@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="薄荷猫耳少女的数字宇宙" />
+  <title>Mint Catgirl · Digital Universe</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <style>
+    .pink-code-decor { position: fixed; right: clamp(18px, 4vw, 64px); bottom: 92px; z-index: 0; color: #ff79bc; font: 800 clamp(44px, 7vw, 104px)/.8 Arial, sans-serif; letter-spacing: -10px; opacity: .68; transform: rotate(-7deg); pointer-events: none; text-shadow: 0 8px 22px rgba(255, 179, 198, .25); }
+    .pink-code-decor sup { position: relative; top: -1em; margin-left: 3px; font-size: .42em; letter-spacing: 0; }
+    .link-music { display: grid; justify-items: center; gap: 7px; transform: rotate(5deg); }
+    .link-music i { display: none; }
+    .link-music .mp3-mark { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; box-shadow: 4px 8px 13px rgba(13, 31, 26, .25); transition: transform .16s ease, box-shadow .16s ease; }
+    .link-music span { opacity: 1; transform: none; padding: 0; border: 0; background: transparent; color: #0D1F1A; font-weight: 700; }
+    .link-music:hover .mp3-mark { transform: translateY(-2px) rotate(-3deg); box-shadow: 6px 11px 16px rgba(13, 31, 26, .3); }
+    .link-music:active .mp3-mark { transform: scale(.84) rotate(-3deg); box-shadow: 2px 4px 7px rgba(13, 31, 26, .2); }
+    @media (max-width: 760px) { .pink-code-decor { right: 18px; bottom: 90px; font-size: 50px; } }
+  </style>
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js" } }
+  </script>
+</head>
+<body class="hub-page">
+  <div class="page-decor decor-rose decor-rose--top" aria-hidden="true"></div>
+  <div class="pink-code-decor" aria-hidden="true">&lt;333<sup>✦</sup></div>
+  <main class="hub">
+    <header class="hub-header">
+      <a class="wordmark" href="index.html">MINT CATGIRL<span>✦</span></a>
+      <p>DIGITAL UNIVERSE · 001</p>
+    </header>
+
+    <section class="hub-stage" aria-labelledby="hub-title">
+      <div class="stage-copy">
+        <p class="eyebrow">ORIGINAL IP PROJECT</p>
+        <h1 id="hub-title">喵子酱</h1>
+        <p>进入她温柔、闪烁的数字宇宙。</p>
+      </div>
+
+      <div class="model-orbit">
+        <div id="hub-viewer" class="three-viewer" data-model="models/catgirl.glb" data-model-name="猫耳少女模型" aria-label="可拖拽旋转的猫耳少女三维模型">
+          <div class="viewer-loading">正在准备数字形象…</div>
+        </div>
+        <div class="mint-halo" aria-hidden="true"></div>
+        <nav class="orbit-nav" aria-label="数字宇宙导航">
+          <a class="orbit-link link-bag" href="bag.html"><i></i><span>包包展示</span></a>
+          <a class="orbit-link link-ip" href="ip.html"><i></i><span>IP 模型</span></a>
+          <a class="orbit-link link-game" href="game.html"><i></i><span>Galgame</span></a>
+          <a class="orbit-link link-music" href="music.html" aria-label="主题曲"><i></i><img class="mp3-mark" src="assets/images/music-player.jpg" alt="" /><span>主题曲</span></a>
+          <a class="orbit-link link-mv" href="mv.html"><i></i><span>MV</span></a>
+          <a class="orbit-link link-ar" href="ar.html"><i></i><span>AR 特效</span></a>
+        </nav>
+      </div>
+      <p class="drag-tip">拖拽模型旋转 · 滚轮缩放</p>
+    </section>
+  </main>
+  <footer class="hub-footer"><button class="store-button" data-store-code="复制打开小红书，搜索店铺：薄荷猫耳少女">前往小红书店铺 <span>↗</span></button><span class="copy-notice" role="status" aria-live="polite"></span></footer>
+  <script src="js/cursor.js"></script>
+  <script type="module" src="js/viewer.js"></script>
+  <script src="js/hub.js"></script>
+</body>
+</html>
