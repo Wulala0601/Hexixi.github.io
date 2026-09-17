@@ -1,0 +1,28 @@
+/* Shared crystal photograph, with a dark veil for readable foreground text. */
+body {
+  min-height: 100vh;
+  background-color: #282530;
+  background-image: linear-gradient(rgba(20, 17, 29, .42), rgba(20, 17, 29, .56)), url("../assets/images/crystal-background.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #fff5fb;
+}
+.hub, .sub-main, .wordmark, .stage-copy h1, .section-intro h1,
+.placeholder-card h1, .hub-page .link-music span { color: #fff5fb; }
+.hub-header p, .stage-copy > p:last-child, .section-intro > p:last-child,
+.drag-tip, .copy-notice, .placeholder-card p:last-child,
+.viewer-loading, .viewer-fallback, .bag-tip, .bag-details p { color: #ecdfeb; }
+.eyebrow { color: #ffd0e7; }
+.hub-header, .stage-copy, .drag-tip, .bag-section > h1, .portfolio > h2 {
+  text-shadow: 0 2px 12px rgba(15, 10, 23, .6);
+}
+.hub-footer, .sub-footer, .sub-header { border-color: rgba(255, 213, 235, .25); }
+.large-viewer, .placeholder-card, .about-card {
+  background: rgba(29, 24, 38, .68);
+  border-color: rgba(255, 213, 235, .28);
+  box-shadow: 0 12px 36px rgba(12, 9, 20, .16);
+}
+.store-button, .back-button { color: #28212e; }
+.about-back { background: rgba(29, 24, 38, .65); }
