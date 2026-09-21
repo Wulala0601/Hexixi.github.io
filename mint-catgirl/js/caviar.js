@@ -1,5 +1,11 @@
 (() => {
-  const base='../assets/portfolio/caviar/';
+  const base = window.resolveMediaUrl ? (window.resolveMediaUrl('assets/portfolio/caviar/')) : '../assets/portfolio/caviar/';
+  const finalFilm = document.querySelector('#final-film');
+  const finalSource = finalFilm && finalFilm.querySelector('source');
+  if (finalSource) {
+    finalSource.src = base + 'final-film.mp4';
+    finalFilm.load();
+  }
   const preference=matchMedia('(prefers-reduced-motion: reduce)');
   let paused=preference.matches;
   const motion=document.querySelector('.motion-control');

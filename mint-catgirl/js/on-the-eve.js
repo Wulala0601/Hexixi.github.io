@@ -1,4 +1,11 @@
 (() => {
+  const mediaBase = window.resolveMediaUrl ? window.resolveMediaUrl('assets/portfolio/undone/') : '../assets/portfolio/undone/';
+  const projectFilm = document.querySelector('#project-film');
+  const projectSource = projectFilm && projectFilm.querySelector('source');
+  if (projectSource) {
+    projectSource.src = mediaBase + 'film.mp4';
+    projectFilm.load();
+  }
   const memories={
     pillow:{title:'白枕头',text:'长久的陪伴，会把一件普通物品变成一处熟悉的地方。阿贝贝，是关于依恋的起点。'},
     telephone:{title:'玩具电话',text:'曾经相信，一通电话可以穿过时间和空间，把想念送到另一边。'},
@@ -9,7 +16,7 @@
   let opener=null,request=0,previousOverflow='';
   document.querySelectorAll('[data-memory]').forEach(button=>button.addEventListener('click',async()=>{
     const token=++request,key=button.dataset.memory,item=memories[key],image=new Image();
-    image.src='../assets/portfolio/undone/'+key+'.webp';
+    image.src=mediaBase + key + '.webp';
     try{await image.decode()}catch{return}
     if(token!==request)return;
     opener=button;
