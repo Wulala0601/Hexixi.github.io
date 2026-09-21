@@ -1,0 +1,45 @@
+name: Deploy website with media
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - name: Download actual website media from LFS
+        run: |
+          git lfs install --local
+          git lfs pull --include="mint-catgirl/**" --exclude=""
+      - name: Validate media and prepare static website
+        run: node scripts/build-pages.cjs
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy static website
+        id: deployment
+        uses: actions/deploy-pages@v4

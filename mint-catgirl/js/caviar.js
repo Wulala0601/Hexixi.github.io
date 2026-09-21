@@ -3,7 +3,8 @@
   const resolveVideo = (src) => {
     if (!src) return src;
     if (/^https?:\/\//i.test(src) || /^data:/i.test(src) || /^blob:/i.test(src)) return src;
-    return window.resolveMediaUrl ? window.resolveMediaUrl(src) : src;
+    const path = src.includes('/') ? src : `../assets/portfolio/caviar/${src}`;
+    return window.resolveMediaUrl ? window.resolveMediaUrl(path) : path;
   };
 
   const finalFilm = document.querySelector('#final-film');

@@ -38,6 +38,16 @@
     .hub-page .link-bag:hover .bag-mark,
     .hub-page .link-bag:active .bag-mark { box-shadow: none; }
     .hub-page .link-bag:focus-visible { outline: 2px solid #ffd0e7; outline-offset: 5px; }
+    .hub-page .link-ip,
+    .hub-page .link-ip:hover { display: grid; justify-items: center; gap: 7px; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+    .hub-page .link-ip .ip-mark { display: block; position: relative; width: 120px; height: 120px; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; pointer-events: none; transition: transform .16s ease; }
+    .hub-page .link-ip .ip-mark * { pointer-events: none; }
+    .hub-page .link-ip .ip-label { color: #fff; padding: 0; border: 0; background: transparent; backdrop-filter: none; font-weight: 700; text-shadow: 0 2px 8px rgba(20,17,29,.75); }
+    .hub-page .link-ip:hover .ip-mark { transform: translateY(-2px) rotate(-3deg); }
+    .hub-page .link-ip:active .ip-mark { transform: scale(.92); }
+    .hub-page .link-ip:focus-visible { outline: 2px solid #ffd0e7; outline-offset: 5px; }
+    .hub-page .ip-mark .viewer-loading, .hub-page .ip-mark .viewer-fallback { font-size: 10px; white-space: normal; padding: 5px; }
+    @media (prefers-reduced-motion: reduce) { .hub-page .link-ip, .hub-page .link-ip .ip-mark { transition: none; } }
     @media (prefers-reduced-motion: reduce) { .hub-page .link-bag, .hub-page .link-bag .bag-mark { transition: none; } }
     @media (max-width: 760px) { .pink-code-decor { right: 18px; bottom: 90px; font-size: 50px; } }
   </style>
@@ -67,7 +77,7 @@
         <div class="mint-halo" aria-hidden="true"></div>
         <nav class="orbit-nav" aria-label="数字宇宙导航">
           <a class="orbit-link link-bag" href="bag.html"><img class="bag-mark" src="assets/images/bag-nav.png" width="448" height="480" alt="" /><span>包包展示</span></a>
-          <a class="orbit-link link-ip" href="ip.html"><i></i><span>IP 模型</span></a>
+          <a class="orbit-link link-ip" href="ip.html" aria-label="打开 IP 模型"><span class="three-viewer ip-mark" data-model="models/ip-nav-fairy.glb" data-model-name="图标" aria-hidden="true"></span><span class="ip-label">IP 模型</span></a>
           <a class="orbit-link link-game" href="game.html"><i></i><span>Galgame</span></a>
           <a class="orbit-link link-music" href="music.html" aria-label="主题曲"><i></i><img class="mp3-mark" src="assets/images/music-player.jpg" alt="" /><span>主题曲</span></a>
           <a class="orbit-link link-mv" href="mv.html"><i></i><span>MV</span></a>
