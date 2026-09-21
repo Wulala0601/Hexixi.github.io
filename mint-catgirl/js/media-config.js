@@ -2,9 +2,10 @@ window.MINT_MEDIA_BASE = window.MINT_MEDIA_BASE || '';
 
 window.resolveMediaUrl = function (path) {
   if (!path) return path;
-  if (/^https?:\/\//i.test(path) || /^data:/i.test(path) || /^blob:/i.test(path) || /^\/\//.test(path)) return path;
-  const base = window.MINT_MEDIA_BASE || '';
-  if (!base) return String(path);
-  const normalized = String(path).replace(/^\.?\/?/, '').replace(/^\//, '');
-  return `${base.replace(/\/$/, '')}/${normalized}`;
+  const normalizedPath = String(path).replace(/\\/g, '/');
+  if (/^https?:\/\//i.test(normalizedPath) || /^data:/i.test(normalizedPath) || /^blob:/i.test(normalizedPath) || /^\/\//.test(normalizedPath)) return normalizedPath;
+  const base = (window.MINT_MEDIA_BASE || '').replace(/\\/g, '/').replace(/\/+$/, '');
+  if (!base) return normalizedPath;
+  const normalized = normalizedPath.replace(/^\.?\/?/, '').replace(/^\/+/, '');
+  return `${base}/${normalized}`;
 };

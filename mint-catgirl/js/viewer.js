@@ -3,7 +3,24 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.166.1/examples/
 
 document.querySelectorAll('.three-viewer[data-model]').forEach(createViewer);
 
+function getResolvedModelUrl(rawPath) {
+  if (!rawPath) return '';
+  if (/^https?:\/\//i.test(rawPath) || /^blob:/i.test(rawPath) || /^data:/i.test(rawPath)) return rawPath;
+  if (typeof window.resolveMediaUrl === 'function') return window.resolveMediaUrl(rawPath);
+  return rawPath;
+}
+
 function createViewer(host) {
+  const rawModelPath = host.dataset.model || '';
+  const modelUrl = getResolvedModelUrl(rawModelPath);
+  if (!modelUrl) {
+    const note = document.createElement('div');
+    note.className = 'viewer-fallback';
+    note.innerHTML = '<span>✦</span>未找到模型地址';
+    host.replaceChildren(note);
+    return;
+  }
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 1000);
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -22,20 +39,46 @@ function createViewer(host) {
   let model, radius = 1, yaw = 0, pitch = 0, distance = 5, drag = null, hovering = false;
   const facePointer = (event) => {
     const rect = host.getBoundingClientRect();
-    // Keep the front toward the camera, with only a small horizontal response.
     yaw = THREE.MathUtils.clamp((event.clientX - rect.left) / rect.width - .5, -.5, .5) * .5;
     pitch = 0;
   };
   const resize = () => { const r = host.getBoundingClientRect(); camera.aspect = r.width / r.height; camera.updateProjectionMatrix(); renderer.setSize(r.width, r.height, false); };
   new ResizeObserver(resize).observe(host); resize();
   const fallback = (message) => { const note = document.createElement('div'); note.className = 'viewer-fallback'; note.innerHTML = `<span>✦</span>${message}`; host.append(note); };
-  new GLTFLoader().load(host.dataset.model, (gltf) => {
+
+  const onLoad = (gltf) => {
     model = gltf.scene; root.add(model);
     loading.remove();
-    const box = new THREE.Box3().setFromObject(model); const size = box.getSize(new THREE.Vector3()); const center = box.getCenter(new THREE.Vector3());
-    model.position.sub(center); radius = Math.max(size.x, size.y, size.z) / 2 || 1;
-    distance = radius / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.5; camera.near = Math.max(.01, distance / 100); camera.far = distance * 100; camera.updateProjectionMatrix();
-  }, progress => { if (progress.total) loading.textContent = `正在加载${host.dataset.modelName || '模型'}… ${Math.round(progress.loaded / progress.total * 100)}%`; }, () => { loading.remove(); fallback(`${host.dataset.modelName || '模型'}加载失败，请刷新重试`); });
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    model.position.sub(center);
+    radius = Math.max(size.x, size.y, size.z) / 2 || 1;
+    distance = radius / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * 1.5;
+    camera.near = Math.max(.01, distance / 100);
+    camera.far = distance * 100;
+    camera.updateProjectionMatrix();
+  };
+
+  const onProgress = (progress) => {
+    if (progress.total) {
+      const percent = Math.round((progress.loaded / progress.total) * 100);
+      loading.textContent = `正在加载${host.dataset.modelName || '模型'}… ${percent}%`;
+    }
+  };
+
+  const onError = (error) => {
+    console.error('GLTF load failed:', modelUrl, error);
+    loading.remove();
+    fallback(`${host.dataset.modelName || '模型'}加载失败，检查资源地址或服务器连接后再刷新。`);
+  };
+
+  try {
+    new GLTFLoader().load(modelUrl, onLoad, onProgress, onError);
+  } catch (error) {
+    onError(error);
+  }
+
   host.addEventListener('pointerenter', e => { hovering = true; if (!drag && !freeRotate) facePointer(e); });
   host.addEventListener('pointerleave', () => { hovering = false; });
   host.addEventListener('pointerdown', e => { drag = { x:e.clientX, y:e.clientY }; host.setPointerCapture(e.pointerId); });
