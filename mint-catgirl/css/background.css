@@ -26,3 +26,11 @@ body {
 }
 .store-button, .back-button { color: #28212e; }
 .about-back { background: rgba(29, 24, 38, .65); }
+
+/* Shared native cursor. The centre of the heart crosshair is the click point. */
+@media (any-pointer: fine) {
+  html, body, body *, body *::before, body *::after {
+    cursor: url("../assets/images/personal-cursor.png") 20 20, auto !important;
+  }
+}
+.custom-cursor { display: none !important; }
