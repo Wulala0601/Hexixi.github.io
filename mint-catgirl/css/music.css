@@ -2,3 +2,38 @@
 :root{--flow-a:#ffd5e3;--flow-b:#ff78b0}.cd{background:transparent!important;box-shadow:none!important}.cd img{mix-blend-mode:screen}.neon{overflow:hidden;filter:none!important;background:linear-gradient(90deg,rgba(255,143,189,.08),rgba(255,213,227,.88),rgba(255,120,176,.7),rgba(255,213,227,.88),rgba(255,143,189,.08))!important;background-size:220% 100%!important;opacity:.8!important;box-shadow:0 -10px 24px rgba(255,143,189,.3),0 -2px 50px rgba(255,213,227,.45);animation:neon-flow 3.2s ease-in-out infinite!important}.neon:before{content:"";position:absolute;inset:-45px -20%;background:radial-gradient(ellipse,rgba(255,255,255,.8),rgba(255,213,227,.35) 30%,transparent 66%);filter:blur(12px);animation:halo-sweep 4s ease-in-out infinite}.neon:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.7) 48%,transparent 60%);width:42%;transform:translateX(-160%);filter:blur(5px);animation:light-pass 3.2s linear infinite}.wave{z-index:2}@keyframes neon-flow{0%,100%{background-position:0% 50%;transform:scaleY(.88);opacity:.55}50%{background-position:100% 50%;transform:scaleY(1.1);opacity:1}}@keyframes halo-sweep{0%,100%{transform:translateX(-16%) scale(.8);opacity:.25}50%{transform:translateX(16%) scale(1.25);opacity:.95}}@keyframes light-pass{to{transform:translateX(430%)}}
 .lyrics-window{position:relative;height:320px;margin-top:22px;overflow:hidden;text-align:center;mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 82%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 82%,transparent 100%)}.lyrics-track{padding:136px 0;transition:transform .4s ease-out}.lyric-line{min-height:48px;margin:0 0 24px;padding:0 10px;cursor:pointer;color:#e8fff6;font-size:18px;line-height:1.35;opacity:.8;transition:color .3s,opacity .3s,font-size .3s,text-shadow .3s}.lyric-line.past{color:#8fb8a8;opacity:.5}.lyric-line.current{color:#ff4da6;opacity:1;font-size:22px;font-weight:700;text-shadow:0 0 8px #ff4da6,0 0 20px #ff4da6,0 0 40px rgba(255,77,166,.6);animation:lyric-breathe 1.8s ease-in-out infinite}@keyframes lyric-breathe{50%{opacity:.72;text-shadow:0 0 5px #ff4da6,0 0 14px #ff4da6,0 0 28px rgba(255,77,166,.45)}}@media(max-width:767px){.lyrics-window{height:280px;margin-top:18px}.lyrics-track{padding:116px 0}.lyric-line{font-size:16px;margin-bottom:20px}.lyric-line.current{font-size:20px}}
 .music-back{position:fixed;z-index:10;top:24px;left:28px;padding:9px 14px;border:1px solid rgba(255,213,227,.55);border-radius:16px;color:#fff6fa;background:rgba(70,15,43,.45);text-decoration:none;font-size:13px}.player{margin-top:55px!important}.info{min-width:0}.lyrics-window{position:relative;z-index:2;width:min(920px,calc(100% - 48px));margin:-5px auto 110px!important}.lyrics-track{padding-top:136px!important}@media(max-width:767px){.music-back{top:15px;left:15px}.player{margin-top:65px!important}.lyrics-window{width:calc(100% - 36px);margin-bottom:95px!important}}
+
+/* Background exclusive to the theme-song page. */
+body.music-page { background-color: #168d89; background-image: linear-gradient(rgba(7, 43, 43, .4), rgba(7, 43, 43, .4)), url("../assets/images/music-lace-bg.jpg"); background-position: center; background-size: cover; background-repeat: no-repeat; background-attachment: fixed; }
+
+/* A soft mint-and-blush glow, fading into the lace rather than a hard band. */
+.music-page .neon {
+  bottom: -30px;
+  height: 140px;
+  pointer-events: none;
+  border: 0;
+  box-shadow: none;
+  background: linear-gradient(105deg, #bdf4df 0%, #d6f6e8 28%, #f7dce7 55%, #c5efdf 80%, #f7dce7 100%) !important;
+  background-size: 180% 100% !important;
+  filter: blur(20px) !important;
+  opacity: .65 !important;
+  mask-image: linear-gradient(to bottom, transparent, #000 70%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 70%);
+  animation: soft-mint-breath 5s ease-in-out infinite !important;
+}
+.music-page .neon::before {
+  background: radial-gradient(ellipse, rgba(218, 255, 237, .65), rgba(250, 222, 234, .3) 40%, transparent 70%);
+  filter: blur(22px);
+  animation: halo-sweep 7s ease-in-out infinite;
+}
+.music-page .neon::after { display: none; }
+.music-page .wave { opacity: .3; }
+.music-page .wave i { background: #e0fff1; border-radius: 999px; }
+.music-page .wave i:nth-child(even) { background: #fbe1eb; }
+@keyframes soft-mint-breath {
+  0%, 100% { background-position: 0% 50%; transform: scaleY(.8); }
+  50% { background-position: 100% 50%; transform: scaleY(1.12); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .music-page .neon, .music-page .neon::before { animation: none !important; }
+}

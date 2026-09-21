@@ -23,13 +23,22 @@
     .link-music i { display: none; }
     .link-bag .bag-mark,
     .link-music .mp3-mark { width: 58px; height: 58px; object-fit: cover; box-shadow: 4px 8px 13px rgba(13, 31, 26, .25); transition: transform .16s ease, box-shadow .16s ease; }
-    .link-bag .bag-mark { width: 72px; height: 72px; border-radius: 18px; }
+    .link-bag .bag-mark { width: 86px; height: 92px; object-fit: contain; border-radius: 0; box-shadow: none; mask: url("assets/images/bag-nav-mask.svg") center / contain no-repeat; -webkit-mask: url("assets/images/bag-nav-mask.svg") center / contain no-repeat; }
     .link-bag span,
     .link-music span { opacity: 1; transform: none; padding: 0; border: 0; background: transparent; color: #0D1F1A; font-weight: 700; }
     .link-bag:hover .bag-mark,
     .link-music:hover .mp3-mark { transform: translateY(-2px) rotate(-3deg); box-shadow: 6px 11px 16px rgba(13, 31, 26, .3); }
     .link-bag:active .bag-mark,
     .link-music:active .mp3-mark { transform: scale(.84) rotate(-3deg); box-shadow: 2px 4px 7px rgba(13, 31, 26, .2); }
+    .hub-page .link-bag,
+    .hub-page .link-bag:hover,
+    .hub-page .link-music,
+    .hub-page .link-music:hover { border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+    .hub-page .link-bag span { color: #fff; background: transparent; border: 0; backdrop-filter: none; text-shadow: 0 2px 8px rgba(20,17,29,.75); }
+    .hub-page .link-bag:hover .bag-mark,
+    .hub-page .link-bag:active .bag-mark { box-shadow: none; }
+    .hub-page .link-bag:focus-visible { outline: 2px solid #ffd0e7; outline-offset: 5px; }
+    @media (prefers-reduced-motion: reduce) { .hub-page .link-bag, .hub-page .link-bag .bag-mark { transition: none; } }
     @media (max-width: 760px) { .pink-code-decor { right: 18px; bottom: 90px; font-size: 50px; } }
   </style>
   <script type="importmap">
@@ -57,7 +66,7 @@
         </div>
         <div class="mint-halo" aria-hidden="true"></div>
         <nav class="orbit-nav" aria-label="数字宇宙导航">
-          <a class="orbit-link link-bag" href="bag.html"><i></i><img class="bag-mark" src="assets/bag/angle-01.png" alt="包包展示" /><span>包包展示</span></a>
+          <a class="orbit-link link-bag" href="bag.html"><img class="bag-mark" src="assets/images/bag-nav.png" width="448" height="480" alt="" /><span>包包展示</span></a>
           <a class="orbit-link link-ip" href="ip.html"><i></i><span>IP 模型</span></a>
           <a class="orbit-link link-game" href="game.html"><i></i><span>Galgame</span></a>
           <a class="orbit-link link-music" href="music.html" aria-label="主题曲"><i></i><img class="mp3-mark" src="assets/images/music-player.jpg" alt="" /><span>主题曲</span></a>

@@ -1,0 +1,10 @@
+/* Exclusive to the IP model page; retain contrast for the existing white text. */
+body.ip-model-page {
+  background-color: #aebed0;
+  background-image: linear-gradient(rgba(20, 24, 40, .38), rgba(20, 24, 40, .38)), url("../assets/images/ip-background.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.ip-page{max-width:1400px;margin:auto;width:100%}.ip-models{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}.ip-model{min-width:0}.ip-model .section-intro h1{font-size:clamp(30px,4vw,50px)}.ip-model .section-intro>p:last-child{min-height:58px}.ip-model .large-viewer{height:520px;min-height:400px;width:100%;overflow:hidden}.ip-model .drag-tip{font-size:12px;text-align:center;line-height:1.8}.ip-model .three-viewer:focus-visible{outline:2px solid #ffd0e7;outline-offset:5px}@media(max-width:760px){.ip-models{grid-template-columns:1fr;gap:35px}.ip-model .large-viewer{height:430px;min-height:320px}}@media(max-width:380px){.ip-model .large-viewer{height:360px}}
