@@ -1,5 +1,5 @@
 (() => {
-  const base = window.resolveMediaUrl ? (window.resolveMediaUrl('assets/portfolio/caviar/')) : '../assets/portfolio/caviar/';
+  const base = window.resolveMediaUrl ? (window.resolveMediaUrl('../assets/portfolio/caviar/')) : '../assets/portfolio/caviar/';
   const finalFilm = document.querySelector('#final-film');
   const finalSource = finalFilm && finalFilm.querySelector('source');
   if (finalSource) {
