@@ -1,22 +1,24 @@
-# GitHub Pages 媒体部署
+# HE XIXI 网站发布
 
-当前线上模型和视频返回 Git LFS 指针文本，不能直接播放。
-新工作流会先取回真正的 LFS 文件，再发布网页目录，保持现有网址及 `/mint-catgirl/` 路径不变。
+线上网站：[打开 HE XIXI — Soft Error Wonderland](https://wulala0601.github.io/Hexixi.github.io/)
 
-## 首次切换
+GitHub 仓库：[Wulala0601/Hexixi.github.io](https://github.com/Wulala0601/Hexixi.github.io)
 
-1. 把本次修改及新增资源提交并推送到 main。必须包含 `.github/workflows/pages.yml`、`scripts/build-pages.cjs`、`mint-catgirl/models/ip-nav-fairy.glb`、`mint-catgirl/assets/portfolio/undone/film.mp4`，以及修改过的网页和脚本。新视频和模型继续使用现有 LFS 规则；不要删除 `.gitattributes`。
-2. GitHub 仓库 → Settings → Pages → Build and deployment → Source，选择 **GitHub Actions**。
-3. Actions → **Deploy website with media** → **Run workflow**（main）。等待 build、deploy 均成功。
+新版源代码保存在仓库的 `wonderland/` 目录。原有素材与旧版文件保留在原位置。
+工作流 `.github/workflows/pages.yml` 在 `main` 更新时安装依赖、检查代码、构建并部署到 GitHub Pages。
+仓库 Settings → Pages 的发布源应为 GitHub Actions。
 
-网址：https://wulala0601.github.io/Hexixi.github.io/
+## 本地运行
 
-之后 main 的每次推送会自动部署。部署产物只含 index.html、mint-catgirl 和可选 CNAME，不包含原始作品集、PSD 或根目录模型副本。无需安装前端依赖。
+在 `wonderland/` 中运行 `npm ci` 和 `npm run dev`。
+普通本地预览使用 `/`；Pages 构建设置 `SITE_BASE_PATH=/Hexixi.github.io/`。
 
-## 检查
+## 网站内容
 
-本地运行 `node scripts/build-pages.cjs` 检查媒体文件并准备 `_site`。该目录已加入忽略规则，不需要提交。
-工作流遇到缺失媒体、未还原的 LFS 指针或无效 GLB / MP4 会停止，避免将损坏资源部署。
-如果 LFS 下载因额度或权限失败，需先处理仓库 LFS 额度/访问权限；不要跳过下载校验。
+- 薄荷粉色波点背景、互动 3D 人物与蕾丝底座。
+- 四扇门与同色钥匙解锁的独立项目页。
+- 粉色电脑内嵌视频、包包和模型详情入口。
+- 浮动星星、爱心光标、喵子酱音乐播放器。
 
-线上验证模型文件开头应为 `glTF`，MP4 第 5–8 个字节应为 `ftyp`，而不是 `version https://git-lfs.github.com/spec/v1`。
+`public/` 中只存放网站使用的媒体，不上传本地缓存、原始作品集或私人文档。
+构建会为各详情页生成入口文件，支持直接打开和刷新网址。

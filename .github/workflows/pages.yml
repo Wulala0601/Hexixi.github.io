@@ -1,4 +1,4 @@
-name: Deploy website with media
+name: Deploy HE XIXI Wonderland
 
 on:
   push:
@@ -15,19 +15,25 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wonderland
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: false
-      - name: Download actual website media from LFS
-        run: |
-          git lfs install --local
-          git lfs pull --include="mint-catgirl/**" --exclude=""
-      - name: Validate media and prepare static website
-        run: node scripts/build-pages.cjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: wonderland/package-lock.json
+      - run: npm ci
+      - run: npm run check
+        env:
+          SITE_BASE_PATH: /Hexixi.github.io/
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: _site
+          path: wonderland/dist
 
   deploy:
     needs: build
@@ -40,6 +46,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/configure-pages@v5
-      - name: Deploy static website
+      - name: Publish website
         id: deployment
         uses: actions/deploy-pages@v4

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wulala0601.github.io/Hexixi.github.io/sitemap.xml

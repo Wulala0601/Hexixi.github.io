@@ -1,0 +1,11 @@
+node_modules/
+.npm-cache/
+dist/
+tmp/
+.vercel/
+.env*
+!.env.example
+*.tsbuildinfo
+*.log
+3937899cf1271d50e868e66ce4264e0e.mp4
+.DS_Store
