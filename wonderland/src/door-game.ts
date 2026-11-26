@@ -1,4 +1,4 @@
-export const doorIds = ['witch', 'iron', 'swan', 'garden', 'crate'] as const
+export const doorIds = ['witch', 'iron', 'swan', 'garden', 'crate', 'shop'] as const
 export type DoorId = typeof doorIds[number]
 export type DoorGame = {
   selected: DoorId | null

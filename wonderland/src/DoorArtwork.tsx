@@ -15,7 +15,7 @@ function Rose({ x, y, size = 1, shade = '#f6cccf' }: { x: number; y: number; siz
 
 export function DoorArtwork({ kind }: { kind: DoorId }) {
   const id = useId().replace(/:/g, '')
-  const colors = { witch: ['#62606c','#26232d','#43404d'], iron: ['#e7afc5','#a75a7c','#cf8aaa'], swan: ['#e1f5fa','#79abc0','#b6dce9'], garden: ['#9da883','#425d43','#70866a'], crate: ['#e6cfa2','#6b4a26','#b8843c'] }[kind]
+  const colors = { witch: ['#62606c','#26232d','#43404d'], iron: ['#e7afc5','#a75a7c','#cf8aaa'], swan: ['#e1f5fa','#79abc0','#b6dce9'], garden: ['#9da883','#425d43','#70866a'], crate: ['#e6cfa2','#6b4a26','#b8843c'], shop: ['#f6e6d9','#a87b62','#d9b39c'] }[kind]
   return <svg viewBox="0 0 200 360" aria-hidden="true" focusable="false">
     <defs>
       <path id={`${id}-curl`} d={curl}/>
@@ -101,6 +101,21 @@ export function DoorArtwork({ kind }: { kind: DoorId }) {
       </g>
       {[[30,150],[170,186],[26,214],[174,120]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r={i%2?2.4:3.4} fill="#f7e2b6" opacity=".8"/>)}
     </>}
+    {kind === 'shop' && <>
+      <path d="M34 252V100C34 20 166 20 166 100V252Z" fill={`url(#${id}-glass)`} stroke="#a87b62" strokeWidth="4"/>
+      <path d="M38 250V100C38 24 162 24 162 100V250Z" fill="none" stroke="#f6e6d9" strokeWidth="1.8"/>
+      {[42,80,118,156].map((x,i)=><path key={x} d={`M${x} 62h38v24h-38Z`} fill={i%2?'#f6e6d9':'#d9b39c'} stroke="#a87b62" strokeWidth="1.4"/>)}
+      <path d="M34 86h132" stroke="#a87b62" strokeWidth="3"/>
+      <path d="M100 92V248M40 168H160" stroke="#a87b62" strokeWidth="2.4" opacity=".5"/>
+      <path d="M42 214H158" stroke="#a87b62" strokeWidth="4"/>
+      <rect x="58" y="178" width="30" height="36" rx="3" fill="#eccbb6" stroke="#a87b62" strokeWidth="2"/>
+      <path d="M64 178v-8h18v8" fill="none" stroke="#a87b62" strokeWidth="2"/>
+      <rect x="100" y="186" width="28" height="28" rx="14" fill="#f8ece2" stroke="#a87b62" strokeWidth="2"/>
+      <path d="M136 214V186" stroke="#a87b62" strokeWidth="3"/>
+      <circle cx="100" cy="128" r="9" fill="none" stroke="#a87b62" strokeWidth="2"/>
+      <path d="M100 137v12" stroke={`url(#${id}-silver)`} strokeWidth="3"/>
+      {[[30,190],[172,196]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r={2.6} fill="#f6e6d9" opacity=".85"/>)}
+    </>}
     <path d="M17 346H183V351H17Z" fill={colors[1]}/>
   </svg>
 }
@@ -114,6 +129,7 @@ export function KeyArtwork({ kind }: { kind: DoorId }) {
         : kind === 'iron' ? <><path d="M55 61C-6 61 17 12 39 30C54 44 29 53 32 35M55 61C116 61 93 12 71 30C56 44 81 53 78 35M55 44C30 25 47 10 55 6C63 10 80 25 55 44Z"/><circle cx="55" cy="5" r="2"/></>
         : kind === 'swan' ? <><path d="M55 61C-4 62 17 12 39 30C53 41 28 50 31 36M55 61C114 62 93 12 71 30C57 41 82 50 79 36M36 24Q51 16 55 1Q59 16 74 24"/><path d="M40 20Q28 22 31 12M70 20Q82 22 79 12"/></>
         : kind === 'crate' ? <><rect x="30" y="12" width="50" height="36" rx="7"/><path d="M42 12V48M68 12V48M30 30H80"/><circle cx="55" cy="38" r="4"/></>
+        : kind === 'shop' ? <><path d="M30 14H72L86 28V50H30Z"/><circle cx="43" cy="30" r="5"/><path d="M56 26H74M56 34H68"/></>
         : <><path d="M55 55C12 57 12 17 55 17C98 17 98 57 55 55Z"/><path d="M55 42L66 53L55 63L44 53Z"/></>}
     </g>
     <g fill="currentColor"><path d="M49 58H61V150H49Z"/><rect x="44" y="61" width="22" height="6" rx="2"/><rect x="45" y="71" width="20" height="5" rx="2"/>

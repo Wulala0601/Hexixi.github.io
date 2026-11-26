@@ -1,0 +1,187 @@
+/* ============================================================
+   六扇门 + 钥匙扣拖拽
+   叠加在 world-doors.css 之上：只重写网格、钥匙入口和拖拽反馈。
+   ============================================================ */
+
+/* ---------- 六扇门：桌面 3 × 2 ---------- */
+.doors-gallery {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 1080px;
+  gap: clamp(26px, 4vw, 56px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 901px) {
+  /* 给右下角固定的音乐播放器让位 */
+  .doors-gallery {
+    margin-left: auto;
+    margin-right: 140px;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 701px) {
+  .doors-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 620px;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .doors-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 520px;
+    margin-right: auto;
+    gap: 34px 18px;
+  }
+}
+
+/* ---------- 钥匙扣 ---------- */
+.keyring {
+  --key-width: clamp(72px, 7.6vw, 104px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: clamp(26px, 4vw, 44px) auto 0;
+  user-select: none;
+}
+
+.keyring-label {
+  font-family: var(--font-body, system-ui);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #6a8076;
+}
+
+.keyring-stage {
+  position: relative;
+  width: min(620px, 96%);
+  height: calc(var(--key-width) * 1.62);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.keyring-hoop {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  margin-left: -17px;
+  border: 3px solid #8d8175;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f6f1e8, #cfc4b6 70%);
+  box-shadow: 0 6px 16px rgba(13, 31, 26, 0.16);
+  z-index: 4;
+}
+
+.keyring-key {
+  position: absolute;
+  top: 20px;
+  width: var(--key-width);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #7b6f63;
+  transform-origin: 50% 0;
+  transform: translateX(0) rotate(0deg);
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), color 0.2s ease, opacity 0.2s ease;
+  cursor: grab;
+  touch-action: none;
+  z-index: 3;
+}
+
+.keyring.is-open .keyring-key,
+.keyring.is-dragging .keyring-key {
+  transform: translateX(var(--dx)) rotate(var(--angle));
+}
+
+.keyring-key:hover { color: #3d332b; }
+.keyring-key:active { cursor: grabbing; }
+
+.keyring-key svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 8px 12px rgba(13, 31, 26, 0.18));
+}
+
+.keyring-key.is-selected {
+  color: #b13327;
+  transform: translateX(var(--dx)) rotate(var(--angle)) scale(1.12);
+  z-index: 5;
+}
+
+.keyring-key.is-selected svg { filter: drop-shadow(0 10px 18px rgba(177, 51, 39, 0.35)); }
+
+.keyring-key.is-used {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.keyring-key-name {
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  transform: translate(-50%, 100%);
+  white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 248, 244, 0.94);
+  font-family: var(--font-body, system-ui);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #4c5a53;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.keyring-key:hover .keyring-key-name,
+.keyring-key.is-selected .keyring-key-name {
+  opacity: 1;
+}
+
+/* 拖动时跟随鼠标的那把钥匙 */
+.keyring-ghost {
+  position: fixed;
+  width: 62px;
+  transform: translate(-50%, -88%) rotate(14deg);
+  color: #b13327;
+  pointer-events: none;
+  z-index: 999;
+  filter: drop-shadow(0 14px 20px rgba(13, 31, 26, 0.35));
+}
+
+.keyring-ghost svg { width: 100%; height: auto; }
+
+/* 触屏没有 hover，直接展开 */
+@media (hover: none) {
+  .keyring .keyring-key { transform: translateX(var(--dx)) rotate(var(--angle)); }
+}
+
+/* ---------- 门的钥匙提示 ---------- */
+.door-key-tag {
+  display: inline-block;
+  padding: 3px 11px;
+  border: 1px solid color-mix(in srgb, var(--door-color, #c5bcb2) 70%, #ffffff);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--door-color, #c5bcb2) 14%, transparent);
+  font-family: var(--font-body, system-ui);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: #4c5a53;
+}
+
+.door-world.has-key .door-leaf {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--door-color, #c5bcb2) 60%, transparent), 0 18px 40px rgba(13, 31, 26, 0.14);
+}
+
+.door-world.has-key .door-knock-hint { opacity: 1; }
+
+/* 拖动时把门抬高一点，方便瞄准 */
+.keyring.is-dragging ~ .doors-gallery .door-leaf { transform: translateY(-3px); }
