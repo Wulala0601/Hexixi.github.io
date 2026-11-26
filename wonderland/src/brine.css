@@ -1,0 +1,405 @@
+﻿/* ============================================================
+   BRINE · 古早少女 · 薄荷 / 全息 / 蕾丝
+   ============================================================ */
+
+.brine {
+  --paper: #f7fbfa;
+  --ink: #17323a;
+  --muted: #5f7d84;
+  --mint: #9fe3d0;
+  --mint-deep: #2f8f7c;
+  --pink: #f3a8c0;
+  --blue: #6fb6d8;
+  --lace: #eef7f4;
+  --line: rgba(23, 50, 58, 0.12);
+
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+.brine-wash {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(180deg, rgba(247, 251, 250, 0.55), rgba(247, 251, 250, 0.92) 45%, var(--paper) 100%),
+    url('/images/brine/backdrop.webp') center / cover no-repeat;
+  pointer-events: none;
+}
+
+.brine > section, .brine > footer { position: relative; z-index: 1; }
+
+.brine h2 em { font-style: normal; color: var(--mint-deep); }
+
+/* ---------- 封面 ---------- */
+.brine-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.75fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: calc(96px + clamp(30px, 5vw, 64px)) 6% clamp(36px, 5vw, 64px);
+}
+
+.brine-mark { width: clamp(88px, 11vw, 132px); margin-bottom: 18px; filter: drop-shadow(0 12px 24px rgba(47, 143, 124, 0.25)); }
+
+.brine-kicker {
+  margin: 0 0 16px;
+  font-family: var(--font-body, system-ui);
+  font-size: 10.5px;
+  letter-spacing: 0.24em;
+  color: var(--mint-deep);
+}
+
+.brine h1 {
+  margin: 0 0 20px;
+  font-family: var(--font-body, system-ui);
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  line-height: 1.18;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+  word-break: auto-phrase;
+}
+
+.brine-lede { margin: 0 0 26px; font-size: clamp(14px, 1.5vw, 16px); line-height: 1.95; color: var(--muted); max-width: 32em; }
+
+.brine-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.brine-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: 1px solid rgba(47, 143, 124, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--ink);
+  font-family: var(--font-body, system-ui);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+}
+
+.brine-btn:hover { transform: translateY(-2px); background: #fff; border-color: var(--mint-deep); }
+.brine-btn-solid { background: var(--mint-deep); border-color: var(--mint-deep); color: #f2fffb; }
+.brine-btn-solid:hover { background: #287a69; border-color: #287a69; color: #fff; }
+
+.brine-hero-art { margin: 0; text-align: center; }
+.brine-hero-art img {
+  width: 100%;
+  max-width: 360px;
+  filter: drop-shadow(0 26px 50px rgba(47, 143, 124, 0.28));
+  animation: brine-float 9s ease-in-out infinite;
+}
+.brine-hero-art figcaption {
+  margin-top: 10px;
+  font-family: var(--font-body, system-ui);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+@keyframes brine-float {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-12px) rotate(1.5deg); }
+}
+
+/* ---------- 区块 ---------- */
+.brine-section {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(44px, 6vw, 84px) 6%;
+}
+
+@media (min-width: 901px) {
+  .brine-section { padding-right: calc(6% + 110px); }
+}
+
+.brine-head { max-width: 660px; margin-bottom: clamp(22px, 3vw, 38px); }
+
+.brine-eyebrow {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-family: var(--font-body, system-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--mint-deep);
+}
+
+.brine h2 {
+  margin: 0 0 12px;
+  font-family: var(--font-body, system-ui);
+  font-size: clamp(23px, 3.2vw, 34px);
+  line-height: 1.28;
+  font-weight: 800;
+  text-wrap: balance;
+  word-break: auto-phrase;
+}
+
+.brine-head > p { margin: 0; font-size: clamp(13.5px, 1.45vw, 15px); line-height: 1.85; color: var(--muted); }
+
+/* ---------- 商品卡 ---------- */
+.brine-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.brine-card {
+  position: relative;
+  border: 1px solid rgba(23, 50, 58, 0.08);
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 18px 40px -32px rgba(23, 50, 58, 0.6);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.brine-card:hover, .brine-card:focus-visible { transform: translateY(-5px); box-shadow: 0 26px 50px -30px rgba(23, 50, 58, 0.55); }
+.brine-card:focus-visible { outline: 2px solid var(--mint-deep); outline-offset: 3px; }
+
+.brine-card-art { position: relative; aspect-ratio: 1 / 1; background: var(--lace); }
+.brine-card-art > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.brine-ribbon {
+  position: absolute;
+  left: 0;
+  bottom: 12px;
+  padding: 5px 12px 5px 10px;
+  border-radius: 0 999px 999px 0;
+  background: var(--pink);
+  color: #4a1f2c;
+  font-family: var(--font-body, system-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.5);
+}
+
+.brine-stock {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: var(--font-body, system-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--mint-deep);
+  border: 1px solid rgba(47, 143, 124, 0.25);
+}
+.brine-stock.is-soon { color: #a06b1f; }
+.brine-stock.is-sold { color: #8d8d8d; }
+
+.brine-card-body { padding: 14px 16px 16px; }
+.brine-tag {
+  display: inline-block;
+  margin-bottom: 7px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(159, 227, 208, 0.35);
+  color: var(--mint-deep);
+  font-family: var(--font-body, system-ui);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.brine-card-body h3 { margin: 0 0 6px; font-size: 15px; line-height: 1.4; font-weight: 700; }
+.brine-card-body h3 em { display: block; margin-top: 3px; font-family: var(--font-body, system-ui); font-size: 10px; font-style: normal; letter-spacing: 0.1em; color: var(--muted); }
+
+.brine-price { margin: 0 0 8px; font-family: var(--font-body, system-ui); font-size: 17px; font-weight: 800; color: var(--mint-deep); }
+.brine-more { font-family: var(--font-body, system-ui); font-size: 11.5px; color: var(--muted); }
+
+/* ---------- 赠品 ---------- */
+.brine-gifts {
+  margin-top: 22px;
+  padding: clamp(16px, 2.4vw, 26px);
+  border-radius: 16px;
+  background: linear-gradient(120deg, rgba(159, 227, 208, 0.22), rgba(243, 168, 192, 0.14));
+  border: 1px dashed rgba(47, 143, 124, 0.35);
+}
+
+.brine-gifts ul { display: grid; gap: 10px; margin: 6px 0 0; padding: 0; list-style: none; }
+
+.brine-gifts li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-body, system-ui);
+  font-size: 13px;
+}
+.brine-gifts li img { width: 22px; height: 22px; object-fit: contain; }
+.brine-gifts li strong { font-size: 13.5px; }
+.brine-gifts li span { color: var(--muted); font-size: 12px; }
+
+/* ---------- 作品墙 ---------- */
+.brine-works { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.brine-works figure { margin: 0; }
+.brine-works img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 14px;
+  filter: saturate(0.92);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.brine-works figure:hover img { transform: translateY(-4px) rotate(-0.8deg); filter: none; }
+.brine-works figcaption { display: grid; gap: 2px; margin-top: 8px; }
+.brine-works figcaption strong { font-size: 13.5px; }
+.brine-works figcaption em { font-family: var(--font-body, system-ui); font-size: 9.5px; font-style: normal; letter-spacing: 0.1em; color: var(--muted); }
+.brine-works figcaption span { font-family: var(--font-body, system-ui); font-size: 10.5px; color: var(--pink); }
+
+/* ---------- 模型 ---------- */
+.brine-model {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.75fr);
+  gap: clamp(24px, 4vw, 52px);
+  align-items: center;
+}
+
+.brine-model-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.brine-soon { font-family: var(--font-body, system-ui); font-size: 11.5px; color: var(--muted); }
+
+.brine-model-visual { position: relative; display: grid; place-items: center; min-height: clamp(220px, 28vw, 320px); }
+.brine-model-visual img { width: clamp(120px, 16vw, 180px); filter: drop-shadow(0 18px 34px rgba(47, 143, 124, 0.3)); animation: brine-float 10s ease-in-out infinite; }
+
+.brine-orbit {
+  position: absolute;
+  width: 78%;
+  aspect-ratio: 1 / 1;
+  border: 1px dashed rgba(47, 143, 124, 0.45);
+  border-radius: 50%;
+  animation: brine-spin 26s linear infinite;
+}
+.brine-orbit.is-two { width: 60%; border-style: dotted; border-color: rgba(243, 168, 192, 0.6); animation-direction: reverse; animation-duration: 18s; }
+
+@keyframes brine-spin { to { transform: rotate(360deg); } }
+
+/* ---------- 幕后 ---------- */
+.brine-behind { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 28px); }
+.brine-behind figure { margin: 0; }
+.brine-behind img { display: block; width: 100%; border-radius: 14px; box-shadow: 0 20px 44px -34px rgba(23, 50, 58, 0.6); }
+.brine-behind figcaption { margin-top: 8px; font-family: var(--font-body, system-ui); font-size: 11px; color: var(--muted); }
+.brine-behind-text { grid-column: 1 / -1; }
+.brine-behind-text p { margin: 0 0 10px; font-size: 14px; line-height: 1.9; color: var(--ink); }
+.brine-behind-en { font-family: var(--font-body, system-ui); font-size: 12px !important; color: var(--muted) !important; }
+
+.brine-packing { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+.brine-packing li {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--font-body, system-ui);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* ---------- 页脚 ---------- */
+.brine-end {
+  padding: clamp(44px, 6vw, 80px) 6% calc(clamp(44px, 6vw, 80px) + 36px);
+  text-align: center;
+  background: linear-gradient(180deg, transparent, rgba(159, 227, 208, 0.28));
+}
+
+.brine-end-mark { width: clamp(140px, 20vw, 220px); margin-bottom: 14px; }
+.brine-end-line { margin: 0 0 22px; font-family: var(--font-body, system-ui); font-size: 12px; letter-spacing: 0.2em; color: var(--muted); }
+.brine-end-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+
+/* ---------- 弹层 ---------- */
+.brine-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(10, 30, 32, 0.62);
+  backdrop-filter: blur(6px);
+  animation: brine-fade 0.25s ease both;
+}
+
+@keyframes brine-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.brine-dialog {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  width: min(900px, 100%);
+  max-height: 88vh;
+  overflow: auto;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.7);
+  animation: brine-pop 0.3s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+@keyframes brine-pop { from { opacity: 0; transform: translateY(16px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+.brine-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.brine-dialog-art { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 12px; background: var(--lace); align-content: start; }
+.brine-dialog-art img:first-child { grid-column: 1 / -1; }
+.brine-dialog-art img { display: block; width: 100%; border-radius: 10px; object-fit: cover; }
+
+.brine-dialog-body { padding: clamp(18px, 2.6vw, 30px); display: grid; align-content: start; gap: 8px; }
+.brine-dialog-body .brine-stock { position: static; justify-self: start; }
+.brine-dialog-body h3 { margin: 4px 0 0; font-size: clamp(19px, 2.4vw, 24px); line-height: 1.35; }
+.brine-dialog-body h3 em { display: block; margin-top: 4px; font-family: var(--font-body, system-ui); font-size: 10.5px; font-style: normal; letter-spacing: 0.14em; color: var(--muted); }
+.brine-dialog-note { margin: 4px 0 0; font-size: 13.5px; line-height: 1.9; color: var(--muted); }
+
+.brine-dialog-gift {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(243, 168, 192, 0.18);
+  font-family: var(--font-body, system-ui);
+  font-size: 12.5px;
+}
+.brine-dialog-gift img { width: 22px; }
+
+.brine-dialog-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.brine-dialog-hint { margin: 2px 0 0; font-family: var(--font-body, system-ui); font-size: 10.5px; color: #9aa9ad; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .brine-hero { grid-template-columns: 1fr; padding-top: calc(76px + 30px); }
+  .brine-hero-art { order: -1; }
+  .brine-hero-art img { max-width: 220px; }
+  .brine-section { padding-right: 6%; }
+  .brine-model { grid-template-columns: 1fr; }
+  .brine-model-visual { min-height: 180px; }
+  .brine-behind { grid-template-columns: 1fr; }
+  .brine-dialog { grid-template-columns: 1fr; }
+  .brine-dialog-art { grid-template-columns: repeat(3, 1fr); }
+}

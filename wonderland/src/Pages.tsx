@@ -8,6 +8,7 @@ import Caviar from './Caviar'
 import OnTheEve from './Eve'
 import Anicat from './Anicat'
 import Clover from './Clover'
+import Brine from './Brine'
 export default function Pages() {
   const { slug } = useParams(); const { t } = usePreferences()
   if (slug === 'atb505') return <Atb505 />
@@ -15,6 +16,7 @@ export default function Pages() {
   if (slug === 'on-the-eve') return <OnTheEve />
   if (slug === 'anicat') return <Anicat />
   if (slug === 'please-lie-here') return <Clover />
+  if (slug === 'shop') return <Brine />
   if (slug === 'bag-details') return <BagDetails />
   if (slug === 'model-details') return <ModelDetails />
   if (slug === 'about') return <About />

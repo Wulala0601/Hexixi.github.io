@@ -1,0 +1,318 @@
+import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { assetUrl } from './assets'
+import { links } from './content'
+import './brine.css'
+
+const img = (name: string) => assetUrl(`/images/brine/${name}.webp`)
+
+type Stock = 'on' | 'soon' | 'sold'
+
+type Product = {
+  id: string
+  zh: string
+  en: string
+  price: number | null
+  gift?: string
+  stock: Stock
+  note: string
+  images: string[]
+  tag: string
+}
+
+const PRODUCTS: Product[] = [
+  {
+    id: 'mint',
+    zh: '薄荷波点古早少女包',
+    en: 'Mint Polka Tote',
+    price: 89,
+    gift: '猫耳徽章',
+    stock: 'on',
+    tag: '最受欢迎',
+    note: '薄荷绿波点帆布 + 蕾丝包边，正面是手绘少女印花。容量放得下 A5 本子、手机和一把小伞。',
+    images: ['bag-mint-white', 'bag-mint-2', 'bag-mint-4'],
+  },
+  {
+    id: 'ocean',
+    zh: '旋转木马粉色海洋包',
+    en: 'Carousel Ocean Tote',
+    price: 72,
+    gift: '亚克力 LOGO 钥匙扣',
+    stock: 'on',
+    tag: '全息',
+    note: '粉蓝渐变的全息面料，光一转动颜色就变。包身轻，适合当日常小包。',
+    images: ['bag-ocean', 'bag-ocean-2'],
+  },
+  {
+    id: 'cat',
+    zh: '天使黑猫包',
+    en: 'Angel Black Cat Tote',
+    price: 72,
+    gift: '亚克力 LOGO 钥匙扣',
+    stock: 'on',
+    tag: '全息',
+    note: '黑猫与星空的全息印花，暗处是黑，光下会浮出一整片银河。',
+    images: ['bag-cat', 'bag-cat-2'],
+  },
+  {
+    id: 'badge',
+    zh: '梦核系列徽章 · 一套 6 个',
+    en: 'Dreamcore Badge Set of 6',
+    price: 69,
+    stock: 'on',
+    tag: '一套 6 个',
+    note: '蛋糕、格桑花、海豚、兔子、小马、钥匙和锁，六个一组，附背板。别在包上或帆布袋上都合适。',
+    images: ['badge-set-white', 'badge-set-main', 'badge-set-grid'],
+  },
+]
+
+const WORKS = [
+  { file: 'work-duck', zh: '小黄鸭系列', en: 'Rubber Duck', hint: '印花打样完成' },
+  { file: 'work-love', zh: '少女的爱系列', en: 'Girl in Love', hint: '配色调整中' },
+  { file: 'work-bear', zh: '复古小熊系列', en: 'Retro Bear', hint: '黑蕾丝 + 小熊' },
+  { file: 'work-piano', zh: '钢琴系列', en: 'Piano', hint: '琴键与花' },
+  { file: 'work-badge-2', zh: '徽章 · 系列二', en: 'Badge Series II', hint: '六个一组' },
+  { file: 'work-badge-3', zh: '徽章 · 系列三', en: 'Badge Series III', hint: '六个一组' },
+]
+
+const GIFTS = [
+  { name: '猫耳徽章', rule: '买薄荷波点包赠' },
+  { name: '亚克力 LOGO 钥匙扣', rule: '买黑猫包 / 海洋包赠' },
+  { name: 'LOGO 贴纸', rule: '随单附赠' },
+]
+
+const stockLabel: Record<Stock, string> = { on: '在售', soon: '即将上架', sold: '补货中' }
+
+export default function Brine() {
+  const [open, setOpen] = useState<Product | null>(null)
+  const dialog = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    document.title = 'BRINE · 小小商店 — HE XIXI'
+    const id = new URLSearchParams(window.location.search).get('p')
+    if (id) {
+      const hit = PRODUCTS.find((p) => p.id === id)
+      if (hit) setOpen(hit)
+    }
+    return () => { document.title = 'HE XIXI — Soft Error Wonderland' }
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(null) }
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    dialog.current?.focus()
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [open])
+
+  return (
+    <main className="brine">
+      <div className="brine-wash" aria-hidden="true" />
+
+      {/* ---------- 封面 ---------- */}
+      <section className="brine-hero">
+        <div className="brine-hero-text">
+          <img className="brine-mark" src={img('logo-mark')} alt="BRINE 标志" />
+          <p className="brine-kicker">BRINE · SMALL THINGS, MADE SLOWLY</p>
+          <h1>把古早的<em>少女心</em>，装进口袋</h1>
+          <p className="brine-lede">
+            BRINE 是我自己的小品牌：帆布包、徽章、钥匙扣和贴纸。
+            每一样都是先画、再打版、最后自己打包寄出去的东西。
+          </p>
+          <div className="brine-actions">
+            <a className="brine-btn brine-btn-solid" href="#shop">看在售 ↗</a>
+            <a className="brine-btn" href="#works">看作品</a>
+            <a className="brine-btn" href="#model">模型项目</a>
+          </div>
+        </div>
+        <figure className="brine-hero-art">
+          <img src={img('logo-lace')} alt="BRINE 蕾丝版标志" />
+          <figcaption>薄荷蕾丝 · 限定标</figcaption>
+        </figure>
+      </section>
+
+      {/* ---------- 在售 ---------- */}
+      <section className="brine-section" id="shop">
+        <header className="brine-head">
+          <span className="brine-eyebrow">01 · ON SALE</span>
+          <h2>现在能买到的<em>四样</em></h2>
+          <p>点开看细节，链接会跳到小红书或淘宝。买包都有赠品。</p>
+        </header>
+
+        <div className="brine-grid">
+          {PRODUCTS.map((product) => (
+            <article
+              key={product.id}
+              className="brine-card"
+              role="button"
+              tabIndex={0}
+              aria-label={`查看 ${product.zh}`}
+              onClick={() => setOpen(product)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(product) }
+              }}
+            >
+              <div className="brine-card-art">
+                <img src={img(product.images[0])} alt={product.zh} loading="lazy" />
+                {product.gift && <span className="brine-ribbon">赠 · {product.gift}</span>}
+                <span className={`brine-stock is-${product.stock}`}>{stockLabel[product.stock]}</span>
+              </div>
+              <div className="brine-card-body">
+                <span className="brine-tag">{product.tag}</span>
+                <h3>{product.zh}<em>{product.en}</em></h3>
+                <p className="brine-price">{product.price ? `¥${product.price}` : '待定'}</p>
+                <span className="brine-more">看细节 →</span>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* 赠品 */}
+        <div className="brine-gifts">
+          <span className="brine-eyebrow">GIFT WITH PURCHASE</span>
+          <ul>
+            {GIFTS.map((gift) => (
+              <li key={gift.name}>
+                <img src={img('logo-mark')} alt="" aria-hidden="true" />
+                <strong>{gift.name}</strong>
+                <span>{gift.rule}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ---------- 作品 ---------- */}
+      <section className="brine-section" id="works">
+        <header className="brine-head">
+          <span className="brine-eyebrow">02 · IN THE WORKS</span>
+          <h2>还在<em>打版</em>的系列</h2>
+          <p>这些还没上架，先放在这里。做好一个放一个。</p>
+        </header>
+        <div className="brine-works">
+          {WORKS.map((work) => (
+            <figure key={work.file}>
+              <img src={img(work.file)} alt={work.zh} loading="lazy" />
+              <figcaption>
+                <strong>{work.zh}</strong>
+                <em>{work.en}</em>
+                <span>{work.hint} · 未上架</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- 模型 ---------- */}
+      <section className="brine-section brine-model" id="model">
+        <div className="brine-model-copy">
+          <span className="brine-eyebrow">03 · 3D MODEL</span>
+          <h2>薄荷猫耳少女，<em>要出实体了</em></h2>
+          <p>
+            网站里一直陪着的那个向导，最早是一个 3D 模型。现在在把它做成可以拿在手上的东西——
+            先开放模型文件与打印版，细节和定价还在算。
+          </p>
+          <div className="brine-model-actions">
+            <Link className="brine-btn brine-btn-solid" to="/ip-models">看模型展厅 ↗</Link>
+            <span className="brine-soon">实体预售 · 筹备中</span>
+          </div>
+        </div>
+        <div className="brine-model-visual" aria-hidden="true">
+          <span className="brine-orbit" />
+          <span className="brine-orbit is-two" />
+          <img src={img('logo-lace')} alt="" />
+        </div>
+      </section>
+
+      {/* ---------- 幕后 ---------- */}
+      <section className="brine-section" id="behind">
+        <header className="brine-head">
+          <span className="brine-eyebrow">04 · BEHIND</span>
+          <h2>从一张画到<em>一个包裹</em></h2>
+          <p>打版、改色、拍白底图、装自封袋、贴贴纸——全部自己来。</p>
+        </header>
+        <div className="brine-behind">
+          <figure>
+            <img src={img('process-white')} alt="白底产品图拍摄" loading="lazy" />
+            <figcaption>白底图：每只包都要拍一套</figcaption>
+          </figure>
+          <figure>
+            <img src={img('process-early')} alt="配色与打版过程" loading="lazy" />
+            <figcaption>配色打版：薄荷绿改了四轮</figcaption>
+          </figure>
+          <div className="brine-behind-text">
+            <p>
+              一只包从画稿到寄出，要经过：印花打样 → 车缝 → 改色 → 拍图 → 写文案 → 打包。
+              中间有两次整批做错，只能自己留着用。
+            </p>
+            <p className="brine-behind-en">
+              Printed, sewn, re-dyed, photographed, packed — and two whole batches that came out wrong.
+            </p>
+            <ul className="brine-packing">
+              <li>冰蓝防水快递袋</li>
+              <li>奶蓝气泡袋</li>
+              <li>蓝色天使自封袋</li>
+              <li>海洋味香片</li>
+              <li>音符回形针</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- 页脚 ---------- */}
+      <footer className="brine-end">
+        <img className="brine-end-mark" src={img('wordmark')} alt="BRINE 字标" loading="lazy" />
+        <p className="brine-end-line">Small things, made slowly.</p>
+        <div className="brine-end-links">
+          <a className="brine-btn brine-btn-solid" href={links.redShop} target="_blank" rel="noopener noreferrer">小红书店铺 ↗</a>
+          <a className="brine-btn" href={links.taobao} target="_blank" rel="noopener noreferrer">淘宝店铺 ↗</a>
+          <Link className="brine-btn" to="/#worlds">回到六个世界 ↗</Link>
+        </div>
+      </footer>
+
+      {/* ---------- 详情弹层 ---------- */}
+      {open && (
+        <div className="brine-modal" onClick={() => setOpen(null)}>
+          <div
+            className="brine-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-label={open.zh}
+            tabIndex={-1}
+            ref={dialog}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button type="button" className="brine-close" onClick={() => setOpen(null)} aria-label="关闭">×</button>
+            <div className="brine-dialog-art">
+              {open.images.map((name, i) => (
+                <img key={name} src={img(name)} alt={`${open.zh} 图 ${i + 1}`} loading={i ? 'lazy' : 'eager'} />
+              ))}
+            </div>
+            <div className="brine-dialog-body">
+              <span className={`brine-stock is-${open.stock}`}>{stockLabel[open.stock]}</span>
+              <h3>{open.zh}<em>{open.en}</em></h3>
+              <p className="brine-price">{open.price ? `¥${open.price}` : '价格待定'}</p>
+              <p className="brine-dialog-note">{open.note}</p>
+              {open.gift && (
+                <p className="brine-dialog-gift">
+                  <img src={img('logo-mark')} alt="" aria-hidden="true" />
+                  随包附赠：<strong>{open.gift}</strong>
+                </p>
+              )}
+              <div className="brine-dialog-links">
+                <a className="brine-btn brine-btn-solid" href={links.redShop} target="_blank" rel="noopener noreferrer">去小红书买 ↗</a>
+                <a className="brine-btn" href={links.taobao} target="_blank" rel="noopener noreferrer">去淘宝买 ↗</a>
+              </div>
+              <p className="brine-dialog-hint">链接暂为店铺首页，单品链接待补。</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  )
+}
