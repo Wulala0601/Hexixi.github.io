@@ -6,11 +6,13 @@ import { BagDetails, ModelDetails } from './ObjectDetails'
 import Atb505 from './Atb505'
 import Caviar from './Caviar'
 import OnTheEve from './Eve'
+import Anicat from './Anicat'
 export default function Pages() {
   const { slug } = useParams(); const { t } = usePreferences()
   if (slug === 'atb505') return <Atb505 />
   if (slug === 'caviar') return <Caviar />
   if (slug === 'on-the-eve') return <OnTheEve />
+  if (slug === 'anicat') return <Anicat />
   if (slug === 'bag-details') return <BagDetails />
   if (slug === 'model-details') return <ModelDetails />
   if (slug === 'about') return <About />
