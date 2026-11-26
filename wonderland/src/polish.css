@@ -102,6 +102,36 @@
   }
 }
 
+/* 7. 第五扇门（ATB505 · 兽华物语）
+   原来四列网格放不下第五扇，改五列并加宽容器；
+   右侧让出固定音乐播放器的宽度，五扇门的标题和钥匙才不会被盖住。 */
+.doors-gallery {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  max-width: 1500px;
+}
+
+@media (min-width: 901px) {
+  .doors-gallery {
+    margin-right: 150px;
+  }
+}
+
+@media (max-width: 1080px) and (min-width: 701px) {
+  .doors-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 900px;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 700px) {
+  .doors-gallery > :nth-child(5) {
+    grid-column: span 2;
+    justify-self: center;
+    max-width: 260px;
+  }
+}
+
 /* 平板：两列，避免四列挤成一行小字。 */
 @media (min-width: 701px) and (max-width: 1080px) {
   .project-fact-grid {

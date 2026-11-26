@@ -29,7 +29,7 @@ test('all worlds can stay open, close independently and reset', () => {
   }
   assert.deepEqual(state.opened, doorIds)
   state = doorGameReducer(state, { type: 'close', id: 'iron' })
-  assert.deepEqual(state.opened, ['witch', 'swan', 'garden'])
+  assert.deepEqual(state.opened, doorIds.filter((id) => id !== 'iron'))
   state = doorGameReducer(state, { type: 'reset' })
   assert.deepEqual(state.opened, [])
   assert.equal(state.selected, null)

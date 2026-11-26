@@ -11,6 +11,7 @@ const doors = [
   { id: 'iron', color: '#bc668c', name: ['The rose iron door', '蔷薇铁艺之门'], key: ['Rose pink', '玫瑰粉'], symbol: '❧' },
   { id: 'swan', color: '#4c92b1', name: ['The swan door', '天鹅之门'], key: ['Sky blue', '天蓝色'], symbol: '◇' },
   { id: 'garden', color: '#588568', name: ['The secret garden door', '秘密花园之门'], key: ['Garden green', '花园绿'], symbol: '✿' },
+  { id: 'crate', color: '#b8843c', name: ['The travelling trunk', '旧手提箱之门'], key: ['Amber', '琥珀金'], symbol: '✦' },
 ] as const
 
 export default function WorldDoors() {
@@ -26,7 +27,7 @@ export default function WorldDoors() {
       : game.feedback === 'opened' && target
         ? t(`Welcome to ${projects[targetIndex].title.en}. Step inside the image.`, `「${projects[targetIndex].title.zh}」已打开，点击门后的图片走进去。`)
         : game.feedback === 'reset'
-          ? t('All four doors are locked again. Pick a key to begin.', '四扇门已经重新上锁，选把钥匙再出发。')
+          ? t('All five doors are locked again. Pick a key to begin.', '五扇门已经重新上锁，选把钥匙再出发。')
           : game.feedback === 'closed'
             ? t('The door is closed. Your key is still with you.', '门已轻轻合上，钥匙还在你手里。')
             : selected
@@ -36,8 +37,8 @@ export default function WorldDoors() {
   const unlock = (id: DoorId) => dispatch({ type: 'unlock', id })
   return <section className={`chapter door-section door-installation ${reduced ? 'doors-reduced' : ''}`} id="worlds" data-chapter="2" aria-labelledby="doors-title">
     <header className="doors-intro">
-      <span className="eyebrow">02 / FOUR DOORS, FOUR WORLDS</span>
-      <h2 id="doors-title">{t('Four worlds.', '四个世界。')}<em>{t('A key to each.', '各有一把钥匙。')}</em></h2>
+      <span className="eyebrow">02 / FIVE DOORS, FIVE WORLDS</span>
+      <h2 id="doors-title">{t('Five worlds.', '五个世界。')}<em>{t('A key to each.', '各有一把钥匙。')}</em></h2>
       <p>{t('Some stories begin with a knock. These begin with a little color.', '有些故事从敲门开始，这里的故事，从一点颜色开始。')}</p>
     </header>
     <div className="door-instructions"><span>01 · {t('Choose a key', '选择钥匙')}</span><span aria-hidden="true">⟶</span><span>02 · {t('Touch the matching door', '点同色的门')}</span><span aria-hidden="true">⟶</span><span>03 · {t('Enter the project', '走进作品')}</span></div>
@@ -75,6 +76,6 @@ export default function WorldDoors() {
         </article>
       })}
     </div>
-    <div className="doors-bottom"><span>{String(game.opened.length).padStart(2, '0')} / 04 · {t('WORLDS DISCOVERED', '个世界已打开')}</span><button onClick={() => dispatch({ type: 'reset' })}>{t('Lock the doors & begin again', '重新上锁 · 再玩一次')} ↶</button></div>
+    <div className="doors-bottom"><span>{String(game.opened.length).padStart(2, '0')} / 05 · {t('WORLDS DISCOVERED', '个世界已打开')}</span><button onClick={() => dispatch({ type: 'reset' })}>{t('Lock the doors & begin again', '重新上锁 · 再玩一次')} ↶</button></div>
   </section>
 }

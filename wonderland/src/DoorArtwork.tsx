@@ -15,7 +15,7 @@ function Rose({ x, y, size = 1, shade = '#f6cccf' }: { x: number; y: number; siz
 
 export function DoorArtwork({ kind }: { kind: DoorId }) {
   const id = useId().replace(/:/g, '')
-  const colors = { witch: ['#62606c','#26232d','#43404d'], iron: ['#e7afc5','#a75a7c','#cf8aaa'], swan: ['#e1f5fa','#79abc0','#b6dce9'], garden: ['#9da883','#425d43','#70866a'] }[kind]
+  const colors = { witch: ['#62606c','#26232d','#43404d'], iron: ['#e7afc5','#a75a7c','#cf8aaa'], swan: ['#e1f5fa','#79abc0','#b6dce9'], garden: ['#9da883','#425d43','#70866a'], crate: ['#e6cfa2','#6b4a26','#b8843c'] }[kind]
   return <svg viewBox="0 0 200 360" aria-hidden="true" focusable="false">
     <defs>
       <path id={`${id}-curl`} d={curl}/>
@@ -80,6 +80,27 @@ export function DoorArtwork({ kind }: { kind: DoorId }) {
       {Array.from({length:28},(_,i)=>{const side=i%2;const n=Math.floor(i/2);const y=335-n*24;const x=side?182+Math.sin(n)*8:18+Math.sin(n)*8;return <g key={i} transform={`translate(${x} ${y}) rotate(${side?-25:25})`}><path d="M0 0Q-26-3-19-20Q-3-22 0 0Q5-24 22-15Q19-1 0 0Z" fill={i%3?'#53724e':'#83915f'} stroke="#334d39" strokeWidth=".7"/></g>})}
       {[[-2,135,.7],[18,83,.9],[46,37,.85],[78,15,.7],[112,12,.9],[146,35,.8],[177,68,.9],[191,114,.7],[13,184,.75],[186,218,.9],[10,263,.8],[189,286,.7]].map(([x,y,s],i)=><Rose key={i} x={x} y={y} size={s} shade={i%3?'#f1d3d1':'#f9ecce'}/>)}
     </>}
+    {kind === 'crate' && <>
+      <path d="M34 252V104C34 18 166 18 166 104V252Z" fill={`url(#${id}-glass)`} stroke="#8a6a3f" strokeWidth="4"/>
+      <path d="M40 248V104C40 26 160 26 160 104V248Z" fill="none" stroke="#e6cfa2" strokeWidth="1.6"/>
+      <circle cx="100" cy="58" r="13" fill="#f4dcae" opacity=".8"/>
+      <path d="M100 78V344" stroke="#ffd9a0" strokeWidth="10" opacity=".32"/>
+      <path d="M100 94V344" stroke="#fff3d6" strokeWidth="2.6" opacity=".9"/>
+      {[0,1,2,3].map(i => <g key={i} transform={`translate(${i<2?62:138} ${114+i*32}) rotate(${i%2?-13:11})`}>
+        <rect x="-17" y="-11" width="34" height="22" rx="2" fill="#f6ecdc" stroke="#b58f5c" strokeWidth="1.2"/>
+        <path d="M-10 -3H10M-10 3H5" stroke="#b58f5c" strokeWidth="1"/>
+      </g>)}
+      <g>
+        <rect x="46" y="252" width="108" height="68" rx="6" fill="#8a5a2b" stroke="#e0bc86" strokeWidth="3"/>
+        <path d="M46 281H154" stroke="#5f3d1d" strokeWidth="3"/>
+        <path d="M84 252V320M116 252V320" stroke="#5f3d1d" strokeWidth="2" opacity=".45"/>
+        <rect x="62" y="270" width="16" height="22" rx="2" fill="#e8c68f" stroke="#5f3d1d" strokeWidth="1.6"/>
+        <rect x="122" y="270" width="16" height="22" rx="2" fill="#e8c68f" stroke="#5f3d1d" strokeWidth="1.6"/>
+        <path d="M88 252h24" stroke="#e8c68f" strokeWidth="5" strokeLinecap="round"/>
+        <circle cx="100" cy="286" r="4" fill="#ffe9bf" stroke="#5f3d1d" strokeWidth="1.4"/>
+      </g>
+      {[[30,150],[170,186],[26,214],[174,120]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r={i%2?2.4:3.4} fill="#f7e2b6" opacity=".8"/>)}
+    </>}
     <path d="M17 346H183V351H17Z" fill={colors[1]}/>
   </svg>
 }
@@ -92,6 +113,7 @@ export function KeyArtwork({ kind }: { kind: DoorId }) {
       {kind === 'witch' ? <><ellipse cx="55" cy="33" rx="28" ry="28"/><path d="M55 8V54M38 40Q55 21 72 40M49 53H61"/></>
         : kind === 'iron' ? <><path d="M55 61C-6 61 17 12 39 30C54 44 29 53 32 35M55 61C116 61 93 12 71 30C56 44 81 53 78 35M55 44C30 25 47 10 55 6C63 10 80 25 55 44Z"/><circle cx="55" cy="5" r="2"/></>
         : kind === 'swan' ? <><path d="M55 61C-4 62 17 12 39 30C53 41 28 50 31 36M55 61C114 62 93 12 71 30C57 41 82 50 79 36M36 24Q51 16 55 1Q59 16 74 24"/><path d="M40 20Q28 22 31 12M70 20Q82 22 79 12"/></>
+        : kind === 'crate' ? <><rect x="30" y="12" width="50" height="36" rx="7"/><path d="M42 12V48M68 12V48M30 30H80"/><circle cx="55" cy="38" r="4"/></>
         : <><path d="M55 55C12 57 12 17 55 17C98 17 98 57 55 55Z"/><path d="M55 42L66 53L55 63L44 53Z"/></>}
     </g>
     <g fill="currentColor"><path d="M49 58H61V150H49Z"/><rect x="44" y="61" width="22" height="6" rx="2"/><rect x="45" y="71" width="20" height="5" rx="2"/>
