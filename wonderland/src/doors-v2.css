@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    六扇门 + 钥匙扣拖拽
    叠加在 world-doors.css 之上：只重写网格、钥匙入口和拖拽反馈。
    ============================================================ */
@@ -39,7 +39,7 @@
 
 /* ---------- 钥匙扣 ---------- */
 .keyring {
-  --key-width: clamp(96px, 9.8vw, 134px);
+  --key-width: clamp(84px, 8.6vw, 112px);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -58,8 +58,8 @@
 
 .keyring-stage {
   position: relative;
-  width: min(760px, 98%);
-  height: calc(var(--key-width) * 1.62);
+  width: min(820px, 100%);
+  height: calc(var(--key-width) * 1.6 + 40px);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -68,7 +68,7 @@
 /* 空心金属圈，中间不再填白；放在钥匙之上，像真的钥匙串 */
 .keyring-hoop {
   position: absolute;
-  top: 0;
+  top: -4px;
   left: 50%;
   width: 46px;
   height: 46px;
@@ -85,15 +85,15 @@
 
 .keyring-key {
   position: absolute;
-  top: 30px;
+  top: 42px;
   width: var(--key-width);
   padding: 0;
   border: 0;
   background: none;
   color: color-mix(in srgb, var(--key-colour, #7b6f63) 78%, #221d19);
   transform-origin: 50% 0;
-  transform: translateX(0) rotate(0deg);
-  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.2s ease, opacity 0.2s ease;
+  transform: translate(0, 0) rotate(calc(var(--tilt) * 0.25));
+  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.2s ease, opacity 0.2s ease;
   cursor: grab;
   touch-action: none;
   z-index: 3;
@@ -101,7 +101,7 @@
 
 .keyring.is-open .keyring-key,
 .keyring.is-dragging .keyring-key {
-  transform: translateX(var(--dx)) rotate(var(--angle));
+  transform: translate(var(--dx), var(--dy)) rotate(var(--tilt));
 }
 
 .keyring-key:hover {
@@ -118,7 +118,7 @@
 }
 
 .keyring-key.is-selected {
-  transform: translateX(var(--dx)) rotate(var(--angle)) scale(1.14);
+  transform: translate(var(--dx), calc(var(--dy) + 6px)) rotate(var(--tilt)) scale(1.1);
   filter: brightness(1.08) saturate(1.2);
   z-index: 5;
 }

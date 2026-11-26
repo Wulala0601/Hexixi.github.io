@@ -1,4 +1,4 @@
-﻿import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
+import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { KeyArtwork } from './DoorArtwork'
 import type { DoorId } from './door-game'
@@ -30,11 +30,12 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
   const origin = useRef<{ x: number; y: number } | null>(null)
   const moved = useRef(false)
 
-  const span = Math.min(56, 9.5 * items.length)
   const center = (items.length - 1) / 2
 
-  const angleOf = (index: number) => (index - center) * (span / Math.max(1, center))
-  const offsetOf = (index: number) => (index - center) * 22
+  /** 展开后：沿弧线水平排开，中间最低、两侧逐级抬高，全部保持竖直 */
+  const spreadOf = (index: number) => (index - center) * 92
+  const liftOf = (index: number) => -Math.abs(index - center) * 10
+  const tiltOf = (index: number) => (index - center) * 4
 
   const onPointerDown = (event: ReactPointerEvent<HTMLButtonElement>, id: DoorId) => {
     if (event.button !== 0 && event.pointerType === 'mouse') return
@@ -86,7 +87,13 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
               key={item.id}
               type="button"
               className={`keyring-key ${isSelected ? 'is-selected' : ''} ${item.disabled ? 'is-used' : ''}`}
-              style={{ '--angle': `${angleOf(index)}deg`, '--dx': `${offsetOf(index)}px`, '--i': index, '--key-colour': item.color } as CSSProperties}
+              style={{
+                '--dx': `${spreadOf(index)}px`,
+                '--dy': `${liftOf(index)}px`,
+                '--tilt': `${tiltOf(index)}deg`,
+                '--i': index,
+                '--key-colour': item.color,
+              } as CSSProperties}
               aria-pressed={isSelected}
               aria-label={`${item.name}钥匙`}
               disabled={item.disabled}
