@@ -401,7 +401,7 @@ export default function Atb505() {
         <p className="atb-end-claim">{atbMeta.claim}</p>
         <p className="atb-end-line">盛唐幻境 · 百老汇之梦 · 霓虹地下城 —— 首弹敬请期待</p>
         <p className="atb-end-meta">{atbMeta.team} · 兽华物语项目组 · IP 商业企划书 · {atbMeta.year}</p>
-        <Link className="atb-btn atb-btn-solid" to="/#worlds">回到四个世界 ↗</Link>
+        <Link className="atb-btn atb-btn-solid" to="/#worlds">回到六个世界 ↗</Link>
       </footer>
     </main>
   )
