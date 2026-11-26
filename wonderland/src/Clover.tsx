@@ -7,18 +7,18 @@ const img = (name: string) => assetUrl(`/images/clover/${name}.webp`)
 
 /** 考古现场的道具：位置是相对底图的百分比 */
 const PROPS = [
-  { id: 'prop-08', x: 1, y: 0, w: 13, step: 0, zh: '棉手套', en: 'Gloves' },
-  { id: 'prop-11', x: 2, y: 30, w: 11, step: 3, zh: '油画刷', en: 'Brush' },
-  { id: 'prop-09', x: 3, y: 56, w: 10, step: 1, zh: '木刮刀', en: 'Wooden rib' },
-  { id: 'prop-10', x: 14, y: 30, w: 8, step: 0, zh: '尖嘴钳', en: 'Pliers' },
-  { id: 'prop-01', x: 12, y: 46, w: 15, step: 0, zh: '铁丝骨架', en: 'Wire armature' },
-  { id: 'prop-02', x: 29, y: 66, w: 9, step: 0, zh: '手中骨架', en: 'Armature in hand' },
-  { id: 'prop-03', x: 21, y: 8, w: 8, step: 1, zh: '上泥初坯', en: 'Clay base' },
-  { id: 'prop-12', x: 35, y: 18, w: 25, step: 2, zh: '成品 · 四叶草抱盆', en: 'Finished piece' },
-  { id: 'prop-05', x: 43, y: 2, w: 9, step: 1, zh: '锡纸包覆', en: 'Foil wrap' },
-  { id: 'prop-04', x: 63, y: 38, w: 9, step: 1, zh: '铁丝花瓣', en: 'Wire petals' },
-  { id: 'prop-06', x: 62, y: 62, w: 9, step: 3, zh: '上色中的坯体', en: 'Painting stage' },
-  { id: 'prop-07', x: 74, y: 24, w: 13, step: 2, zh: '双手底座', en: 'Hands base' },
+  { id: 'prop-08', x: 1, y: 0, w: 11, step: 0, zh: '棉手套', en: 'Gloves' },
+  { id: 'prop-11', x: 2, y: 33, w: 9, step: 3, zh: '油画刷', en: 'Brush' },
+  { id: 'prop-09', x: 3, y: 61, w: 9, step: 1, zh: '木刮刀', en: 'Wooden rib' },
+  { id: 'prop-10', x: 12, y: 32, w: 8, step: 0, zh: '尖嘴钳', en: 'Pliers' },
+  { id: 'prop-01', x: 10, y: 49, w: 15, step: 0, zh: '铁丝骨架', en: 'Wire armature' },
+  { id: 'prop-02', x: 24, y: 70, w: 10, step: 0, zh: '手中骨架', en: 'Armature in hand' },
+  { id: 'prop-03', x: 17, y: 1, w: 12, step: 1, zh: '上泥初坯', en: 'Clay base' },
+  { id: 'prop-05', x: 44, y: 0, w: 12, step: 1, zh: '锡纸包覆', en: 'Foil wrap' },
+  { id: 'prop-12', x: 32, y: 11, w: 27, step: 2, zh: '成品 · 四叶草抱盆', en: 'Finished piece' },
+  { id: 'prop-04', x: 63, y: 29, w: 12, step: 1, zh: '铁丝花瓣', en: 'Wire petals' },
+  { id: 'prop-06', x: 61, y: 60, w: 12, step: 3, zh: '上色中的坯体', en: 'Painting stage' },
+  { id: 'prop-07', x: 76, y: 14, w: 16, step: 2, zh: '双手底座', en: 'Hands base' },
 ]
 
 const STEPS = [
@@ -97,9 +97,17 @@ export default function Clover() {
 
       {/* ---------- 首屏 ---------- */}
       <section className="clo-hero">
+        <figure className="clo-hero-media">
+          <img src={img('hero-band')} alt="夜里长满植物的房间，双手捧着的四叶草装置" />
+          <figcaption>PLEASE LIE HERE · 装置场景</figcaption>
+        </figure>
         <div className="clo-hero-inner">
           <p className="clo-kicker">SPATIAL NARRATIVE · MATERIAL STUDY · 2025</p>
-          <h1>请躺在这里<em>PLEASE LIE HERE</em></h1>
+          <div className="clo-title-lockup">
+            <h1>请躺在这里</h1>
+            <img className="clo-title-logo" src={img('icon-hands')} alt="四叶草抱盆标志" />
+          </div>
+          <p className="clo-title-en">PLEASE LIE HERE</p>
           <p className="clo-lede">
             一件让人躺下来休息的装置。双手捧着一小片会发光的草地——它不在任何花园里，
             却在你终于愿意停下来的那一刻出现。
@@ -109,7 +117,6 @@ export default function Clover() {
             <a className="clo-btn" href="#render">看材质渲染</a>
           </div>
         </div>
-        <img className="clo-hero-icon" src={img('icon-hands')} alt="四叶草抱盆标志" />
       </section>
 
       {/* ---------- 灵感 ---------- */}
@@ -144,7 +151,7 @@ export default function Clover() {
           </p>
         </div>
         <figure className="clo-figure clo-figure-sketch">
-          <img src={img('icon-sketch')} alt="手绘草图：四叶草抱盆的标注" loading="lazy" />
+          <img src={img('sketch-white')} alt="手绘草图：四角星、椅背与马里奥水管的标注" loading="lazy" />
         </figure>
       </section>
 
