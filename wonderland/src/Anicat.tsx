@@ -107,15 +107,13 @@ export default function Anicat() {
         </header>
         <div className="ani-logo-grid">
           <figure className="ani-logo-main">
-            <img src={img('logo')} alt="AniCat 立体字标" loading="lazy" />
-            <figcaption>主字标：圆头笔画的猫耳，橙色落在 t 的收笔上</figcaption>
-          </figure>
-          <figure>
-            <img src={img('slide-logo')} alt="标志设计：ANICA 与 ANICAT 组合" loading="lazy" />
-            <figcaption>ANICA / ANICAT 的六种组合，对应包装与门店场景</figcaption>
+            <img src={img('logo-design')} alt="标志设计：草图、ANICA 猫头组合与 AniCat 立体字标" loading="lazy" />
+            <figcaption>Logo Design — 从 01 到 07 的草图推演，最终收在橙色椭圆与立体字标上</figcaption>
           </figure>
         </div>
-        <p className="ani-note">品牌口号 <strong>Love Without Burden</strong>，性格关键词：Youthful · Energetic · Caring。</p>
+        <p className="ani-note">
+          从 01 到 07 的草图推演：名字取 ANIMAL 与 CAT 的合成，最终收在橙色椭圆里的猫头与立体字标上。
+        </p>
       </section>
 
       {/* ---------- IP ---------- */}
@@ -135,10 +133,28 @@ export default function Anicat() {
             <img src={img('mascot-b')} alt="KAKA 橘猫三维形象" loading="lazy" />
             <figcaption><strong>KAKA</strong>橘猫 · 吃货 / 摄影师 / 户外爱好者</figcaption>
           </figure>
-          <figure className="ani-wide ani-ip-slide">
-            <img src={img('slide-ip')} alt="IP 设计说明：KAKA 与 ANI 的设定" loading="lazy" />
-            <figcaption>KAKA &amp; ANI: The Perfect Duo</figcaption>
-          </figure>
+        </div>
+
+        <div className="ani-ip-text">
+          <p className="ani-ip-lead">KAKA &amp; ANI — <em>The Perfect Duo</em></p>
+          <div className="ani-ip-cols">
+            <article>
+              <h3>KAKA <span>吃货 · 摄影师 · 户外爱好者</span></h3>
+              <p className="ani-ip-quote">“Capturing the scenery, and your smile.”</p>
+              <p>
+                KAKA 的世界由味道和取景框组成。他爱吃、爱露营，总带着妹妹去没去过的地方。
+                镜头收下山与湖，但收得最多的，是 ANI 最亮的那个笑。
+              </p>
+            </article>
+            <article>
+              <h3>ANI <span>运动员 · 芭蕾舞者 · 元气</span></h3>
+              <p className="ani-ip-quote">“My stage is everywhere.”</p>
+              <p>
+                ANI 的世界由节奏和动势组成。她踩轮滑掠过风，在芭蕾里追光，把精力分给身边每一个人。
+                而她最安心的，是不管跑多远，哥哥和他的相机总在那里看着她。
+              </p>
+            </article>
+          </div>
         </div>
 
         <div className="ani-illus">
@@ -179,18 +195,34 @@ export default function Anicat() {
             <p className="ani-pack-note">
               当前口味：<strong>{flavour.zh} {flavour.en}</strong> · Freeze-Dried · 100% Natural
             </p>
-            <div className="ani-tubs">
-              {[1, 2, 3, 4, 5, 6, 7].map((n) => (
-                <img key={n} src={img(`tub-${n}`)} alt="" aria-hidden="true" loading="lazy" />
-              ))}
-            </div>
           </div>
         </div>
 
-        <figure className="ani-wide">
-          <img src={img('slide-packaging')} alt="包装设计：100% 纯，满分活力" loading="lazy" />
-          <figcaption>Packaging Design — “100% Pure, Full-Score Vitality”</figcaption>
-        </figure>
+        <div className="ani-pack-shelf">
+          <div className="ani-tub-row ani-tub-row-4">
+            {[1, 2, 3, 4].map((n) => (
+              <img key={n} src={img(`tub-${n}`)} alt="" aria-hidden="true" loading="lazy" />
+            ))}
+          </div>
+          <div className="ani-tub-row ani-tub-row-3">
+            {[5, 6, 7].map((n) => (
+              <img key={n} src={img(`tub-${n}`)} alt="" aria-hidden="true" loading="lazy" />
+            ))}
+          </div>
+        </div>
+
+        <div className="ani-pack-copy">
+          <h3>100% Pure, <em>Full-Score Vitality</em></h3>
+          <p>
+            「100% NATURE」的承诺让人一眼看懂纯度；再配上高饱和的数字徽章，这份「纯」就被翻译成一整格的活力。
+            整套包装都在直说一件事：选 ANICA，就是给猫选看得见的健康与开心。
+          </p>
+          <p className="ani-pack-copy-en">
+            The “100% NATURE” claim promises pure quality at a glance. Paired with vibrant numeric badges,
+            this purity is translated into a full score of vitality. The entire design intuitively tells
+            consumers that choosing ANICA means choosing visible health and happiness for their beloved cat.
+          </p>
+        </div>
       </section>
 
       {/* ---------- 视觉与 UGC ---------- */}
@@ -231,8 +263,6 @@ export default function Anicat() {
         <div className="ani-shop-grid">
           <figure><img src={img('shop-1')} alt="店铺首页排版 A" loading="lazy" /><figcaption>店铺首页 · 版式 A</figcaption></figure>
           <figure><img src={img('shop-2')} alt="店铺首页排版 B" loading="lazy" /><figcaption>店铺首页 · 版式 B</figcaption></figure>
-          <figure><img src={img('slide-shop-a')} alt="店铺视觉提案 A" loading="lazy" /><figcaption>Crafting the Digital Storefront · A</figcaption></figure>
-          <figure><img src={img('slide-shop-b')} alt="店铺视觉提案 B" loading="lazy" /><figcaption>Crafting the Digital Storefront · B</figcaption></figure>
         </div>
       </section>
 
