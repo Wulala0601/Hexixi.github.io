@@ -37,6 +37,13 @@ const JOURNALS = [
   { file: 'journal-4', caption: '手稿 04 · 黑色爆炸与数字噪点' },
 ]
 
+const DETAILS = [
+  { file: 'detail-arch', label: '白色拱门 · 3D 打印' },
+  { file: 'detail-camera', label: 'DV 摄像机' },
+  { file: 'detail-bunny', label: '兔子玩偶' },
+  { file: 'detail-bloom', label: '蓝色蜀葵' },
+]
+
 export default function OnTheEve() {
   const video = useRef<HTMLVideoElement>(null)
   const [playing, setPlaying] = useState(false)
@@ -239,6 +246,23 @@ export default function OnTheEve() {
           <img src={img('desk')} alt="桌面上铺满剪好的贴纸、花与玩偶素材" loading="lazy" />
           <figcaption>剪贴之前的工作台 · 一半是素材，一半是还没想清楚的话</figcaption>
         </figure>
+
+        <div className="eve-bts-critters" aria-hidden="true">
+          {[3, 5, 2, 4].map((n, i) => (
+            <span key={n} style={{ '--rot': `${i % 2 ? 7 : -9}deg`, '--i': i } as React.CSSProperties}>
+              <img src={img(`sticker-${n}`)} alt="" loading="lazy" />
+            </span>
+          ))}
+        </div>
+
+        <ul className="eve-details">
+          {DETAILS.map((item) => (
+            <li key={item.file}>
+              <img src={img(item.file)} alt={item.label} loading="lazy" />
+              <span>{item.label}</span>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* ---------- 小生物 ---------- */}
