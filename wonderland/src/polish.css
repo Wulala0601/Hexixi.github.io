@@ -1,0 +1,110 @@
+/* ============================================================
+   Polish pass / 细节打磨层
+   Loaded after site.css and reference-theme.css so it can refine
+   them without rewriting the minified originals.
+   加载顺序在另外两层主题之后，只做覆盖，不改原文件。
+   ============================================================ */
+
+/* 1. 中文标题断行
+   原来「给尖锐想法留一处柔软空间。」会断成「…柔软空 / 间。」，
+   末行只剩一个字。
+   - balance：两行字数接近，不留单字孤行
+   - auto-phrase：按词组分行的中日韩断行（Chrome 119+），
+     避免把「留一处」拆成「留一 / 处」；不支持的浏览器自动忽略 */
+.inner-page h1,
+.hero-copy h2,
+.chapter-copy h2,
+.chapter-copy h2 em {
+  text-wrap: balance;
+  word-break: auto-phrase;
+}
+
+/* 拉丁大标题用 -4px 字距很合适，中文会被挤在一起，收一点。 */
+.inner-page h1 {
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+/* 2. 正文对比度
+   --muted 在波点底上偏浅，正文改回 --ink 并压低一点不透明度，
+   保留「柔和」的感觉但看得清。 */
+.lead,
+.project-fact-grid p,
+.about-grid li,
+.model-grid figcaption,
+.inner-page .product-card small {
+  color: var(--ink) !important;
+  opacity: 0.84;
+}
+
+.lead {
+  opacity: 1;
+  font-weight: 500;
+}
+
+/* 小标签（背景 / 01 之类）原来和正文同色，看不出层级。 */
+.project-fact-grid .eyebrow,
+.page-intro .eyebrow {
+  color: #0f5f45 !important;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  opacity: 1;
+}
+
+/* 3. 四个事实，四列
+   原来 fixed 三列，第 4 条「AI 参与」单独掉到下一行，右侧留一大块空。 */
+.project-fact-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 26px 24px;
+}
+
+.project-fact-grid p {
+  margin-top: 8px;
+  font-size: 14.5px;
+  line-height: 1.78;
+}
+
+/* 4. 模型展厅 / 商店的图片
+   这几张渲染图自带浅灰影棚背景，放进奶白相框会变成「白框里套灰照片」。
+   把相框底色改成偏暖的中性灰：比照片底色亮一点，接缝不刺眼，
+   又不会再出现一条白边。 */
+.model-grid img,
+.product-card img {
+  background: #cfccc7;
+  border-color: rgba(13, 31, 26, 0.16);
+}
+
+/* 5. 首页右下角的「轻放」圆形贴纸被固定的音乐播放器压住了。
+   竖直方向腾不出 136px，所以往左让开播放器的宽度。 */
+@media (min-width: 901px) {
+  .hero-sticker {
+    right: 158px;
+    bottom: 27%;
+  }
+
+  /* 内页正文在最右一栏会被固定的播放器盖住（1280 宽左右尤其明显），
+     给右侧留出播放器的宽度。 */
+  .inner-page {
+    padding-right: 172px;
+  }
+}
+
+/* 6. 手机端：最后一屏别被固定的播放器盖住。 */
+@media (max-width: 700px) {
+  .inner-page {
+    padding-bottom: 150px;
+  }
+
+  .project-fact-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+}
+
+/* 平板：两列，避免四列挤成一行小字。 */
+@media (min-width: 701px) and (max-width: 1080px) {
+  .project-fact-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
