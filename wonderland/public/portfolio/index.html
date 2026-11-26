@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="何茜茜的个人作品集 —— 视觉设计、展陈叙事与影像。" />
+  <title>何茜茜 · 作品集</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff7a59'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23fff'/%3E%3C/svg%3E" />
+  <noscript>
+    <!-- 没开 JS 时也要能看到内容，别让 .reveal 把它藏起来 -->
+    <style>
+      .reveal { opacity: 1 !important; transform: none !important; }
+    </style>
+  </noscript>
+  <script>
+    /* 在首屏渲染前套用主题，避免闪白 */
+    try {
+      var saved = localStorage.getItem('theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="site-header" id="header">
+    <div class="wrap header-inner">
+      <a class="logo" href="#top" aria-label="回到首页">
+        <span class="logo-mark">茜</span>
+        <span class="logo-text">何茜茜<em>Portfolio</em></span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="主导航">
+        <a href="#about">关于</a>
+        <a href="#works">作品</a>
+        <a href="#skills">能力</a>
+        <a href="#contact">联系</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-btn" id="themeBtn" type="button" aria-label="切换深色 / 浅色主题">
+          <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.6M12 19.4V22M2 12h2.6M19.4 12H22M4.9 4.9l1.9 1.9M17.2 17.2l1.9 1.9M19.1 4.9l-1.9 1.9M6.8 17.2l-1.9 1.9"/></svg>
+        </button>
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="nav">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ================= 首屏 ================= -->
+    <section class="hero" id="top">
+      <div class="wrap hero-inner">
+        <p class="eyebrow reveal">视觉设计 · 展陈叙事 · 影像</p>
+        <h1 class="reveal">
+          把复杂的信息<br />
+          整理成<em>看得懂</em>的样子
+        </h1>
+        <p class="lede reveal">
+          我是何茜茜，一名喜欢在版式、图像与叙事之间来回折腾的设计学生。
+          这里放着我最近的课程项目、提案和影像实验。
+        </p>
+        <div class="hero-cta reveal">
+          <a class="btn btn-primary" href="#works">看作品 <span aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost" href="#contact">聊聊合作</a>
+        </div>
+
+        <dl class="stats reveal">
+          <div><dt>项目</dt><dd>06</dd></div>
+          <div><dt>方向</dt><dd>03</dd></div>
+          <div><dt>年份</dt><dd>2025—26</dd></div>
+        </dl>
+      </div>
+      <div class="hero-glow" aria-hidden="true"></div>
+      <span class="scroll-cue" aria-hidden="true">向下滚动 · SCROLL</span>
+    </section>
+
+    <!-- ================= 关于 ================= -->
+    <section class="section" id="about">
+      <div class="wrap section-grid">
+        <div class="section-label reveal">
+          <span class="num">01</span>
+          <h2>关于我</h2>
+        </div>
+        <div class="section-body">
+          <p class="big reveal">
+            我关心的不是「好不好看」，而是<strong>信息有没有说清楚</strong>：
+            一个提案、一场展览、一支三十秒的片子，都要先想明白给谁看、看完记住什么。
+          </p>
+          <p class="reveal">
+            目前在学校做设计方向的项目，习惯从调研和文案开始，再落到版式、配色与动效。
+            做过的题目跨度有点大——从韩国拍卖行的市场分析，到宋城演艺的品牌提案，
+            再到潮玩 IP 的案例拆解和当代艺术家的展陈研究。跨度大，反而练出了快速进入陌生领域的方法。
+          </p>
+          <ul class="tools reveal">
+            <li>Photoshop / Illustrator</li>
+            <li>Premiere / After Effects</li>
+            <li>PowerPoint 深度排版</li>
+            <li>Figma</li>
+            <li>HTML / CSS</li>
+            <li>中文文案与讲稿</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 作品 ================= -->
+    <section class="section" id="works">
+      <div class="wrap section-grid">
+        <div class="section-label reveal">
+          <span class="num">02</span>
+          <h2>精选作品</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="works">
+            <!-- 卡片：把 <a href="#"> 换成真实链接，把 .thumb 的背景换成图片 -->
+            <a class="card reveal" href="#" style="--c1:#2b3a55;--c2:#8a6cff">
+              <div class="thumb"><span class="thumb-tag">报告</span></div>
+              <div class="card-body">
+                <h3>首尔拍卖 · 市场观察</h3>
+                <p>把一份行业报告拆成可讲的叙事线，配数据图表与结论页。</p>
+                <span class="card-meta">ATB503 · 小组作业</span>
+              </div>
+            </a>
+
+            <a class="card reveal" href="#" style="--c1:#4a2a2a;--c2:#ff8a5c">
+              <div class="thumb"><span class="thumb-tag">提案</span></div>
+              <div class="card-body">
+                <h3>宋城演艺 · 品牌提案</h3>
+                <p>从公司背景到内容矩阵，一套 5 页起手的提案框架与统一配色。</p>
+                <span class="card-meta">ATB506 · 演示设计</span>
+              </div>
+            </a>
+
+            <a class="card reveal" href="#" style="--c1:#1f3b33;--c2:#5fd3a8">
+              <div class="thumb"><span class="thumb-tag">研究</span></div>
+              <div class="card-body">
+                <h3>Gloomy Bear · 反向设计</h3>
+                <p>论文与案例拆解：可爱外壳下的攻击性，如何被角色设计编码。</p>
+                <span class="card-meta">ATB504 · 案例分析</span>
+              </div>
+            </a>
+
+            <a class="card reveal" href="#" style="--c1:#3a2f45;--c2:#d9a3ff">
+              <div class="thumb"><span class="thumb-tag">展陈</span></div>
+              <div class="card-body">
+                <h3>盐田千春 · 线的记忆</h3>
+                <p>十分钟讲稿与视觉分析，讲清「缺席」如何被装置变成可感知的空间。</p>
+                <span class="card-meta">演讲稿 · 图像研究</span>
+              </div>
+            </a>
+
+            <a class="card reveal" href="#" style="--c1:#2d2a1f;--c2:#f0c14b">
+              <div class="thumb"><span class="thumb-tag">影像</span></div>
+              <div class="card-body">
+                <h3>商品展示 · 30 秒</h3>
+                <p>分镜、提示词包、剪辑节奏：一支短片从文字到成片的完整链路。</p>
+                <span class="card-meta">ATB505 · 短片</span>
+              </div>
+            </a>
+
+            <a class="card reveal" href="#" style="--c1:#1e2a38;--c2:#6fb1ff">
+              <div class="thumb"><span class="thumb-tag">网页</span></div>
+              <div class="card-body">
+                <h3>这个网站</h3>
+                <p>没有框架，纯 HTML / CSS / JS 手写：响应式、深浅主题、滚动揭示。</p>
+                <span class="card-meta">Side project</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 能力 ================= -->
+    <section class="section" id="skills">
+      <div class="wrap section-grid">
+        <div class="section-label reveal">
+          <span class="num">03</span>
+          <h2>我能做什么</h2>
+        </div>
+        <div class="section-body">
+          <ul class="skill-list">
+            <li class="reveal">
+              <span class="skill-idx">A</span>
+              <div>
+                <h3>信息架构与版式</h3>
+                <p>把一堆散乱资料压成一条观众跟得上的线：先结论，再证据，最后行动。</p>
+              </div>
+            </li>
+            <li class="reveal">
+              <span class="skill-idx">B</span>
+              <div>
+                <h3>演示与讲稿</h3>
+                <p>PPT 不只做「好看」，还要经得起被追问；讲稿控制在时间轴内。</p>
+              </div>
+            </li>
+            <li class="reveal">
+              <span class="skill-idx">C</span>
+              <div>
+                <h3>影像与动效</h3>
+                <p>分镜 → 素材 → 剪辑 → 节奏，30 秒内让人记住一个卖点。</p>
+              </div>
+            </li>
+            <li class="reveal">
+              <span class="skill-idx">D</span>
+              <div>
+                <h3>网页与落地页</h3>
+                <p>手写响应式页面，能读懂设计稿，也能自己把设计稿变成代码。</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 联系 ================= -->
+    <section class="section contact" id="contact">
+      <div class="wrap">
+        <p class="eyebrow reveal">04 · 联系</p>
+        <h2 class="contact-title reveal">有项目、实习或<br />只是想聊聊设计？</h2>
+        <a class="mail reveal" href="mailto:hello@example.com">hello@example.com</a>
+        <div class="socials reveal">
+          <a href="#" aria-label="小红书">小红书</a>
+          <a href="#" aria-label="Behance">Behance</a>
+          <a href="#" aria-label="GitHub">GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>© <span id="year">2026</span> 何茜茜</span>
+      <span><a class="back-home" href="../">← 回到主站</a></span>
+      <span>Made by hand, with HTML &amp; CSS.</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
