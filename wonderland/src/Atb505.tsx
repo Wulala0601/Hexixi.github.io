@@ -1,6 +1,7 @@
 import { useEffect, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import BlindBox from './BlindBox'
+import SceneVideo from './SceneVideo'
 import { atbImage } from './atb505-utils'
 import {
   atbMeta, audience, cast, channels, doors, funnel, hidden, loop, mechanics,
@@ -177,22 +178,28 @@ export default function Atb505() {
             </header>
 
             {index === 0 && (
-              <figure className="atb-scene">
-                <img src={atbImage('scene-tang')} alt="盛唐幻境 长安城" loading="lazy" />
-                <figcaption>开元二十三年 · 长安 · 花灯巷与西市</figcaption>
-              </figure>
+              <SceneVideo
+                src="/videos/atb/tang.mp4"
+                poster="/images/atb/scene-tang.webp"
+                caption="开元二十三年 · 长安 · 花灯巷与西市"
+                label="盛唐幻境 · 概念短片"
+              />
             )}
             {index === 1 && (
-              <figure className="atb-scene">
-                <img src={atbImage('scene-broadway')} alt="百老汇之梦 舞台" loading="lazy" />
-                <figcaption>《最终彩排》· 四剧合一的舞台</figcaption>
-              </figure>
+              <SceneVideo
+                src="/videos/atb/broadway.mp4"
+                poster="/images/atb/scene-broadway.webp"
+                caption="《最终彩排》· 四剧合一的舞台"
+                label="百老汇之梦 · 概念短片"
+              />
             )}
             {index === 2 && (
-              <figure className="atb-scene">
-                <img src={atbImage('scene-neon')} alt="霓虹地下城" loading="lazy" />
-                <figcaption>千禧年地下文化展 · 霓虹与棋盘格</figcaption>
-              </figure>
+              <SceneVideo
+                src="/videos/atb/neon.mp4"
+                poster="/images/atb/scene-neon.webp"
+                caption="千禧年地下文化展 · 霓虹与棋盘格"
+                label="霓虹地下城 · 概念短片"
+              />
             )}
 
             <ol className="atb-beats">
