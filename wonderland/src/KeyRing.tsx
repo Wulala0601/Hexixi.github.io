@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
+﻿import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { KeyArtwork } from './DoorArtwork'
 import type { DoorId } from './door-game'
@@ -34,7 +34,7 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
   const center = (items.length - 1) / 2
 
   const angleOf = (index: number) => (index - center) * (span / Math.max(1, center))
-  const offsetOf = (index: number) => (index - center) * 9
+  const offsetOf = (index: number) => (index - center) * 22
 
   const onPointerDown = (event: ReactPointerEvent<HTMLButtonElement>, id: DoorId) => {
     if (event.button !== 0 && event.pointerType === 'mouse') return
@@ -86,7 +86,7 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
               key={item.id}
               type="button"
               className={`keyring-key ${isSelected ? 'is-selected' : ''} ${item.disabled ? 'is-used' : ''}`}
-              style={{ '--angle': `${angleOf(index)}deg`, '--dx': `${offsetOf(index)}px`, '--i': index } as CSSProperties}
+              style={{ '--angle': `${angleOf(index)}deg`, '--dx': `${offsetOf(index)}px`, '--i': index, '--key-colour': item.color } as CSSProperties}
               aria-pressed={isSelected}
               aria-label={`${item.name}钥匙`}
               disabled={item.disabled}
@@ -104,7 +104,7 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
       </div>
 
       {drag && draggedItem && createPortal(
-        <span className="keyring-ghost" style={{ left: drag.x, top: drag.y }} aria-hidden="true">
+        <span className="keyring-ghost" style={{ left: drag.x, top: drag.y, color: draggedItem.color }} aria-hidden="true">
           <KeyArtwork kind={draggedItem.id} />
         </span>,
         document.body,

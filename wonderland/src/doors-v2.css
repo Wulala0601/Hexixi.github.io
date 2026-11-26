@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    六扇门 + 钥匙扣拖拽
    叠加在 world-doors.css 之上：只重写网格、钥匙入口和拖拽反馈。
    ============================================================ */
@@ -39,57 +39,61 @@
 
 /* ---------- 钥匙扣 ---------- */
 .keyring {
-  --key-width: clamp(72px, 7.6vw, 104px);
+  --key-width: clamp(96px, 9.8vw, 134px);
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: clamp(26px, 4vw, 44px) auto 0;
   user-select: none;
 }
 
 .keyring-label {
   font-family: var(--font-body, system-ui);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.14em;
-  color: #6a8076;
+  color: #5d7268;
 }
 
 .keyring-stage {
   position: relative;
-  width: min(620px, 96%);
+  width: min(760px, 98%);
   height: calc(var(--key-width) * 1.62);
   display: flex;
   justify-content: center;
   align-items: flex-start;
 }
 
+/* 空心金属圈，中间不再填白；放在钥匙之上，像真的钥匙串 */
 .keyring-hoop {
   position: absolute;
   top: 0;
   left: 50%;
-  width: 34px;
-  height: 34px;
-  margin-left: -17px;
-  border: 3px solid #8d8175;
+  width: 46px;
+  height: 46px;
+  margin-left: -23px;
+  border: 6px solid #b3a48e;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #f6f1e8, #cfc4b6 70%);
-  box-shadow: 0 6px 16px rgba(13, 31, 26, 0.16);
-  z-index: 4;
+  background: transparent;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.55),
+    inset 0 0 6px rgba(90, 78, 62, 0.35),
+    0 6px 14px rgba(13, 31, 26, 0.18);
+  z-index: 8;
 }
 
 .keyring-key {
   position: absolute;
-  top: 20px;
+  top: 30px;
   width: var(--key-width);
   padding: 0;
   border: 0;
   background: none;
-  color: #7b6f63;
+  color: color-mix(in srgb, var(--key-colour, #7b6f63) 78%, #221d19);
   transform-origin: 50% 0;
   transform: translateX(0) rotate(0deg);
-  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), color 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.2s ease, opacity 0.2s ease;
   cursor: grab;
   touch-action: none;
   z-index: 3;
@@ -100,27 +104,33 @@
   transform: translateX(var(--dx)) rotate(var(--angle));
 }
 
-.keyring-key:hover { color: #3d332b; }
+.keyring-key:hover {
+  z-index: 7;
+  filter: brightness(1.12) saturate(1.15);
+}
 .keyring-key:active { cursor: grabbing; }
 
 .keyring-key svg {
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 8px 12px rgba(13, 31, 26, 0.18));
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.95)) drop-shadow(0 8px 12px rgba(13, 31, 26, 0.22));
 }
 
 .keyring-key.is-selected {
-  color: #b13327;
-  transform: translateX(var(--dx)) rotate(var(--angle)) scale(1.12);
+  transform: translateX(var(--dx)) rotate(var(--angle)) scale(1.14);
+  filter: brightness(1.08) saturate(1.2);
   z-index: 5;
 }
 
-.keyring-key.is-selected svg { filter: drop-shadow(0 10px 18px rgba(177, 51, 39, 0.35)); }
+.keyring-key.is-selected svg {
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.85)) drop-shadow(0 10px 18px rgba(13, 31, 26, 0.35));
+}
 
 .keyring-key.is-used {
-  opacity: 0.32;
+  opacity: 0.3;
   cursor: default;
+  filter: grayscale(0.7);
 }
 
 .keyring-key-name {
@@ -149,9 +159,8 @@
 /* 拖动时跟随鼠标的那把钥匙 */
 .keyring-ghost {
   position: fixed;
-  width: 62px;
+  width: 84px;
   transform: translate(-50%, -88%) rotate(14deg);
-  color: #b13327;
   pointer-events: none;
   z-index: 999;
   filter: drop-shadow(0 14px 20px rgba(13, 31, 26, 0.35));
