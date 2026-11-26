@@ -1,8 +1,8 @@
 import { useReducer, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { imageUrl, projects } from './content'
+import { assetUrl } from './assets'
 import { usePreferences } from './preferences'
-import { DoorArtwork } from './DoorArtwork'
 import KeyRing from './KeyRing'
 import { doorGameReducer, initialDoorGame, type DoorId } from './door-game'
 import './world-doors.css'
@@ -18,12 +18,12 @@ type DoorDef = {
 }
 
 const doors: DoorDef[] = [
-  { id: 'witch', slug: 'caviar', color: '#71527f', name: ['The witch’s door', '女巫之门'], key: ['Violet', '紫黑色'], symbol: '☾' },
-  { id: 'iron', slug: 'on-the-eve', color: '#bc668c', name: ['The rose iron door', '蔷薇铁艺之门'], key: ['Rose pink', '玫瑰粉'], symbol: '❧' },
-  { id: 'swan', slug: 'anicat', color: '#4c92b1', name: ['The swan door', '天鹅之门'], key: ['Sky blue', '天蓝色'], symbol: '◇' },
-  { id: 'garden', slug: 'please-lie-here', color: '#588568', name: ['The secret garden door', '秘密花园之门'], key: ['Garden green', '花园绿'], symbol: '✿' },
-  { id: 'crate', slug: 'atb505', color: '#b8843c', name: ['The travelling trunk', '旧手提箱之门'], key: ['Amber', '琥珀金'], symbol: '✦' },
-  { id: 'shop', slug: 'shop', color: '#d4a58c', name: ['The little shop window', '小小商店之门'], key: ['Pearl', '珍珠白'], symbol: '❋' },
+  { id: 'witch', slug: 'caviar', color: '#4a6b46', name: ['The witch’s door', '女巫之门'], key: ['Forest green', '墨绿'], symbol: '☾' },
+  { id: 'iron', slug: 'on-the-eve', color: '#c98a9c', name: ['The rose iron door', '蔷薇铁艺之门'], key: ['Rose pink', '玫瑰粉'], symbol: '❧' },
+  { id: 'swan', slug: 'anicat', color: '#8fb6c8', name: ['The swan door', '天鹅之门'], key: ['Sky blue', '天蓝色'], symbol: '◇' },
+  { id: 'garden', slug: 'please-lie-here', color: '#b2434f', name: ['The secret garden door', '秘密花园之门'], key: ['Strawberry', '草莓红'], symbol: '✿' },
+  { id: 'crate', slug: 'atb505', color: '#a9743f', name: ['The travelling trunk', '旧手提箱之门'], key: ['Amber', '琥珀金'], symbol: '✦' },
+  { id: 'shop', slug: 'shop', color: '#7fc4b4', name: ['The little shop window', '小小商店之门'], key: ['Mint', '薄荷绿'], symbol: '❋' },
 ]
 
 /** 第六扇门通向商店，不是项目页，所以这里补一份标题信息 */
@@ -152,7 +152,12 @@ export default function WorldDoors() {
                   aria-label={t(`Open ${door.name[0]} with the ${door.key[0].toLowerCase()} key`, `用${door.key[1]}钥匙打开${door.name[1]}`)}
                   tabIndex={opened ? -1 : 0}
                 >
-                  <DoorArtwork kind={door.id} />
+                  <img
+                    className="door-photo"
+                    src={assetUrl(`/images/doors/${door.id}.webp`)}
+                    alt=""
+                    loading="lazy"
+                  />
                   <span className="door-knock-hint">
                     {wrong
                       ? t(`Use the ${door.key[0].toLowerCase()} key`, `需要${door.key[1]}钥匙`)

@@ -16,7 +16,7 @@
   /* 给右下角固定的音乐播放器让位 */
   .doors-gallery {
     margin-left: auto;
-    margin-right: 140px;
+    margin-right: 176px;
   }
 }
 
@@ -162,6 +162,44 @@
 /* 触屏没有 hover，直接展开 */
 @media (hover: none) {
   .keyring .keyring-key { transform: translateX(var(--dx)) rotate(var(--angle)); }
+}
+
+/* ---------- 实拍门 ---------- */
+/* 统一门高，宽度按各自比例自动，避免一排门参差不齐 */
+.door-theatre {
+  aspect-ratio: auto;
+  height: clamp(320px, 33vw, 460px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.door-leaf {
+  position: static;
+  inset: auto;
+  display: block;
+  width: auto;
+  height: 100%;
+  padding: 0;
+}
+
+.door-photo {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  filter: drop-shadow(3px 8px 6px rgba(48, 74, 66, 0.22));
+  pointer-events: none;
+}
+
+/* 门关着的时候不显示门后的作品图，避免从照片透明边缘漏出来 */
+.door-reveal {
+  opacity: 0;
+  transition: opacity 0.35s ease 0.45s;
+}
+
+.door-world.is-open .door-reveal {
+  opacity: 1;
 }
 
 /* ---------- 门的钥匙提示 ---------- */
