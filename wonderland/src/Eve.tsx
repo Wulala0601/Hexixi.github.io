@@ -228,6 +228,19 @@ export default function OnTheEve() {
         </div>
       </section>
 
+      {/* ---------- 花絮 ---------- */}
+      <section className="eve-section eve-bts">
+        <header className="eve-head">
+          <span className="eve-eyebrow">BEHIND THE SCENES · 花絮</span>
+          <h2>桌面上的<em>素材</em></h2>
+          <p>贴纸、手机壳贴、蓝色的花、一排兔子玩偶，还有等着被剪下来的小生物。</p>
+        </header>
+        <figure className="eve-bts-photo">
+          <img src={img('desk')} alt="桌面上铺满剪好的贴纸、花与玩偶素材" loading="lazy" />
+          <figcaption>剪贴之前的工作台 · 一半是素材，一半是还没想清楚的话</figcaption>
+        </figure>
+      </section>
+
       {/* ---------- 小生物 ---------- */}
       <section className="eve-section eve-creatures">
         <header className="eve-head">

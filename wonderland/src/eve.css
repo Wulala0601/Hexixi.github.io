@@ -362,6 +362,29 @@
 .eve-journal-grid img { width: 100%; border-radius: 4px; box-shadow: 0 16px 34px -22px rgba(90, 80, 120, 0.55); }
 .eve-journal-grid figcaption { margin-top: 9px; font-family: var(--font-body, system-ui); font-size: 11.5px; color: var(--muted); }
 
+/* ---------- 花絮 ---------- */
+.eve-bts-photo {
+  margin: 0;
+  padding: clamp(10px, 1.4vw, 18px) clamp(10px, 1.4vw, 18px) 0;
+  background: #fffdfa;
+  border-radius: 3px;
+  box-shadow: 0 26px 60px -30px rgba(90, 80, 120, 0.55), 0 0 0 1px rgba(44, 42, 60, 0.06);
+  transform: rotate(-1.1deg);
+  transition: transform 0.5s ease;
+}
+
+.eve-bts-photo:hover { transform: rotate(0deg) translateY(-3px); }
+
+.eve-bts-photo img { display: block; width: 100%; border-radius: 2px; }
+
+.eve-bts-photo figcaption {
+  padding: clamp(10px, 1.2vw, 16px) 2px clamp(12px, 1.4vw, 18px);
+  font-size: clamp(13px, 1.4vw, 15px);
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
 /* ---------- 小生物 ---------- */
 .eve-creatures-row {
   display: flex;
