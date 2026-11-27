@@ -1,0 +1,184 @@
+﻿/* ============================================================
+   手机端修整（≤ 820px）
+   目标：首屏不再互相压字、3D 不上手机、章节数字收小、
+        播放器不挡正文、钥匙排成整齐的 3×2。
+   ============================================================ */
+
+@media (max-width: 820px) {
+  /* ---------- 1. 手机不加载 3D 画面（它固定铺满，会压住所有文字） ---------- */
+  .scene-host { display: none !important; }
+
+  /* ---------- 2. 首屏：从「绝对叠放」改成正常竖排 ---------- */
+  .hero {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 26px 6% 46px;
+    display: block;
+  }
+
+  .hero:before { display: none; }
+
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    line-height: 1.6;
+    color: #5b6b62;
+  }
+
+  .hero-title {
+    font-size: 31vw !important;
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    margin: 12px 0 0;
+  }
+
+  .hero-title span { font-size: 0.18em; vertical-align: top; }
+
+  .hero-copy {
+    margin-top: 22px !important;
+    display: block !important;
+    max-width: 100%;
+  }
+
+  .hero-copy .eyebrow {
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+  }
+
+  .hero-copy h2 {
+    font-size: clamp(30px, 10vw, 42px);
+    line-height: 1.18;
+    margin: 8px 0 10px;
+  }
+
+  .hero-copy p {
+    margin: 0 0 16px;
+    font-size: 13px;
+    line-height: 1.85;
+    color: #4c5b53;
+  }
+
+  .hero-copy .pill {
+    display: inline-flex;
+    margin-bottom: 10px;
+  }
+
+  .hero-copy .skip-3d {
+    display: block;
+    font-size: 11px;
+    opacity: 0.75;
+  }
+
+  .guide-note,
+  .hero-sticker {
+    display: none !important;
+  }
+
+  /* ---------- 3. 章节大数字：小一点、淡一点、不压标题 ---------- */
+  main.journey .chapter:not(.hero)::after {
+    font-size: 24vw;
+    line-height: 1;
+    opacity: 0.1;
+    top: 6px;
+    right: 2%;
+  }
+
+  /* ---------- 4. 章节节奏：给底部留出播放器的位置 ---------- */
+  main.journey .chapter:not(.hero) {
+    padding: 96px 6% 120px;
+    min-height: auto;
+  }
+
+  /* ---------- 5. 播放器：缩成一个圆，别挡正文 ---------- */
+  .music-player {
+    width: 62px;
+    padding: 4px;
+    right: 10px;
+    bottom: 86px;
+    border-radius: 50%;
+    overflow: hidden;
+    opacity: 0.92;
+  }
+
+  .music-player .mp3-readout,
+  .music-player .mp3-label,
+  .music-player .mp3-disc-label {
+    display: none;
+  }
+
+  .chapter-nav {
+    right: 10px;
+    bottom: 16px;
+    padding: 8px 12px;
+    gap: 10px;
+    font-size: 10px;
+  }
+
+  /* ---------- 6. 六个世界：提示条与钥匙排布 ---------- */
+  .door-feedback {
+    max-width: 100%;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 10px 14px;
+    border-radius: 14px;
+  }
+
+  .door-instructions {
+    font-size: 10px;
+    gap: 6px;
+    line-height: 1.7;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .doors-intro h2 { font-size: clamp(28px, 8.6vw, 40px); }
+  .doors-intro p { font-size: 13px; }
+
+  .keyring .keyring-stage {
+    justify-content: center;
+    gap: 4px 6px;
+  }
+
+  .keyring .keyring-key { width: 27vw; max-width: 104px; }
+
+  .keyring .keyring-key-name { font-size: 9px; }
+
+  /* 手机上丝带差别太大，否则像乱挂 */
+  .keyring .keyring-ribbon { height: calc(var(--ribbon, 60px) * 0.5); }
+  .keyring .keyring-key:hover .keyring-ribbon,
+  .keyring .keyring-key:focus-visible .keyring-ribbon { height: calc(var(--ribbon, 60px) * 0.5 + 14px); }
+
+  /* ---------- 7. 自我介绍：标签与链接 ---------- */
+  .identity-tags { gap: 8px; }
+  .identity-tags span { font-size: 10.5px; padding: 6px 12px; }
+
+  /* ---------- 8. 结尾：标题别顶到屏幕边 ---------- */
+  main.journey #hello h2 { font-size: clamp(32px, 9.4vw, 46px); }
+}
+
+/* 更窄的机器 */
+@media (max-width: 420px) {
+  .hero-title { font-size: 33vw; }
+  .keyring .keyring-key { width: 28vw; }
+  .hero-copy h2 { font-size: 28px; }
+}
+
+/* ---------- 9. 首屏底部那排小字：别再和按钮叠在一起 ---------- */
+@media (max-width: 820px) {
+  .hero-copy { margin-bottom: 20px !important; }
+
+  /* 这一排小字在手机上没有空间，直接收起来，信息在上面的标题里已经有了 */
+  .hero-bottom { display: none !important; }
+
+  .hero-copy .pill { margin: 6px 0 10px; }
+  .hero-copy .skip-3d {
+    display: block;
+    margin-top: 4px;
+    font-size: 10.5px;
+    text-align: left;
+  }
+}

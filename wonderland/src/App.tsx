@@ -1,4 +1,4 @@
-﻿import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, Route, Routes, useLocation } from 'react-router-dom'
 import { PreferencesProvider, recommendedQuality, usePreferences, type Quality } from './preferences'
 import { links, projects } from './content'
@@ -7,6 +7,7 @@ import WorldDoors from './WorldDoors'
 import StarField from './StarField'
 import MusicPlayer from './MusicPlayer'
 import './little-world.css'
+import './mobile.css'
 const Scene = lazy(() => import('./Scene'))
 const Pages = lazy(() => import('./Pages'))
 const Arrow = () => <span aria-hidden="true">↗</span>
