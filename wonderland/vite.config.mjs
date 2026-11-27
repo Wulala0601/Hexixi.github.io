@@ -1,7 +1,13 @@
-﻿import { defineConfig } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  // 构建时间戳：页脚显示，方便判断浏览器是不是还在用旧缓存
+  define: {
+    __BUILD_STAMP__: JSON.stringify(
+      new Date().toLocaleString('zh-CN', { hour12: false, timeZone: 'Asia/Shanghai' }),
+    ),
+  },
   base: process.env.SITE_BASE_PATH || '/',
   plugins: [react()],
   server: {
