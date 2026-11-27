@@ -86,6 +86,18 @@ const GIFTS = [
   { name: 'LOGO 贴纸', rule: '随单附赠' },
 ]
 
+const REVIEWS = [
+  { file: 'review-01', name: '捏捏BB', text: '太可爱了……包装超可爱', date: '09-02' },
+  { file: 'review-02', name: 'rahlitrap', text: '好可爱，还有珠光闪闪的好漂亮', date: '05-23' },
+  { file: 'review-03', name: 'mino', text: '包包真的超级好看，店主更是温柔又可爱', date: '07-21' },
+  { file: 'review-04', name: 'rahlitrap', text: '好可爱的包包！里面还有拉链和内袋，好用心', date: '04-22' },
+  { file: 'review-05', name: '捏捏BB', text: '就这样萌死我吧', date: '09-02' },
+  { file: 'review-06', name: 'babybel', text: '分享萌萌包，店主还送了可爱阿拉蕾小夹子', date: '09-05' },
+  { file: 'review-07', name: 'yy', text: '容量很大，面料还防水，日常搭衣服也很可爱', date: '09-07' },
+  { file: 'review-08', name: 'yy', text: '已经在你家买过两个包包了', date: '09-07' },
+  { file: 'review-09', name: '烤菠萝', text: '特别可爱的设计，容量也很大，特别喜欢薄荷绿', date: '09-06' },
+]
+
 const stockLabel: Record<Stock, string> = { on: '在售', soon: '即将上架', sold: '补货中' }
 
 export default function Brine() {
@@ -192,10 +204,31 @@ export default function Brine() {
         </div>
       </section>
 
+      {/* ---------- 买家秀 ---------- */}
+      <section className="brine-section" id="reviews">
+        <header className="brine-head">
+          <span className="brine-eyebrow">02 · REAL REVIEWS</span>
+          <h2>买过的人<em>怎么说</em></h2>
+          <p>下面都是小红书买家自己拍的照片，文字是他们写的，我只做了排版。</p>
+        </header>
+        <div className="brine-reviews">
+          {REVIEWS.map((review) => (
+            <figure key={review.file} className="brine-review">
+              <img src={img(review.file)} alt={`${review.name} 的买家秀`} loading="lazy" />
+              <figcaption>
+                <strong>{review.name}</strong>
+                <p>{review.text}</p>
+                <span>{review.date} · 小红书</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
       {/* ---------- 作品 ---------- */}
       <section className="brine-section" id="works">
         <header className="brine-head">
-          <span className="brine-eyebrow">02 · IN THE WORKS</span>
+          <span className="brine-eyebrow">03 · IN THE WORKS</span>
           <h2>还在<em>打版</em>的系列</h2>
           <p>这些还没上架，先放在这里。做好一个放一个。</p>
         </header>
@@ -217,7 +250,7 @@ export default function Brine() {
       {/* ---------- 模型 ---------- */}
       <section className="brine-section brine-model" id="model">
         <div className="brine-model-copy">
-          <span className="brine-eyebrow">03 · 3D MODEL</span>
+          <span className="brine-eyebrow">04 · 3D MODEL</span>
           <h2>薄荷猫耳少女，<em>要出实体了</em></h2>
           <p>
             网站里一直陪着的那个向导，最早是一个 3D 模型。现在在把它做成可以拿在手上的东西——
@@ -238,7 +271,7 @@ export default function Brine() {
       {/* ---------- 幕后 ---------- */}
       <section className="brine-section" id="behind">
         <header className="brine-head">
-          <span className="brine-eyebrow">04 · BEHIND</span>
+          <span className="brine-eyebrow">05 · BEHIND</span>
           <h2>从一张画到<em>一个包裹</em></h2>
           <p>打版、改色、拍白底图、装自封袋、贴贴纸——全部自己来。</p>
         </header>

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    BRINE · 古早少女 · 薄荷 / 全息 / 蕾丝
    ============================================================ */
 
@@ -242,6 +242,28 @@
 .brine-gifts li img { width: 22px; height: 22px; object-fit: contain; }
 .brine-gifts li strong { font-size: 13.5px; }
 .brine-gifts li span { color: var(--muted); font-size: 12px; }
+
+/* ---------- 买家秀 ---------- */
+.brine-reviews { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+
+.brine-review { margin: 0; display: grid; gap: 8px; align-content: start; }
+
+.brine-review img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 12px;
+  background: var(--lace);
+  box-shadow: 0 18px 38px -32px rgba(23, 50, 58, 0.7);
+  transition: transform 0.3s ease;
+}
+.brine-review:hover img { transform: translateY(-4px) rotate(-0.6deg); }
+
+.brine-review figcaption { display: grid; gap: 3px; }
+.brine-review figcaption strong { font-family: var(--font-body, system-ui); font-size: 12px; color: var(--mint-deep); }
+.brine-review figcaption p { margin: 0; font-size: 11.5px; line-height: 1.65; color: var(--ink); }
+.brine-review figcaption span { font-family: var(--font-body, system-ui); font-size: 10px; letter-spacing: 0.06em; color: #9aa9ad; }
 
 /* ---------- 作品墙 ---------- */
 .brine-works { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
