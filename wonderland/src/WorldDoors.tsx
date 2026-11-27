@@ -1,4 +1,4 @@
-import { useReducer, useState, type CSSProperties } from 'react'
+﻿import { Fragment, useReducer, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { imageUrl, projects } from './content'
 import { assetUrl } from './assets'
@@ -118,25 +118,35 @@ export default function WorldDoors() {
         {status}
       </div>
 
-      <KeyRing
-        items={doors.map((door) => ({
-          id: door.id,
-          color: door.color,
-          name: door.key[1],
-          disabled: game.opened.includes(door.id),
-        }))}
-        selected={game.selected}
-        onPick={pick}
-        onDrop={drop}
-      />
+
 
       <div className="street">
         <div className="street-sky" aria-hidden="true">
           <span className="street-sun" />
         </div>
 
+        <span className="street-fence is-a" aria-hidden="true" />
+        <span className="street-fence is-b" aria-hidden="true" />
+
         <div className="doors-gallery">
-        {doors.map((door, i) => {
+        {doors.map((door, i) => (
+          <Fragment key={`wrap-${door.id}`}>
+            {i === 3 && (
+              <div className="doors-keyrow">
+                <KeyRing
+                  items={doors.map((d) => ({
+                    id: d.id,
+                    color: d.color,
+                    name: d.key[1],
+                    disabled: game.opened.includes(d.id),
+                  }))}
+                  selected={game.selected}
+                  onPick={pick}
+                  onDrop={drop}
+                />
+              </div>
+            )}
+            {(() => {
           const meta = metaFor(door.slug)
           const opened = game.opened.includes(door.id)
           const armed = game.selected === door.id
@@ -150,7 +160,6 @@ export default function WorldDoors() {
             >
               <div className="door-plaque"><span>0{i + 1}</span><span>{t(door.name[0], door.name[1])}</span><span aria-hidden="true">{door.symbol}</span></div>
               <div className="door-theatre">
-                <span className="door-building" aria-hidden="true" />
                 <div className="door-threshold" />
                 <div className="door-reveal" id={`behind-${door.id}`} aria-hidden={!opened}>
                   <Link to={hrefFor(door.slug)} tabIndex={opened ? 0 : -1} aria-label={t(`Enter ${meta.title.en}`, `走进${meta.title.zh}`)}>
@@ -193,8 +202,9 @@ export default function WorldDoors() {
                   : <span className="door-key-tag" style={{ '--door-color': door.color } as CSSProperties}>{t(door.key[0], door.key[1])}{t(' key', '钥匙')}</span>}
               </div>
             </article>
-          )
-        })}
+            )})()}
+          </Fragment>
+        ))}
         </div>
 
         <div className="street-floor" aria-hidden="true">
