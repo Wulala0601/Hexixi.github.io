@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { assetUrl } from './assets'
 import { links } from './content'
+import ModelViewer from './ModelViewer'
 import './brine.css'
 
 const img = (name: string) => assetUrl(`/images/brine/${name}.webp`)
@@ -86,7 +87,7 @@ const GIFTS = [
   { name: 'LOGO 贴纸', rule: '随单附赠' },
 ]
 
-const REVIEWS = [
+const REVIEWS: { file: string; name: string; text: string; date?: string }[] = [
   { file: 'review-01', name: '捏捏BB', text: '太可爱了……包装超可爱', date: '09-02' },
   { file: 'review-02', name: 'rahlitrap', text: '好可爱，还有珠光闪闪的好漂亮', date: '05-23' },
   { file: 'review-03', name: 'mino', text: '包包真的超级好看，店主更是温柔又可爱', date: '07-21' },
@@ -96,6 +97,8 @@ const REVIEWS = [
   { file: 'review-07', name: 'yy', text: '容量很大，面料还防水，日常搭衣服也很可爱', date: '09-07' },
   { file: 'review-08', name: 'yy', text: '已经在你家买过两个包包了', date: '09-07' },
   { file: 'review-09', name: '烤菠萝', text: '特别可爱的设计，容量也很大，特别喜欢薄荷绿', date: '09-06' },
+  { file: 'review-10', name: '买家晒单', text: '薄荷绿配全套徽章，出门一次带齐' },
+  { file: 'review-11', name: '买家晒单', text: '粉蓝海洋包配格裙，意外地搭' },
 ]
 
 const stockLabel: Record<Stock, string> = { on: '在售', soon: '即将上架', sold: '补货中' }
@@ -234,7 +237,7 @@ export default function Brine() {
               <figcaption>
                 <strong>{review.name}</strong>
                 <p>{review.text}</p>
-                <span>{review.date} · 小红书</span>
+                <span>{review.date ? review.date + ' · 小红书' : '小红书晒单'}</span>
               </figcaption>
             </figure>
           ))}
@@ -265,25 +268,43 @@ export default function Brine() {
 
       {/* ---------- 模型 ---------- */}
       <section className="brine-section brine-model" id="model">
-        <div className="brine-model-copy">
+        <header className="brine-head">
           <span className="brine-eyebrow">04 · 3D MODEL</span>
-          <h2>薄荷猫耳少女，<em>要出实体了</em></h2>
+          <h2>薄荷猫耳少女，<em>做成了钥匙扣</em></h2>
           <p>
-            网站里一直陪着的那个向导，最早是一个 3D 模型。现在在把它做成可以拿在手上的东西——
-            先开放模型文件与打印版，细节和定价还在算。
+            最早是首页里那个 3D 模型。现在打成白膜：15cm 高、3D 打印，头顶加了一个圆环，可以挂在包上。
+            左边这个可以拖动旋转。
           </p>
-          <div className="brine-model-actions">
-            <Link className="brine-btn brine-btn-solid" to="/ip-models">看模型展厅 ↗</Link>
-            <span className="brine-soon">实体预售 · 筹备中</span>
+        </header>
+
+        <div className="brine-model-grid">
+          <div className="brine-model-stage">
+            <ModelViewer />
+          </div>
+          <div className="brine-model-shots">
+            {['model-01', 'model-02', 'model-03', 'model-04'].map((name, i) => (
+              <img key={name} src={img(name)} alt={`薄荷猫耳少女白膜 ${i + 1}`} loading="lazy" />
+            ))}
+            <figure className="brine-model-ring">
+              <img src={img('model-ring')} alt="头顶的圆环细节" loading="lazy" />
+              <figcaption>头顶的圆环 · 后加的</figcaption>
+            </figure>
           </div>
         </div>
-        <div className="brine-model-visual" aria-hidden="true">
-          <span className="brine-orbit" />
-          <span className="brine-orbit is-two" />
-          <img src={img('logo-lace')} alt="" />
+
+        <div className="brine-model-facts">
+          <ul>
+            <li><span>高度</span><strong>15 cm</strong></li>
+            <li><span>工艺</span><strong>3D 打印 · 白膜</strong></li>
+            <li><span>挂环</span><strong>可挂包 / 钥匙</strong></li>
+            <li><span>状态</span><strong>准备出售</strong></li>
+          </ul>
+          <div className="brine-model-actions">
+            <Link className="brine-btn brine-btn-solid" to="/ip-models">看原始模型 ↗</Link>
+            <span className="brine-soon">实体上架筹备中</span>
+          </div>
         </div>
       </section>
-
       {/* ---------- 页脚 ---------- */}
       <footer className="brine-end">
         <img className="brine-end-mark" src={img('wordmark')} alt="BRINE 字标" loading="lazy" />
