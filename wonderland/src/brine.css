@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    BRINE · 古早少女 · 薄荷 / 全息 / 蕾丝
    ============================================================ */
 
@@ -243,6 +243,61 @@
 .brine-gifts li strong { font-size: 13.5px; }
 .brine-gifts li span { color: var(--muted); font-size: 12px; }
 
+/* ---------- 品牌口号 ---------- */
+.brine-slogan {
+  margin: 0 0 26px;
+  padding: 14px 18px;
+  border-left: 3px solid var(--mint-deep);
+  border-radius: 0 10px 10px 0;
+  background: rgba(159, 227, 208, 0.18);
+  font-size: clamp(13.5px, 1.45vw, 15.5px);
+  line-height: 1.95;
+  color: var(--ink);
+}
+
+/* ---------- 制作流程 ---------- */
+.brine-process {
+  margin-top: 22px;
+  padding: clamp(16px, 2.4vw, 26px);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(23, 50, 58, 0.08);
+}
+
+.brine-process ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.brine-process li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(47, 143, 124, 0.25);
+  font-family: var(--font-body, system-ui);
+  font-size: 12.5px;
+  color: var(--ink);
+}
+
+.brine-process li:not(:last-child)::after {
+  content: "→";
+  margin-left: 8px;
+  color: var(--mint-deep);
+  opacity: 0.6;
+}
+
+.brine-step-no { font-size: 9.5px; letter-spacing: 0.1em; color: var(--mint-deep); }
+
+.brine-process p { margin: 0; font-size: 13.5px; line-height: 1.85; color: var(--muted); }
+
 /* ---------- 买家秀 ---------- */
 .brine-reviews { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
 
@@ -309,26 +364,6 @@
 .brine-orbit.is-two { width: 60%; border-style: dotted; border-color: rgba(243, 168, 192, 0.6); animation-direction: reverse; animation-duration: 18s; }
 
 @keyframes brine-spin { to { transform: rotate(360deg); } }
-
-/* ---------- 幕后 ---------- */
-.brine-behind { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 28px); }
-.brine-behind figure { margin: 0; }
-.brine-behind img { display: block; width: 100%; border-radius: 14px; box-shadow: 0 20px 44px -34px rgba(23, 50, 58, 0.6); }
-.brine-behind figcaption { margin-top: 8px; font-family: var(--font-body, system-ui); font-size: 11px; color: var(--muted); }
-.brine-behind-text { grid-column: 1 / -1; }
-.brine-behind-text p { margin: 0 0 10px; font-size: 14px; line-height: 1.9; color: var(--ink); }
-.brine-behind-en { font-family: var(--font-body, system-ui); font-size: 12px !important; color: var(--muted) !important; }
-
-.brine-packing { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
-.brine-packing li {
-  padding: 5px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: #fff;
-  font-family: var(--font-body, system-ui);
-  font-size: 11.5px;
-  color: var(--muted);
-}
 
 /* ---------- 页脚 ---------- */
 .brine-end {
@@ -422,7 +457,6 @@
   .brine-section { padding-right: 6%; }
   .brine-model { grid-template-columns: 1fr; }
   .brine-model-visual { min-height: 180px; }
-  .brine-behind { grid-template-columns: 1fr; }
   .brine-dialog { grid-template-columns: 1fr; }
   .brine-dialog-art { grid-template-columns: repeat(3, 1fr); }
 }

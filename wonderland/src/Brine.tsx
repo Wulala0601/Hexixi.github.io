@@ -113,7 +113,6 @@ export default function Brine() {
     }
     return () => { document.title = 'HE XIXI — Soft Error Wonderland' }
   }, [])
-
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(null) }
@@ -140,6 +139,10 @@ export default function Brine() {
           <p className="brine-lede">
             BRINE 是我自己的小品牌：帆布包、徽章、钥匙扣和贴纸。
             每一样都是先画、再打版、最后自己打包寄出去的东西。
+          </p>
+          <p className="brine-slogan">
+            BRINE 就是一些像夏天一样的小东西。<br />
+            如果你偶尔想从现实里躲一躲，它们可以陪着你。
           </p>
           <div className="brine-actions">
             <a className="brine-btn brine-btn-solid" href="#shop">看在售 ↗</a>
@@ -202,9 +205,22 @@ export default function Brine() {
             ))}
           </ul>
         </div>
+        {/* 制作流程 */}
+        <div className="brine-process">
+          <span className="brine-eyebrow">HOW IT'S MADE</span>
+          <ol>
+            {['印花打样', '车缝', '改色', '拍图', '写文案', '打包'].map((step, i) => (
+              <li key={step}>
+                <span className="brine-step-no">{String(i + 1).padStart(2, '0')}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+          <p>
+            一只包从画稿到寄出，要经过这六步。中间有两次整批做错，只能自己留着用。
+          </p>
+        </div>
       </section>
-
-      {/* ---------- 买家秀 ---------- */}
       <section className="brine-section" id="reviews">
         <header className="brine-head">
           <span className="brine-eyebrow">02 · REAL REVIEWS</span>
@@ -265,41 +281,6 @@ export default function Brine() {
           <span className="brine-orbit" />
           <span className="brine-orbit is-two" />
           <img src={img('logo-lace')} alt="" />
-        </div>
-      </section>
-
-      {/* ---------- 幕后 ---------- */}
-      <section className="brine-section" id="behind">
-        <header className="brine-head">
-          <span className="brine-eyebrow">05 · BEHIND</span>
-          <h2>从一张画到<em>一个包裹</em></h2>
-          <p>打版、改色、拍白底图、装自封袋、贴贴纸——全部自己来。</p>
-        </header>
-        <div className="brine-behind">
-          <figure>
-            <img src={img('process-white')} alt="白底产品图拍摄" loading="lazy" />
-            <figcaption>白底图：每只包都要拍一套</figcaption>
-          </figure>
-          <figure>
-            <img src={img('process-early')} alt="配色与打版过程" loading="lazy" />
-            <figcaption>配色打版：薄荷绿改了四轮</figcaption>
-          </figure>
-          <div className="brine-behind-text">
-            <p>
-              一只包从画稿到寄出，要经过：印花打样 → 车缝 → 改色 → 拍图 → 写文案 → 打包。
-              中间有两次整批做错，只能自己留着用。
-            </p>
-            <p className="brine-behind-en">
-              Printed, sewn, re-dyed, photographed, packed — and two whole batches that came out wrong.
-            </p>
-            <ul className="brine-packing">
-              <li>冰蓝防水快递袋</li>
-              <li>奶蓝气泡袋</li>
-              <li>蓝色天使自封袋</li>
-              <li>海洋味香片</li>
-              <li>音符回形针</li>
-            </ul>
-          </div>
         </div>
       </section>
 
