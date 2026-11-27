@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from './assets'
 import './pixel-room.css'
 
 const W = 320
 const H = 200
-const GROUND = 154
+const GROUND = 166
 
 type Kind = 'girl' | 'fish' | 'bei'
 type GirlMood = 'idle' | 'walk' | 'phone' | 'read' | 'music' | 'exercise' | 'eat' | 'toilet'
@@ -18,6 +18,7 @@ type Cat = {
   target: number
   timer: number
   tick: number
+  zone: [number, number]
 }
 
 const F = {
@@ -39,7 +40,7 @@ const F = {
 
 /** 每个角色导出时的统一高度，用来换算显示比例 */
 const REF_H = { girl: 480, fish: 420, bei: 420 }
-const DISPLAY_H = { girl: 122, fish: 74, bei: 80 }
+const DISPLAY_H = { girl: 122, fish: 56, bei: 60 }
 
 const LINES = ['在发呆', '想喝奶茶', '今天也在改稿', '喵？', '别吵，在想事情']
 
@@ -51,10 +52,10 @@ export default function PixelRoom() {
   const st = useRef({
     imgs: {} as Record<string, HTMLImageElement>,
     room: null as HTMLImageElement | null,
-    girl: { mood: 'idle' as GirlMood, x: 156, dir: 1 as 1 | -1, target: 156, timer: 2600, tick: 0, toiletQueued: false },
+    girl: { mood: 'idle' as GirlMood, x: 150, dir: 1 as 1 | -1, target: 150, timer: 2600, tick: 0, toiletQueued: false },
     cats: [
-      { kind: 'fish' as const, mood: 'idle' as CatMood, x: 78, dir: 1 as 1 | -1, target: 78, timer: 2200, tick: 0 },
-      { kind: 'bei' as const, mood: 'idle' as CatMood, x: 232, dir: -1 as 1 | -1, target: 232, timer: 3200, tick: 0 },
+      { kind: 'fish' as const, mood: 'idle' as CatMood, x: 86, dir: 1 as 1 | -1, target: 78, timer: 2200, tick: 0, zone: [72, 100] },
+      { kind: 'bei' as const, mood: 'idle' as CatMood, x: 180, dir: -1 as 1 | -1, target: 186, timer: 3200, tick: 0, zone: [160, 196] },
     ] as Cat[],
     particles: [] as { x: number; y: number; vy: number; life: number; glyph: string; colour: string }[],
     bubbles: [] as { x: number; y: number; text: string; life: number }[],
@@ -149,7 +150,7 @@ export default function PixelRoom() {
           g.timer = 5200 + Math.random() * 5000
         } else if (!reduce) {
           g.mood = 'walk'
-          g.target = 90 + Math.random() * (W - 180)
+          g.target = 112 + Math.random() * 38
           g.timer = 4000
         } else {
           g.timer = 4000
@@ -192,7 +193,7 @@ export default function PixelRoom() {
         const roll = Math.random()
         if (roll < 0.45) {
           c.mood = 'walk'
-          c.target = 20 + Math.random() * (W - 60)
+          c.target = c.zone[0] + Math.random() * (c.zone[1] - c.zone[0])
           c.timer = 3000
         } else if (roll < 0.75) {
           c.mood = 'groom'
@@ -213,6 +214,23 @@ export default function PixelRoom() {
         } else {
           c.dir = dx > 0 ? 1 : -1
           c.x += c.dir * 0.032 * dt
+        }
+      })
+
+      // 位置校正：夹在走动区域内，猫与猫、猫与人之间保持距离
+      const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v))
+      g.x = clamp(g.x, 110, 152)
+      s.cats.forEach((c) => { c.x = clamp(c.x, c.zone[0], c.zone[1]) })
+      const [c1, c2] = s.cats
+      if (c2.x - c1.x < 58) {
+        const mid = (c1.x + c2.x) / 2
+        c1.x = clamp(mid - 29, c1.zone[0], c1.zone[1])
+        c2.x = clamp(mid + 29, c2.zone[0], c2.zone[1])
+      }
+      s.cats.forEach((c) => {
+        if (Math.abs(c.x - g.x) < 58) {
+          const away = c.x >= g.x ? 1 : -1
+          c.x = clamp(c.x + away * 0.6, c.zone[0], c.zone[1])
         }
       })
 
