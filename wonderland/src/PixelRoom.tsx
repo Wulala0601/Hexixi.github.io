@@ -1,82 +1,88 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from './assets'
 import './pixel-room.css'
 
-const W = 300
-const H = 190
-const GROUND = 160
+const W = 320
+const H = 200
+const GROUND = 154
 
 type Kind = 'girl' | 'fish' | 'bei'
-type Mood = 'idle' | 'hop' | 'dance' | 'eat' | 'dizzy' | 'chase'
+type GirlMood = 'idle' | 'walk' | 'phone' | 'read' | 'music' | 'exercise' | 'eat' | 'toilet'
+type CatMood = 'idle' | 'walk' | 'groom' | 'eat'
 
-type Actor = {
-  kind: Kind
-  img: HTMLImageElement | HTMLCanvasElement
-  dh: number
+type Cat = {
+  kind: 'fish' | 'bei'
+  mood: CatMood
   x: number
   dir: 1 | -1
-  mood: Mood
   target: number
   timer: number
-  phase: number
+  tick: number
 }
 
-type Ball = { x: number; y: number; vx: number; vy: number; life: number }
-type Particle = { x: number; y: number; vy: number; life: number; glyph: string; colour: string }
-type Bubble = { x: number; y: number; text: string; life: number }
+const F = {
+  girl: {
+    front: 'girl-front', side: 'girl-side', walk1: 'girl-walk1', walk2: 'girl-walk2',
+    eat1: 'girl-eat1', eat2: 'girl-eat2', toilet1: 'girl-toilet1', toilet2: 'girl-toilet2',
+    read: 'girl-read', phone: 'girl-phone', music: 'girl-music',
+    dumbbell1: 'girl-dumbbell1', dumbbell2: 'girl-dumbbell2',
+  },
+  fish: {
+    front: 'fish-front', side: 'fish-side', walk1: 'fish-walk1', walk2: 'fish-walk2',
+    eat: 'fish-eat', groom1: 'fish-groom1', groom2: 'fish-groom2',
+  },
+  bei: {
+    front: 'bei-front', side: 'bei-side', walk1: 'bei-walk1', walk2: 'bei-walk2',
+    eat: 'bei-eat', groom1: 'bei-groom1', groom2: 'bei-groom2',
+  },
+} as const
 
-const LINES: Record<Kind, string[]> = {
-  girl: ['在发呆', '想喝奶茶', '今天也在改稿', '喵？'],
-  fish: ['喵', '饿了', '别摸肚子', '我是鱼子酱'],
-  bei: ['喵呜', '想睡', '罐头呢', '抱一下'],
-}
+/** 每个角色导出时的统一高度，用来换算显示比例 */
+const REF_H = { girl: 480, fish: 420, bei: 420 }
+const DISPLAY_H = { girl: 122, fish: 74, bei: 80 }
 
-const SPEC: Record<Kind, { file: string; h: number }> = {
-  girl: { file: 'girl', h: 118 },
-  fish: { file: 'fish', h: 74 },
-  bei: { file: 'bei', h: 78 },
-}
+const LINES = ['在发呆', '想喝奶茶', '今天也在改稿', '喵？', '别吵，在想事情']
 
 export default function PixelRoom() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [hint, setHint] = useState('点一下他们，会回头看你')
+  const [hint, setHint] = useState('点一下她，会回头看你')
   const [ready, setReady] = useState(false)
+
   const st = useRef({
-    actors: [] as Actor[],
-    ball: null as Ball | null,
-    particles: [] as Particle[],
-    bubbles: [] as Bubble[],
+    imgs: {} as Record<string, HTMLImageElement>,
+    room: null as HTMLImageElement | null,
+    girl: { mood: 'idle' as GirlMood, x: 156, dir: 1 as 1 | -1, target: 156, timer: 2600, tick: 0, toiletQueued: false },
+    cats: [
+      { kind: 'fish' as const, mood: 'idle' as CatMood, x: 78, dir: 1 as 1 | -1, target: 78, timer: 2200, tick: 0 },
+      { kind: 'bei' as const, mood: 'idle' as CatMood, x: 232, dir: -1 as 1 | -1, target: 232, timer: 3200, tick: 0 },
+    ] as Cat[],
+    particles: [] as { x: number; y: number; vy: number; life: number; glyph: string; colour: string }[],
+    bubbles: [] as { x: number; y: number; text: string; life: number }[],
     t: 0,
   })
 
-  // 载入三张角色图
   useEffect(() => {
     let cancelled = false
-    const loaded: Record<string, HTMLImageElement> = {}
-    let count = 0
-    ;(Object.keys(SPEC) as Kind[]).forEach((kind) => {
+    const files = [
+      ...Object.values(F.girl), ...Object.values(F.fish), ...Object.values(F.bei),
+    ]
+    let loaded = 0
+    const imgs: Record<string, HTMLImageElement> = {}
+    files.forEach((name) => {
       const img = new Image()
-      img.src = assetUrl(`/images/pixel/${SPEC[kind].file}.webp`)
       img.onload = () => {
-        loaded[kind] = img
-        count += 1
-        if (count === 3 && !cancelled) {
-          const s = st.current
-          s.actors = (Object.keys(SPEC) as Kind[]).map((k, i) => ({
-            kind: k,
-            img: loaded[k],
-            dh: SPEC[k].h,
-            x: [118, 52, 196][i],
-            dir: 1,
-            mood: 'idle' as Mood,
-            target: 0,
-            timer: 1000 + i * 400,
-            phase: i * 1.7,
-          }))
+        imgs[name] = img
+        loaded += 1
+        if (loaded === files.length && !cancelled) {
+          st.current.imgs = imgs
           setReady(true)
         }
       }
+      img.src = assetUrl(`/images/pixel/${name}.webp`)
     })
+    const room = new Image()
+    room.onload = () => { st.current.room = room }
+    room.src = assetUrl('/images/pixel/room-bg.webp')
     return () => { cancelled = true }
   }, [])
 
@@ -86,170 +92,204 @@ export default function PixelRoom() {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const s = st.current
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     let raf = 0
     let last = performance.now()
 
-    const drawActor = (a: Actor) => {
-      const w = (a.img.width / a.img.height) * a.dh
-      const bob = a.mood === 'dance' ? Math.sin(s.t / 120 + a.phase) * 3 : a.mood === 'hop' || a.mood === 'chase' ? -Math.abs(Math.sin(s.t / 150 + a.phase)) * 8 : Math.sin(s.t / 700 + a.phase) * 1.2
-      const squash = a.mood === 'eat' || a.mood === 'dizzy' ? 0.9 : 1
-      const tilt = a.mood === 'dance' ? Math.sin(s.t / 120 + a.phase) * 0.06 : 0
-      const y = GROUND - a.dh * squash + bob
+    const drawSprite = (name: string, kind: Kind, x: number, dir: 1 | -1, bob = 0) => {
+      const img = s.imgs[name]
+      if (!img) return
+      const k = DISPLAY_H[kind] / REF_H[kind]
+      const w = img.width * k
+      const h = img.height * k
       ctx.save()
-      ctx.translate(a.x, y)
-      if (a.dir === -1) ctx.scale(-1, 1)
-      ctx.rotate(tilt)
-      ctx.drawImage(a.img, -w / 2, 0, w, a.dh * squash)
+      ctx.translate(x, GROUND - h + bob)
+      if (dir === -1) { ctx.translate(w, 0); ctx.scale(-1, 1) }
+      ctx.drawImage(img, 0, 0, w, h)
       ctx.restore()
+      return { w, h }
+    }
+
+    const shadow = (x: number, kind: Kind) => {
+      const k = DISPLAY_H[kind] / REF_H[kind]
+      const ref = kind === 'girl' ? s.imgs[F.girl.front] : s.imgs[kind === 'fish' ? F.fish.side : F.bei.side]
+      if (!ref) return
+      const w = Math.max(18, ref.width * k * 0.52)
+      ctx.fillStyle = 'rgba(10,5,16,0.35)'
+      ctx.beginPath()
+      ctx.ellipse(x, GROUND - 1, w / 2, 4, 0, 0, Math.PI * 2)
+      ctx.fill()
     }
 
     const loop = (now: number) => {
-      const dt = Math.min(48, now - last)
+      const dt = Math.min(50, now - last)
       last = now
       s.t += dt
 
-      // 房间
-      const bg = ctx.createLinearGradient(0, 0, 0, H)
-      bg.addColorStop(0, '#1a1024')
-      bg.addColorStop(0.6, '#251536')
-      bg.addColorStop(1, '#140b1c')
-      ctx.fillStyle = bg
-      ctx.fillRect(0, 0, W, H)
-
-      // 窗
-      ctx.fillStyle = '#100a18'
-      ctx.fillRect(196, 18, 74, 52)
-      ctx.fillStyle = '#2a1d3f'
-      ctx.fillRect(198, 20, 70, 48)
-      ctx.fillStyle = 'rgba(255,225,242,0.8)'
-      for (const [x, y] of [[208, 28], [224, 40], [242, 26], [258, 44], [232, 56], [252, 58]]) ctx.fillRect(x, y, 2, 2)
-      ctx.fillStyle = 'rgba(255,214,236,0.22)'
-      ctx.fillRect(232, 20, 1, 48)
-      ctx.fillRect(198, 42, 70, 1)
-
-      // 台灯（最左，别挡角色）
-      ctx.fillStyle = '#6b4a86'
-      ctx.fillRect(15, 104, 3, 36)
-      ctx.fillRect(6, 138, 22, 3)
-      ctx.fillStyle = '#c98ab0'
-      ctx.fillRect(8, 92, 16, 5)
-      ctx.fillStyle = '#ffd0e4'
-      ctx.fillRect(10, 96, 12, 4)
-      ctx.fillStyle = '#4a3560'
-      ctx.fillRect(8, 100, 16, 2)
-
-      // 地面 + 地毯
-      ctx.fillStyle = '#2f1d40'
-      ctx.fillRect(0, GROUND, W, H - GROUND)
-      ctx.fillStyle = '#3a2450'
-      ctx.fillRect(0, GROUND, W, 2)
-      ctx.fillStyle = 'rgba(255,140,194,0.12)'
-      ctx.fillRect(20, GROUND + 6, W - 40, H - GROUND - 16)
-
-      // 盆栽
-      ctx.fillStyle = '#2f5a41'
-      ctx.fillRect(268, 108, 4, 8)
-      ctx.fillRect(274, 104, 4, 12)
-      ctx.fillRect(262, 112, 4, 6)
-      ctx.fillStyle = '#7a4a3a'
-      ctx.fillRect(258, 120, 26, 10)
-      ctx.fillStyle = '#5e3628'
-      ctx.fillRect(258, 120, 26, 3)
-
-      // 灯光
-      const glow = ctx.createRadialGradient(16, 96, 4, 16, 104, 86)
-      glow.addColorStop(0, 'rgba(255,214,236,0.26)')
-      glow.addColorStop(1, 'rgba(255,214,236,0)')
-      ctx.fillStyle = glow
-      ctx.fillRect(0, 0, W, H)
-
-      // 球
-      if (s.ball) {
-        s.ball.x += s.ball.vx * dt
-        s.ball.y += s.ball.vy * dt
-        s.ball.vy += 0.0008 * dt
-        if (s.ball.x < 10 || s.ball.x > W - 10) { s.ball.vx *= -1; s.ball.x = Math.max(10, Math.min(W - 10, s.ball.x)) }
-        if (s.ball.y > GROUND - 4) { s.ball.y = GROUND - 4; s.ball.vy *= -0.6 }
-        s.ball.life -= dt
-        if (s.ball.life <= 0) s.ball = null
+      // 背景
+      if (s.room) {
+        const r = s.room
+        const scale = Math.max(W / r.width, H / r.height)
+        const dw = r.width * scale
+        const dh = r.height * scale
+        ctx.drawImage(r, (W - dw) / 2, (H - dh) / 2, dw, dh)
+      } else {
+        ctx.fillStyle = '#1a1024'
+        ctx.fillRect(0, 0, W, H)
       }
 
-      s.actors.forEach((a) => {
-        a.timer -= dt
-        if (s.ball && a.kind !== 'girl') {
-          a.mood = 'chase'
-          const dx = s.ball.x - a.x
-          a.dir = dx > 0 ? 1 : -1
-          if (Math.abs(dx) > 6) a.x += a.dir * 0.08 * dt
-          if (Math.abs(dx) < 14) {
-            s.ball.vx = -a.dir * (0.07 + Math.random() * 0.05)
-            s.ball.vy = -0.2
-            s.ball.life = 4000
-            s.particles.push({ x: a.x, y: GROUND - a.dh - 6, vy: -0.16, life: 1, glyph: '!', colour: '#ff8cc2' })
-          }
-        } else if (a.mood === 'chase') {
-          a.mood = 'idle'
-          a.timer = 600
-        }
+      const g = s.girl
+      g.timer -= dt
 
-        if (a.mood === 'idle' && a.timer <= 0 && !reduce) {
-          a.mood = 'hop'
-          a.target = 60 + Math.random() * (W - 140)
-          a.timer = 2400
+      // 女孩状态机
+      if (g.mood === 'idle' && g.timer <= 0) {
+        if (!reduce && Math.random() < 0.42) {
+          g.mood = 'phone'
+          g.timer = 5200 + Math.random() * 5000
+        } else if (!reduce) {
+          g.mood = 'walk'
+          g.target = 90 + Math.random() * (W - 180)
+          g.timer = 4000
+        } else {
+          g.timer = 4000
         }
-        if (a.mood === 'hop') {
-          const dx = a.target - a.x
-          if (Math.abs(dx) < 4 || a.timer <= 0) {
-            a.mood = 'idle'
-            a.timer = 1200 + Math.random() * 2000
-          } else {
-            a.dir = dx > 0 ? 1 : -1
-            a.x += a.dir * 0.05 * dt
-          }
+      }
+      if (g.mood === 'walk') {
+        const dx = g.target - g.x
+        if (Math.abs(dx) < 3 || g.timer <= 0) {
+          g.mood = 'idle'
+          g.timer = 2600 + Math.random() * 3200
+        } else {
+          g.dir = dx > 0 ? 1 : -1
+          g.x += g.dir * 0.042 * dt
         }
-        if ((a.mood === 'eat' || a.mood === 'dizzy' || a.mood === 'dance') && a.timer <= 0) {
-          a.mood = 'idle'
-          a.timer = 1200
+      }
+      if (['phone', 'read', 'music', 'exercise', 'eat', 'toilet'].includes(g.mood) && g.timer <= 0) {
+        g.mood = 'idle'
+        g.timer = 2000
+        if (g.toiletQueued && s.t > 0) {
+          // 吃完一段时间后的彩蛋
+        }
+      }
+
+      // 吃东西 → 过一会儿去马桶（彩蛋）
+      if (g.mood === 'eat' && g.timer < 200 && g.toiletQueued) {
+        g.toiletQueued = false
+        g.mood = 'toilet'
+        g.timer = 4200
+        s.bubbles.push({ x: g.x, y: GROUND - DISPLAY_H.girl - 14, text: '……先去个洗手间', life: 1 })
+      }
+
+      // 猫：站立 / 走动 / 舔毛
+      s.cats.forEach((c) => {
+        c.timer -= dt
+        if (c.mood === 'eat') {
+          if (c.timer <= 0) { c.mood = 'idle'; c.timer = 2400 + Math.random() * 2600 }
+          return
+        }
+        if (c.timer > 0) return
+        const roll = Math.random()
+        if (roll < 0.45) {
+          c.mood = 'walk'
+          c.target = 20 + Math.random() * (W - 60)
+          c.timer = 3000
+        } else if (roll < 0.75) {
+          c.mood = 'groom'
+          c.timer = 3000 + Math.random() * 2200
+        } else {
+          c.mood = 'idle'
+          c.timer = 2200 + Math.random() * 3000
         }
       })
 
-      s.actors.forEach(drawActor)
+      // 猫走动
+      s.cats.forEach((c) => {
+        if (c.mood !== 'walk') return
+        const dx = c.target - c.x
+        if (Math.abs(dx) < 3 || c.timer <= 0) {
+          c.mood = 'idle'
+          c.timer = 2000 + Math.random() * 2600
+        } else {
+          c.dir = dx > 0 ? 1 : -1
+          c.x += c.dir * 0.032 * dt
+        }
+      })
 
-      if (s.ball) {
-        ctx.fillStyle = '#ff8cc2'
-        ctx.beginPath()
-        ctx.arc(s.ball.x, s.ball.y, 4, 0, Math.PI * 2)
-        ctx.fill()
-        ctx.fillStyle = 'rgba(255,255,255,0.8)'
-        ctx.fillRect(s.ball.x - 2, s.ball.y - 3, 2, 2)
+      s.cats.forEach((c) => shadow(c.x, c.kind))
+      shadow(g.x, 'girl')
+
+      // 猫
+      s.cats.forEach((c) => {
+        const set = c.kind === 'fish' ? F.fish : F.bei
+        c.tick += dt
+        if (c.mood === 'walk') {
+          drawSprite(c.tick % 320 < 160 ? set.walk1 : set.walk2, c.kind, c.x, c.dir, -1)
+        } else if (c.mood === 'groom') {
+          drawSprite(c.tick % 900 < 450 ? set.groom1 : set.groom2, c.kind, c.x, c.dir)
+        } else if (c.mood === 'eat') {
+          drawSprite(set.eat, c.kind, c.x, c.dir)
+        } else {
+          drawSprite(set.side, c.kind, c.x, c.dir)
+        }
+      })
+
+      // 女孩
+      g.tick += dt
+      const walking = g.mood === 'walk'
+      const bob = walking ? Math.abs(Math.sin(g.tick / 110)) * 1.6 : 0
+      switch (g.mood) {
+        case 'walk':
+          drawSprite(g.tick % 320 < 160 ? F.girl.walk1 : F.girl.walk2, 'girl', g.x, g.dir, -bob)
+          break
+        case 'phone':
+          drawSprite(F.girl.phone, 'girl', g.x, 1)
+          break
+        case 'read':
+          drawSprite(F.girl.read, 'girl', g.x, 1)
+          break
+        case 'music':
+          drawSprite(F.girl.music, 'girl', g.x, 1)
+          break
+        case 'exercise':
+          drawSprite(g.tick % 700 < 350 ? F.girl.dumbbell1 : F.girl.dumbbell2, 'girl', g.x, 1)
+          break
+        case 'eat':
+          drawSprite(g.tick % 900 < 450 ? F.girl.eat1 : F.girl.eat2, 'girl', g.x, 1)
+          break
+        case 'toilet':
+          drawSprite(g.tick % 1100 < 550 ? F.girl.toilet1 : F.girl.toilet2, 'girl', g.x, 1)
+          break
+        default:
+          drawSprite(F.girl.front, 'girl', g.x, 1)
       }
 
+      // 粒子
       s.particles = s.particles.filter((p) => {
         p.y += p.vy * dt
-        p.life -= dt / 1700
+        p.life -= dt / 1600
         if (p.life <= 0) return false
         ctx.globalAlpha = Math.max(0, Math.min(1, p.life))
         ctx.fillStyle = p.colour
-        ctx.font = 'bold 11px monospace'
+        ctx.font = 'bold 12px monospace'
         ctx.fillText(p.glyph, p.x, p.y)
         ctx.globalAlpha = 1
         return true
       })
 
+      // 气泡
       s.bubbles = s.bubbles.filter((b) => {
-        b.life -= dt / 2300
+        b.life -= dt / 2400
         if (b.life <= 0) return false
-        ctx.globalAlpha = Math.max(0, Math.min(1, b.life * 1.4))
-        ctx.font = 'bold 9px "PingFang SC", monospace'
-        const w = ctx.measureText(b.text).width + 10
+        ctx.globalAlpha = Math.max(0, Math.min(1, b.life * 1.5))
+        ctx.font = 'bold 10px "PingFang SC", monospace'
+        const w = ctx.measureText(b.text).width + 12
         ctx.fillStyle = 'rgba(18,9,24,0.9)'
-        ctx.fillRect(b.x - w / 2, b.y - 16, w, 13)
+        ctx.fillRect(b.x - w / 2, b.y - 18, w, 15)
         ctx.strokeStyle = 'rgba(255,140,194,0.75)'
-        ctx.strokeRect(b.x - w / 2 + 0.5, b.y - 16.5, w - 1, 12)
+        ctx.strokeRect(b.x - w / 2 + 0.5, b.y - 18.5, w - 1, 14)
         ctx.fillStyle = '#ffe8f3'
-        ctx.fillText(b.text, b.x - w / 2 + 5, b.y - 6)
+        ctx.fillText(b.text, b.x - w / 2 + 6, b.y - 7)
         ctx.globalAlpha = 1
         return true
       })
@@ -261,35 +301,36 @@ export default function PixelRoom() {
     return () => cancelAnimationFrame(raf)
   }, [ready])
 
-  const act = (kind: 'music' | 'food' | 'ball') => {
+  const act = (kind: 'music' | 'food' | 'exercise' | 'study') => {
     const s = st.current
-    if (!s.actors.length) return
+    const g = s.girl
     if (kind === 'music') {
-      s.actors.forEach((a) => {
-        a.mood = 'dance'
-        a.timer = 5200
-        for (let i = 0; i < 3; i += 1) {
-          s.particles.push({ x: a.x + 4, y: GROUND - a.dh - 4 - i * 6, vy: -0.14, life: 1, glyph: '♪', colour: '#c9a7ff' })
-        }
-      })
-      s.bubbles.push({ x: W * 0.36, y: 52, text: '一起跳一段', life: 1 })
-      setHint('他们在跟着节拍晃')
+      g.mood = 'music'
+      g.timer = 5200
+      for (let i = 0; i < 4; i += 1) {
+        s.particles.push({ x: g.x + 6, y: GROUND - DISPLAY_H.girl + 10 - i * 8, vy: -0.14, life: 1, glyph: '♪', colour: '#c9a7ff' })
+      }
+      setHint('她在听歌，脚在打拍子')
     } else if (kind === 'food') {
-      s.actors.forEach((a) => {
-        a.mood = 'eat'
-        a.timer = 2600
-        s.particles.push({ x: a.x + 4, y: GROUND - a.dh - 6, vy: -0.12, life: 1, glyph: '♥', colour: '#ff8cc2' })
-        window.setTimeout(() => {
-          s.particles.push({ x: a.x + 6, y: GROUND - a.dh - 10, vy: -0.2, life: 1, glyph: '°', colour: '#e6d9ef' })
-          a.mood = 'dizzy'
-          a.timer = 3800
-        }, 1600)
-      })
-      s.bubbles.push({ x: W * 0.36, y: 52, text: '吃太饱了…', life: 1 })
-      setHint('吃饱之后坐下不动了')
+      g.mood = 'eat'
+      g.timer = 3600
+      g.toiletQueued = true
+      s.cats.forEach((c) => { c.mood = 'eat'; c.timer = 3600 })
+      s.particles.push({ x: g.x + 6, y: GROUND - DISPLAY_H.girl - 4, vy: -0.1, life: 1, glyph: '♥', colour: '#ff8cc2' })
+      s.cats.forEach((c) => s.particles.push({ x: c.x + 10, y: GROUND - DISPLAY_H[c.kind] - 2, vy: -0.1, life: 1, glyph: '♥', colour: '#ff8cc2' }))
+      setHint('三个一起开饭')
+    } else if (kind === 'exercise') {
+      g.mood = 'exercise'
+      g.timer = 6200
+      for (let i = 0; i < 3; i += 1) {
+        s.particles.push({ x: g.x - 8 - i * 4, y: GROUND - DISPLAY_H.girl + 30, vy: -0.1, life: 1, glyph: '✧', colour: '#9fe3d0' })
+      }
+      setHint('开始举哑铃，两只猫看都不看')
     } else {
-      s.ball = { x: 40, y: 70, vx: 0.08, vy: -0.14, life: 6000 }
-      setHint('球滚进来了，两只猫去追')
+      g.mood = 'read'
+      g.timer = 6800
+      s.bubbles.push({ x: g.x, y: GROUND - DISPLAY_H.girl - 12, text: '看会儿书', life: 1 })
+      setHint('盘腿看书，房间安静下来')
     }
   }
 
@@ -299,16 +340,15 @@ export default function PixelRoom() {
     const rect = canvas.getBoundingClientRect()
     const x = ((event.clientX - rect.left) / rect.width) * W
     const s = st.current
-    const hit = [...s.actors].reverse().find((a) => {
-      const w = (a.img.width / a.img.height) * a.dh
-      return x >= a.x - w / 2 && x <= a.x + w / 2
-    })
-    if (!hit) return
-    const lines = LINES[hit.kind]
-    s.bubbles.push({ x: hit.x, y: GROUND - hit.dh - 10, text: lines[Math.floor(Math.random() * lines.length)], life: 1 })
-    hit.dir = hit.dir === 1 ? -1 : 1
-    hit.mood = 'idle'
-    setHint('它回头看了你一眼')
+    const g = s.girl
+    const k = DISPLAY_H.girl / REF_H.girl
+    const ref = s.imgs[F.girl.front]
+    if (!ref) return
+    const w = ref.width * k
+    // 只响应她本人；猫很高冷，点了不理
+    if (x < g.x - w / 2 || x > g.x + w / 2) return
+    s.bubbles.push({ x: g.x, y: GROUND - DISPLAY_H.girl - 12, text: LINES[Math.floor(Math.random() * LINES.length)], life: 1 })
+    setHint('她抬头看了你一眼')
   }
 
   return (
@@ -320,15 +360,16 @@ export default function PixelRoom() {
           height={H}
           onPointerDown={poke}
           role="img"
-          aria-label="像素小房间：你、鱼子酱和小贝在这里待着"
+          aria-label="像素小房间：何茜茜和两只猫在同一间房里"
         />
       </div>
       <div className="pr-bar">
-        <span className="pr-hint">{ready ? hint : '把小客人们请进来…'}</span>
+        <span className="pr-hint">{ready ? hint : '正在把家具搬进来…'}</span>
         <div className="pr-actions">
-          <button type="button" onClick={() => act('music')} disabled={!ready}>♪ 放音乐</button>
+          <button type="button" onClick={() => act('music')} disabled={!ready}>♪ 听音乐</button>
           <button type="button" onClick={() => act('food')} disabled={!ready}>♥ 喂饭</button>
-          <button type="button" onClick={() => act('ball')} disabled={!ready}>● 丢球</button>
+          <button type="button" onClick={() => act('exercise')} disabled={!ready}>✧ 运动</button>
+          <button type="button" onClick={() => act('study')} disabled={!ready}>▤ 学习</button>
         </div>
       </div>
     </div>
