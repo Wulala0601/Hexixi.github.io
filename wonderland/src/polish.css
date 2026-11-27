@@ -119,9 +119,11 @@
    只是每个章节的「温度」不一样了。
    ============================================================ */
 
-main.journey .chapter {
-  isolation: isolate;
-}
+/* 注意：这里不能给 .chapter 加 isolation。
+   3D 画布 .scene-host 是 fixed + z-index:2，章节里的文字靠 .chapter-copy
+   的 z-index:5 才盖在画布上面（点击也才落到链接上）。
+   一旦给 .chapter 建了层叠上下文（isolation），整章会掉到 z-index:auto，
+   画布就压在上面，扉页里的按钮和链接全部点不动。 */
 
 /* 02 作品：米白纸 + 细网格，让文字章节安静下来 */
 main.journey #identity {
