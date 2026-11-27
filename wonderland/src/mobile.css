@@ -95,7 +95,7 @@
 
   /* ---------- 5. 播放器：缩成一个圆，别挡正文 ---------- */
   .music-player {
-    width: 62px;
+    width: 54px;
     padding: 4px;
     right: 10px;
     bottom: 86px;
@@ -111,7 +111,8 @@
   }
 
   .chapter-nav {
-    right: 10px;
+    left: 10px;
+    right: auto;
     bottom: 16px;
     padding: 8px 12px;
     gap: 10px;
