@@ -1,65 +1,47 @@
 ﻿import { useEffect, useRef, useState } from 'react'
-import { BEI, FISH, GIRL, TAIL_BLACK, TAIL_TABBY, type Sprite } from './pixel-sprites'
+import { assetUrl } from './assets'
 import './pixel-room.css'
 
-const W = 170
-const H = 108
-const GROUND = 90
+const W = 300
+const H = 190
+const GROUND = 160
 
 type Kind = 'girl' | 'fish' | 'bei'
-type Mood = 'idle' | 'walk' | 'dance' | 'eat' | 'dizzy' | 'chase'
+type Mood = 'idle' | 'hop' | 'dance' | 'eat' | 'dizzy' | 'chase'
 
 type Actor = {
   kind: Kind
-  sprite: Sprite
+  img: HTMLImageElement | HTMLCanvasElement
+  dh: number
   x: number
-  y: number
   dir: 1 | -1
   mood: Mood
   target: number
   timer: number
-  step: number
-  bob: number
+  phase: number
 }
 
 type Ball = { x: number; y: number; vx: number; vy: number; life: number }
 type Particle = { x: number; y: number; vy: number; life: number; glyph: string; colour: string }
 type Bubble = { x: number; y: number; text: string; life: number }
 
-const MOOD_TEXT: Record<Kind, string[]> = {
-  girl: ['在发呆', '想吃甜的', '今天也在改稿', '喵～'],
-  fish: ['喵', '饿', '别摸肚子', '我最大'],
-  bei: ['喵呜', '困', '罐头呢', '抱一下'],
+const LINES: Record<Kind, string[]> = {
+  girl: ['在发呆', '想喝奶茶', '今天也在改稿', '喵？'],
+  fish: ['喵', '饿了', '别摸肚子', '我是鱼子酱'],
+  bei: ['喵呜', '想睡', '罐头呢', '抱一下'],
 }
 
-function drawSprite(ctx: CanvasRenderingContext2D, sprite: Sprite, x: number, y: number, dir: 1 | -1, flipY = 0) {
-  const { rows, palette } = sprite
-  const w = rows[0].length
-  const h = rows.length
-  ctx.save()
-  ctx.translate(Math.round(x), Math.round(y + flipY))
-  if (dir === -1) {
-    ctx.translate(w, 0)
-    ctx.scale(-1, 1)
-  }
-  for (let row = 0; row < h; row += 1) {
-    const line = rows[row]
-    for (let col = 0; col < w; col += 1) {
-      const ch = line[col]
-      if (!ch || ch === '.') continue
-      const colour = palette[ch]
-      if (!colour) continue
-      ctx.fillStyle = colour
-      ctx.fillRect(col, row, 1, 1)
-    }
-  }
-  ctx.restore()
+const SPEC: Record<Kind, { file: string; h: number }> = {
+  girl: { file: 'girl', h: 118 },
+  fish: { file: 'fish', h: 74 },
+  bei: { file: 'bei', h: 78 },
 }
 
 export default function PixelRoom() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [hint, setHint] = useState('点地上的人或猫，它们会理你')
-  const stateRef = useRef({
+  const [hint, setHint] = useState('点一下他们，会回头看你')
+  const [ready, setReady] = useState(false)
+  const st = useRef({
     actors: [] as Actor[],
     ball: null as Ball | null,
     particles: [] as Particle[],
@@ -67,243 +49,247 @@ export default function PixelRoom() {
     t: 0,
   })
 
+  // 载入三张角色图
   useEffect(() => {
+    let cancelled = false
+    const loaded: Record<string, HTMLImageElement> = {}
+    let count = 0
+    ;(Object.keys(SPEC) as Kind[]).forEach((kind) => {
+      const img = new Image()
+      img.src = assetUrl(`/images/pixel/${SPEC[kind].file}.webp`)
+      img.onload = () => {
+        loaded[kind] = img
+        count += 1
+        if (count === 3 && !cancelled) {
+          const s = st.current
+          s.actors = (Object.keys(SPEC) as Kind[]).map((k, i) => ({
+            kind: k,
+            img: loaded[k],
+            dh: SPEC[k].h,
+            x: [118, 52, 196][i],
+            dir: 1,
+            mood: 'idle' as Mood,
+            target: 0,
+            timer: 1000 + i * 400,
+            phase: i * 1.7,
+          }))
+          setReady(true)
+        }
+      }
+    })
+    return () => { cancelled = true }
+  }, [])
+
+  useEffect(() => {
+    if (!ready) return
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    const make = (kind: Kind, sprite: Sprite, x: number): Actor => ({
-      kind,
-      sprite,
-      x,
-      y: GROUND - sprite.rows.length,
-      dir: 1,
-      mood: 'idle',
-      target: x,
-      timer: 800 + Math.random() * 1200,
-      step: 0,
-      bob: 0,
-    })
-
-    const st = stateRef.current
-    st.actors = [make('girl', GIRL, 78), make('fish', FISH, 40), make('bei', BEI, 124)]
-    st.ball = null
-    st.particles = []
-    st.bubbles = []
-
+    const s = st.current
     let raf = 0
     let last = performance.now()
 
-    const spawn = (x: number, y: number, glyph: string, colour: string) => {
-      st.particles.push({ x, y, vy: -0.22 - Math.random() * 0.2, life: 1, glyph, colour })
+    const drawActor = (a: Actor) => {
+      const w = (a.img.width / a.img.height) * a.dh
+      const bob = a.mood === 'dance' ? Math.sin(s.t / 120 + a.phase) * 3 : a.mood === 'hop' || a.mood === 'chase' ? -Math.abs(Math.sin(s.t / 150 + a.phase)) * 8 : Math.sin(s.t / 700 + a.phase) * 1.2
+      const squash = a.mood === 'eat' || a.mood === 'dizzy' ? 0.9 : 1
+      const tilt = a.mood === 'dance' ? Math.sin(s.t / 120 + a.phase) * 0.06 : 0
+      const y = GROUND - a.dh * squash + bob
+      ctx.save()
+      ctx.translate(a.x, y)
+      if (a.dir === -1) ctx.scale(-1, 1)
+      ctx.rotate(tilt)
+      ctx.drawImage(a.img, -w / 2, 0, w, a.dh * squash)
+      ctx.restore()
     }
 
-    const step = (now: number) => {
+    const loop = (now: number) => {
       const dt = Math.min(48, now - last)
       last = now
-      st.t += dt
+      s.t += dt
 
-      // 背景
-      ctx.clearRect(0, 0, W, H)
-      const grad = ctx.createLinearGradient(0, 0, 0, H)
-      grad.addColorStop(0, '#1a1024')
-      grad.addColorStop(0.62, '#241433')
-      grad.addColorStop(1, '#150c1e')
-      ctx.fillStyle = grad
+      // 房间
+      const bg = ctx.createLinearGradient(0, 0, 0, H)
+      bg.addColorStop(0, '#1a1024')
+      bg.addColorStop(0.6, '#251536')
+      bg.addColorStop(1, '#140b1c')
+      ctx.fillStyle = bg
       ctx.fillRect(0, 0, W, H)
+
+      // 窗
+      ctx.fillStyle = '#100a18'
+      ctx.fillRect(196, 18, 74, 52)
+      ctx.fillStyle = '#2a1d3f'
+      ctx.fillRect(198, 20, 70, 48)
+      ctx.fillStyle = 'rgba(255,225,242,0.8)'
+      for (const [x, y] of [[208, 28], [224, 40], [242, 26], [258, 44], [232, 56], [252, 58]]) ctx.fillRect(x, y, 2, 2)
+      ctx.fillStyle = 'rgba(255,214,236,0.22)'
+      ctx.fillRect(232, 20, 1, 48)
+      ctx.fillRect(198, 42, 70, 1)
+
+      // 台灯（最左，别挡角色）
+      ctx.fillStyle = '#6b4a86'
+      ctx.fillRect(15, 104, 3, 36)
+      ctx.fillRect(6, 138, 22, 3)
+      ctx.fillStyle = '#c98ab0'
+      ctx.fillRect(8, 92, 16, 5)
+      ctx.fillStyle = '#ffd0e4'
+      ctx.fillRect(10, 96, 12, 4)
+      ctx.fillStyle = '#4a3560'
+      ctx.fillRect(8, 100, 16, 2)
 
       // 地面 + 地毯
       ctx.fillStyle = '#2f1d40'
       ctx.fillRect(0, GROUND, W, H - GROUND)
       ctx.fillStyle = '#3a2450'
       ctx.fillRect(0, GROUND, W, 2)
-      ctx.fillStyle = 'rgba(255,140,194,0.13)'
-      ctx.fillRect(18, GROUND + 6, W - 36, H - GROUND - 14)
+      ctx.fillStyle = 'rgba(255,140,194,0.12)'
+      ctx.fillRect(20, GROUND + 6, W - 40, H - GROUND - 16)
 
-      // 窗（右上）
-      ctx.fillStyle = '#120b1a'
-      ctx.fillRect(112, 12, 42, 30)
-      ctx.fillStyle = '#2a1d3f'
-      ctx.fillRect(113, 13, 40, 28)
-      ctx.fillStyle = 'rgba(255,220,240,0.75)'
-      ctx.fillRect(118, 18, 1, 1)
-      ctx.fillRect(126, 24, 1, 1)
-      ctx.fillRect(136, 17, 1, 1)
-      ctx.fillRect(144, 27, 1, 1)
-      ctx.fillRect(131, 33, 1, 1)
-      ctx.fillStyle = 'rgba(255,214,236,0.4)'
-      ctx.fillRect(132, 13, 1, 28)
-      ctx.fillRect(113, 26, 40, 1)
-
-      // 台灯（左上）
-      ctx.fillStyle = '#3d2a52'
-      ctx.fillRect(20, 54, 2, 22)
-      ctx.fillRect(14, 74, 14, 2)
-      ctx.fillStyle = '#ffb3d1'
-      ctx.fillRect(15, 46, 12, 3)
-      ctx.fillRect(17, 49, 8, 2)
-      ctx.fillStyle = 'rgba(255,214,236,0.5)'
-      ctx.fillRect(18, 51, 6, 1)
-
-      // 盆栽（右下）
+      // 盆栽
       ctx.fillStyle = '#2f5a41'
-      ctx.fillRect(150, 68, 3, 6)
-      ctx.fillRect(155, 66, 3, 8)
-      ctx.fillRect(146, 70, 3, 5)
+      ctx.fillRect(268, 108, 4, 8)
+      ctx.fillRect(274, 104, 4, 12)
+      ctx.fillRect(262, 112, 4, 6)
       ctx.fillStyle = '#7a4a3a'
-      ctx.fillRect(145, 76, 15, 7)
+      ctx.fillRect(258, 120, 26, 10)
       ctx.fillStyle = '#5e3628'
-      ctx.fillRect(145, 76, 15, 2)
+      ctx.fillRect(258, 120, 26, 3)
 
-      // 台灯的光
-      const glow = ctx.createRadialGradient(24, 18, 2, 24, 18, 70)
-      glow.addColorStop(0, 'rgba(255,214,236,0.30)')
+      // 灯光
+      const glow = ctx.createRadialGradient(16, 96, 4, 16, 104, 86)
+      glow.addColorStop(0, 'rgba(255,214,236,0.26)')
       glow.addColorStop(1, 'rgba(255,214,236,0)')
       ctx.fillStyle = glow
       ctx.fillRect(0, 0, W, H)
 
-      for (const a of st.actors) {
-        a.timer -= dt
+      // 球
+      if (s.ball) {
+        s.ball.x += s.ball.vx * dt
+        s.ball.y += s.ball.vy * dt
+        s.ball.vy += 0.0008 * dt
+        if (s.ball.x < 10 || s.ball.x > W - 10) { s.ball.vx *= -1; s.ball.x = Math.max(10, Math.min(W - 10, s.ball.x)) }
+        if (s.ball.y > GROUND - 4) { s.ball.y = GROUND - 4; s.ball.vy *= -0.6 }
+        s.ball.life -= dt
+        if (s.ball.life <= 0) s.ball = null
+      }
 
-        // 状态机
-        if (a.mood === 'idle' && a.timer <= 0 && !reduce) {
-          a.mood = 'walk'
-          a.target = 10 + Math.random() * (W - 40)
-          a.timer = 4000
+      s.actors.forEach((a) => {
+        a.timer -= dt
+        if (s.ball && a.kind !== 'girl') {
+          a.mood = 'chase'
+          const dx = s.ball.x - a.x
+          a.dir = dx > 0 ? 1 : -1
+          if (Math.abs(dx) > 6) a.x += a.dir * 0.08 * dt
+          if (Math.abs(dx) < 14) {
+            s.ball.vx = -a.dir * (0.07 + Math.random() * 0.05)
+            s.ball.vy = -0.2
+            s.ball.life = 4000
+            s.particles.push({ x: a.x, y: GROUND - a.dh - 6, vy: -0.16, life: 1, glyph: '!', colour: '#ff8cc2' })
+          }
+        } else if (a.mood === 'chase') {
+          a.mood = 'idle'
+          a.timer = 600
         }
-        if (a.mood === 'walk') {
+
+        if (a.mood === 'idle' && a.timer <= 0 && !reduce) {
+          a.mood = 'hop'
+          a.target = 60 + Math.random() * (W - 140)
+          a.timer = 2400
+        }
+        if (a.mood === 'hop') {
           const dx = a.target - a.x
-          if (Math.abs(dx) < 2 || a.timer <= 0) {
+          if (Math.abs(dx) < 4 || a.timer <= 0) {
             a.mood = 'idle'
-            a.timer = 1200 + Math.random() * 2200
+            a.timer = 1200 + Math.random() * 2000
           } else {
             a.dir = dx > 0 ? 1 : -1
-            a.x += a.dir * 0.07 * dt * 0.9
-            a.step += dt
+            a.x += a.dir * 0.05 * dt
           }
         }
-        if ((a.mood === 'eat' || a.mood === 'dizzy') && a.timer <= 0) {
+        if ((a.mood === 'eat' || a.mood === 'dizzy' || a.mood === 'dance') && a.timer <= 0) {
           a.mood = 'idle'
-          a.timer = 1500
+          a.timer = 1200
         }
-        if (a.mood === 'dance' && a.timer <= 0) {
-          a.mood = 'idle'
-          a.timer = 900
-        }
+      })
 
-        a.bob = a.mood === 'dance' ? Math.sin(st.t / 130) * 2 : a.mood === 'walk' ? Math.abs(Math.sin(a.step / 110)) * 1.5 : 0
+      s.actors.forEach(drawActor)
 
-        // 球：猫会追
-        if (st.ball) {
-          st.ball.x += st.ball.vx * dt
-          st.ball.y += st.ball.vy * dt
-          st.ball.vy += 0.0006 * dt
-          if (st.ball.x < 6 || st.ball.x > W - 6) { st.ball.vx *= -1; st.ball.x = Math.max(6, Math.min(W - 6, st.ball.x)) }
-          if (st.ball.y > GROUND - 3) { st.ball.y = GROUND - 3; st.ball.vy *= -0.62 }
-          st.ball.life -= dt
-          if (st.ball.life <= 0) st.ball = null
-
-          if (a.kind !== 'girl' && st.ball) {
-            a.mood = 'chase'
-            const dx = st.ball.x - a.x
-            a.dir = dx > 0 ? 1 : -1
-            a.x += a.dir * 0.12 * dt
-            a.step += dt
-            if (Math.abs(dx) < 8) {
-              st.ball.vx = -a.dir * (0.05 + Math.random() * 0.04)
-              st.ball.vy = -0.16
-              st.ball.life = 4000
-              spawn(a.x, a.y - 2, '!', '#ff8cc2')
-            }
-          }
-        }
-
-        // 粒子
-        // draw actor
-        const frameBob = Math.round(a.bob)
-        if (a.kind !== 'girl') {
-          const tail = a.kind === 'fish' ? TAIL_BLACK : TAIL_TABBY
-          drawSprite(ctx, tail, a.x - (a.dir === 1 ? 4 : -2), a.y + 6, a.dir, frameBob)
-        }
-        drawSprite(ctx, a.sprite, a.x, a.y, a.dir, frameBob)
-      }
-
-      // 球
-      if (st.ball) {
+      if (s.ball) {
         ctx.fillStyle = '#ff8cc2'
         ctx.beginPath()
-        ctx.arc(st.ball.x, st.ball.y, 2.6, 0, Math.PI * 2)
+        ctx.arc(s.ball.x, s.ball.y, 4, 0, Math.PI * 2)
         ctx.fill()
-        ctx.fillStyle = 'rgba(255,255,255,0.75)'
-        ctx.fillRect(st.ball.x - 1, st.ball.y - 2, 1, 1)
+        ctx.fillStyle = 'rgba(255,255,255,0.8)'
+        ctx.fillRect(s.ball.x - 2, s.ball.y - 3, 2, 2)
       }
 
-      // 粒子
-      st.particles = st.particles.filter((p) => {
+      s.particles = s.particles.filter((p) => {
         p.y += p.vy * dt
-        p.life -= dt / 1600
+        p.life -= dt / 1700
         if (p.life <= 0) return false
         ctx.globalAlpha = Math.max(0, Math.min(1, p.life))
         ctx.fillStyle = p.colour
-        ctx.font = 'bold 7px monospace'
+        ctx.font = 'bold 11px monospace'
         ctx.fillText(p.glyph, p.x, p.y)
         ctx.globalAlpha = 1
         return true
       })
 
-      // 气泡
-      st.bubbles = st.bubbles.filter((b) => {
-        b.life -= dt / 2200
+      s.bubbles = s.bubbles.filter((b) => {
+        b.life -= dt / 2300
         if (b.life <= 0) return false
         ctx.globalAlpha = Math.max(0, Math.min(1, b.life * 1.4))
-        ctx.font = 'bold 6px "PingFang SC", monospace'
-        const w = ctx.measureText(b.text).width + 6
-        ctx.fillStyle = 'rgba(20,10,26,0.86)'
-        ctx.fillRect(b.x - w / 2, b.y - 12, w, 9)
-        ctx.strokeStyle = 'rgba(255,140,194,0.7)'
-        ctx.strokeRect(b.x - w / 2 + 0.5, b.y - 12.5, w - 1, 8)
+        ctx.font = 'bold 9px "PingFang SC", monospace'
+        const w = ctx.measureText(b.text).width + 10
+        ctx.fillStyle = 'rgba(18,9,24,0.9)'
+        ctx.fillRect(b.x - w / 2, b.y - 16, w, 13)
+        ctx.strokeStyle = 'rgba(255,140,194,0.75)'
+        ctx.strokeRect(b.x - w / 2 + 0.5, b.y - 16.5, w - 1, 12)
         ctx.fillStyle = '#ffe8f3'
-        ctx.fillText(b.text, b.x - w / 2 + 3, b.y - 5)
+        ctx.fillText(b.text, b.x - w / 2 + 5, b.y - 6)
         ctx.globalAlpha = 1
         return true
       })
 
-      raf = requestAnimationFrame(step)
+      raf = requestAnimationFrame(loop)
     }
 
-    raf = requestAnimationFrame(step)
+    raf = requestAnimationFrame(loop)
     return () => cancelAnimationFrame(raf)
-  }, [])
+  }, [ready])
 
   const act = (kind: 'music' | 'food' | 'ball') => {
-    const st = stateRef.current
+    const s = st.current
+    if (!s.actors.length) return
     if (kind === 'music') {
-      st.actors.forEach((a) => { a.mood = 'dance'; a.timer = 5200 })
-      st.actors.forEach((a) => {
+      s.actors.forEach((a) => {
+        a.mood = 'dance'
+        a.timer = 5200
         for (let i = 0; i < 3; i += 1) {
-          st.particles.push({ x: a.x + 4, y: a.y - 2 - i * 4, vy: -0.16, life: 1, glyph: '♪', colour: '#c9a7ff' })
+          s.particles.push({ x: a.x + 4, y: GROUND - a.dh - 4 - i * 6, vy: -0.14, life: 1, glyph: '♪', colour: '#c9a7ff' })
         }
       })
-      st.bubbles.push({ x: W / 2, y: 26, text: '一起跳一段', life: 1 })
-      setHint('它们在跟着节拍晃')
+      s.bubbles.push({ x: W * 0.36, y: 52, text: '一起跳一段', life: 1 })
+      setHint('他们在跟着节拍晃')
     } else if (kind === 'food') {
-      st.actors.forEach((a) => { a.mood = 'eat'; a.timer = 4200 })
-      st.actors.forEach((a) => {
-        st.particles.push({ x: a.x + 5, y: a.y - 4, vy: -0.1, life: 1, glyph: '♥', colour: '#ff8cc2' })
+      s.actors.forEach((a) => {
+        a.mood = 'eat'
+        a.timer = 2600
+        s.particles.push({ x: a.x + 4, y: GROUND - a.dh - 6, vy: -0.12, life: 1, glyph: '♥', colour: '#ff8cc2' })
         window.setTimeout(() => {
-          st.particles.push({ x: a.x + 5, y: a.y - 6, vy: -0.2, life: 1, glyph: '°', colour: '#e6d9ef' })
+          s.particles.push({ x: a.x + 6, y: GROUND - a.dh - 10, vy: -0.2, life: 1, glyph: '°', colour: '#e6d9ef' })
           a.mood = 'dizzy'
-          a.timer = 3600
-        }, 1500)
+          a.timer = 3800
+        }, 1600)
       })
-      st.bubbles.push({ x: W / 2, y: 26, text: '吃太饱了…', life: 1 })
-      setHint('吃饱之后直接坐下了')
+      s.bubbles.push({ x: W * 0.36, y: 52, text: '吃太饱了…', life: 1 })
+      setHint('吃饱之后坐下不动了')
     } else {
-      st.ball = { x: 30, y: 60, vx: 0.07, vy: -0.12, life: 6000 }
-      setHint('球滚进来了，两只猫在追')
+      s.ball = { x: 40, y: 70, vx: 0.08, vy: -0.14, life: 6000 }
+      setHint('球滚进来了，两只猫去追')
     }
   }
 
@@ -312,16 +298,16 @@ export default function PixelRoom() {
     if (!canvas) return
     const rect = canvas.getBoundingClientRect()
     const x = ((event.clientX - rect.left) / rect.width) * W
-    const st = stateRef.current
-    let hit: Actor | null = null
-    for (const a of st.actors) {
-      const w = a.sprite.rows[0].length
-      if (x >= a.x - 6 && x <= a.x + w + 6) hit = a
-    }
+    const s = st.current
+    const hit = [...s.actors].reverse().find((a) => {
+      const w = (a.img.width / a.img.height) * a.dh
+      return x >= a.x - w / 2 && x <= a.x + w / 2
+    })
     if (!hit) return
-    const lines = MOOD_TEXT[hit.kind]
-    st.bubbles.push({ x: hit.x + hit.sprite.rows[0].length / 2, y: hit.y - 2, text: lines[Math.floor(Math.random() * lines.length)], life: 1 })
+    const lines = LINES[hit.kind]
+    s.bubbles.push({ x: hit.x, y: GROUND - hit.dh - 10, text: lines[Math.floor(Math.random() * lines.length)], life: 1 })
     hit.dir = hit.dir === 1 ? -1 : 1
+    hit.mood = 'idle'
     setHint('它回头看了你一眼')
   }
 
@@ -333,16 +319,16 @@ export default function PixelRoom() {
           width={W}
           height={H}
           onPointerDown={poke}
-          aria-label="像素小房间：你、鱼子酱和小贝在这里走动"
           role="img"
+          aria-label="像素小房间：你、鱼子酱和小贝在这里待着"
         />
       </div>
       <div className="pr-bar">
-        <span className="pr-hint">{hint}</span>
+        <span className="pr-hint">{ready ? hint : '把小客人们请进来…'}</span>
         <div className="pr-actions">
-          <button type="button" onClick={() => act('music')}>♪ 放音乐</button>
-          <button type="button" onClick={() => act('food')}>♥ 喂饭</button>
-          <button type="button" onClick={() => act('ball')}>● 丢球</button>
+          <button type="button" onClick={() => act('music')} disabled={!ready}>♪ 放音乐</button>
+          <button type="button" onClick={() => act('food')} disabled={!ready}>♥ 喂饭</button>
+          <button type="button" onClick={() => act('ball')} disabled={!ready}>● 丢球</button>
         </div>
       </div>
     </div>

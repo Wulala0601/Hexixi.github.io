@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom'
 import { assetUrl } from './assets'
 import { imageUrl, links } from './content'
+import PixelRoom from './PixelRoom'
 import './about-page.css'
 
 const img = (name: string) => assetUrl(`/images/${name}.webp`)
@@ -106,6 +107,7 @@ export default function AboutPage() {
               </li>
             ))}
           </ol>
+          <PixelRoom />
         </div>
       </section>
 
