@@ -1,4 +1,4 @@
-﻿import type { CSSProperties } from 'react'
+﻿import { useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { assetUrl } from './assets'
 import { imageUrl, links } from './content'
@@ -8,12 +8,36 @@ import './about-page.css'
 const img = (name: string) => assetUrl(`/images/${name}.webp`)
 
 const TAGS = [
-  { file: 'tag-1', label: 'ANIME' },
-  { file: 'tag-2', label: 'TATTOO' },
-  { file: 'tag-3', label: 'ISFP' },
-  { file: 'tag-4', label: 'GEMINI' },
-  { file: 'tag-5', label: 'IP CREATOR' },
-  { file: 'tag-6', label: 'DREAMCORE' },
+  {
+    file: 'tag-1',
+    label: 'ANIME',
+    note: '我喜欢看一些动漫~最喜欢的是《攻壳机动队》还有《来自深渊》！',
+  },
+  {
+    file: 'tag-2',
+    label: 'TATTOO',
+    note: '我学过纹身噢！我身上也有好几处纹身呢~如果你想知道他们的含义可以来问我呀♥',
+  },
+  {
+    file: 'tag-3',
+    label: 'ISFP',
+    note: '很惊讶吧 我可是I人噢 不过没关系我不怕生的！',
+  },
+  {
+    file: 'tag-4',
+    label: 'GEMINI',
+    note: '其实我现在的很多作品都是用AI做的~如果你有什么不会的可以来问我呀',
+  },
+  {
+    file: 'tag-5',
+    label: 'IP CREATOR',
+    note: '我很喜欢做一些有意思的IP！你想看看吗？',
+  },
+  {
+    file: 'tag-6',
+    label: 'DREAMCORE',
+    note: '这是我最喜欢的艺术风格啦♥♥♥',
+  },
 ]
 
 const FACTS = [
@@ -36,6 +60,21 @@ const MAKES = [
 const MARQUEE = ['油画', '国画', '素描', '版画', '插画', 'PS', 'SAI', 'Midjourney', '品牌视觉', '包装', 'IP 角色', '3D 打印']
 
 export default function AboutPage() {
+  const [hover, setHover] = useState<{ i: number; x: number; y: number; side: 'right' | 'left' } | null>(null)
+
+  // 标签旁边弹出一张小纸条：位置贴着吊牌，靠近右边界就翻到左边
+  const showNote = (i: number, el: HTMLElement) => {
+    const r = el.getBoundingClientRect()
+    const width = 286
+    const side: 'right' | 'left' = r.right + width + 24 > window.innerWidth ? 'left' : 'right'
+    setHover({
+      i,
+      x: side === 'right' ? r.right + 14 : r.left - 14,
+      y: Math.min(window.innerHeight - 90, Math.max(80, r.top + r.height / 2)),
+      side,
+    })
+  }
+
   return (
     <main className="ap">
       <section className="ap-hero">
@@ -87,11 +126,33 @@ export default function AboutPage() {
             <p>六个吊牌挂在一起，鼠标放上去会散得更开一点。</p>
           </header>
 
-          <div className="ap-tags" tabIndex={0} aria-label="我的六个标签">
+          <div className="ap-tags" onPointerLeave={() => setHover(null)} aria-label="我的六个标签">
             {TAGS.map((tag, i) => (
-              <img key={tag.file} src={img(tag.file)} alt={tag.label} style={{ '--i': i } as CSSProperties} loading="lazy" />
+              <img
+                key={tag.file}
+                src={img(tag.file)}
+                alt={tag.label}
+                style={{ '--i': i } as CSSProperties}
+                loading="lazy"
+                className={hover?.i === i ? 'is-hot' : ''}
+                tabIndex={0}
+                onPointerEnter={(e) => showNote(i, e.currentTarget)}
+                onFocus={(e) => showNote(i, e.currentTarget)}
+                onBlur={() => setHover(null)}
+              />
             ))}
           </div>
+
+          {hover && (
+            <div
+              className={`ap-note ${hover.side === 'left' ? 'is-left' : ''}`}
+              style={{ left: hover.x, top: hover.y } as CSSProperties}
+              role="tooltip"
+            >
+              <strong>{TAGS[hover.i].label}</strong>
+              <p>{TAGS[hover.i].note}</p>
+            </div>
+          )}
         </div>
 
         <div className="ap-col">
