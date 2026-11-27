@@ -1,4 +1,4 @@
-﻿import { Fragment, useReducer, useState, type CSSProperties } from 'react'
+import { Fragment, useReducer, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { imageUrl, projects } from './content'
 import { assetUrl } from './assets'
@@ -77,7 +77,7 @@ export default function WorldDoors() {
               ? t('The door is closed. Your key is still with you.', '门已轻轻合上，钥匙还在你手里。')
               : selected
                 ? t(`${selected.key[0]} key in hand. Drag it onto the matching door.`, `${selected.key[1]}钥匙在你手里，把它拖到同色的门上。`)
-                : t('A small ritual: pick up a key, then drag it onto the door of the same color.', '一个小小的仪式：拿起一把钥匙，拖到同色的门上。')
+                : t('A small ritual: pick up a key, then put it on the door of the same color.', '一个小小的仪式：拿起一把钥匙，放到同色的门上。')
 
   const pick = (id: DoorId) => {
     setHint(null)
@@ -194,6 +194,16 @@ export default function WorldDoors() {
                   </span>
                 </button>
               </div>
+              <button
+                type="button"
+                className="door-quickkey"
+                style={{ '--door-color': door.color } as CSSProperties}
+                onClick={() => { setHint(null); dispatch({ type: 'open', id: door.id }) }}
+                aria-label={t(`Open with the ${door.key[0].toLowerCase()} key`, `点这把钥匙直接开门`)}
+              >
+                <img src={assetUrl(`/images/keys/${door.id}.webp`)} alt="" loading="lazy" />
+                <span>{t('tap to open', '点我开门')}</span>
+              </button>
               <h3>{meta.title[lang]}</h3>
               <p className="door-project-type">{meta.type[lang]}</p>
               <div className="door-underlink">

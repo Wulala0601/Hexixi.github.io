@@ -417,3 +417,77 @@ main.journey #worlds,
   .keyring .keyring-key:hover .keyring-ribbon,
   .keyring .keyring-key:focus-visible .keyring-ribbon { height: calc(var(--ribbon, 60px) * 0.66 + 16px); }
 }
+
+/* ============================================================
+   每扇门旁边的小钥匙（手机端专用，点一下直接开门）
+   ============================================================ */
+.door-quickkey {
+  display: none;
+  position: relative;
+  align-items: center;
+  gap: 6px;
+  margin: 8px auto 2px;
+  padding: 5px 10px 5px 6px;
+  border: 1px solid color-mix(in srgb, var(--door-color) 42%, #ffffff);
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.94);
+  color: color-mix(in srgb, var(--door-color) 74%, #2f4a42);
+  font-family: var(--font-body, system-ui);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 6px 14px -10px rgba(47, 74, 66, 0.6);
+}
+
+.door-quickkey img {
+  width: 26px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 2px 3px rgba(47, 74, 66, 0.3));
+}
+
+.door-quickkey:active { transform: scale(0.96); }
+
+.door-world.is-open .door-quickkey { display: none; }
+
+@media (max-width: 820px) {
+  /* 门缩小一圈 */
+  .doors-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(18px, 5vw, 30px) clamp(10px, 3vw, 18px);
+    max-width: 460px;
+    padding: 0 4%;
+  }
+
+  .door-world .door-theatre {
+    width: 100%;
+    max-width: 132px;
+    margin: 0 auto;
+  }
+
+  .door-world .door-plaque {
+    max-width: 132px;
+    margin: 0 auto 4px;
+    font-size: 8.5px;
+    padding: 4px 6px;
+  }
+
+  .door-world .door-plaque > span:nth-child(3) { display: none; }
+  .door-world h3 { font-size: 12.5px; }
+  .door-world .door-project-type { font-size: 9.5px; }
+  .door-world .door-key-tag { font-size: 9px; padding: 2px 8px; }
+
+  /* 手机不再用「整排钥匙 + 拖拽」，改成每扇门自己的小钥匙 */
+  .doors-keyrow { display: none; }
+
+  .door-world .door-quickkey {
+    display: inline-flex;
+    margin: 10px auto 0;
+    padding: 4px 9px 4px 5px;
+    font-size: 9px;
+  }
+  .door-world .door-quickkey img { width: 20px; }
+
+  /* 手机上不用再讲拖拽那套 */
+  .door-instructions { display: none; }
+}
