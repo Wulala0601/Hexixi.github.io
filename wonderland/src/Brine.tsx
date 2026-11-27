@@ -14,6 +14,8 @@ type Product = {
   en: string
   price: number | null
   gift?: string
+  giftShort?: string
+  giftImg?: string
   stock: Stock
   note: string
   images: string[]
@@ -59,6 +61,9 @@ const PRODUCTS: Product[] = [
     zh: '梦核系列徽章 · 一套 6 个',
     en: 'Dreamcore Badge Set of 6',
     price: 69,
+    gift: '随机手作胸花（吧唧托）1 枚',
+    giftShort: '手作胸花',
+    giftImg: 'gift-brooch',
     stock: 'on',
     tag: '一套 6 个',
     note: '蛋糕、格桑花、海豚、兔子、小马、钥匙和锁，六个一组，附背板。别在包上或帆布袋上都合适。',
@@ -66,18 +71,18 @@ const PRODUCTS: Product[] = [
   },
 ]
 
-const WORKS = [
+const WORKS: { file: string; zh: string; en: string; hint: string; gift?: string; giftImg?: string }[] = [
   { file: 'work-duck', zh: '小黄鸭系列', en: 'Rubber Duck', hint: '印花打样完成' },
-  { file: 'work-love', zh: '少女的爱系列', en: 'Girl in Love', hint: '配色调整中' },
+  { file: 'work-love', zh: '少女的爱系列', en: 'Girl in Love', hint: '配色调整中', gift: '指虎徽章', giftImg: 'work-badge-3' },
   { file: 'work-bear', zh: '复古小熊系列', en: 'Retro Bear', hint: '黑蕾丝 + 小熊' },
   { file: 'work-piano', zh: '钢琴系列', en: 'Piano', hint: '琴键与花' },
-  { file: 'work-badge-2', zh: '徽章 · 系列二', en: 'Badge Series II', hint: '六个一组' },
-  { file: 'work-badge-3', zh: '徽章 · 系列三', en: 'Badge Series III', hint: '六个一组' },
+  { file: 'work-badge-2', zh: '徽章 · 系列二', en: 'Badge Series II', hint: '九个一组' },
 ]
 
 const GIFTS = [
   { name: '猫耳徽章', rule: '买薄荷波点包赠' },
   { name: '亚克力 LOGO 钥匙扣', rule: '买黑猫包 / 海洋包赠' },
+  { name: '随机手作胸花（吧唧托）', rule: '拍梦核徽章整套赠，款式随机' },
   { name: 'LOGO 贴纸', rule: '随单附赠' },
 ]
 
@@ -159,7 +164,7 @@ export default function Brine() {
             >
               <div className="brine-card-art">
                 <img src={img(product.images[0])} alt={product.zh} loading="lazy" />
-                {product.gift && <span className="brine-ribbon">赠 · {product.gift}</span>}
+                {product.gift && <span className="brine-ribbon">赠 · {product.giftShort ?? product.gift}</span>}
                 <span className={`brine-stock is-${product.stock}`}>{stockLabel[product.stock]}</span>
               </div>
               <div className="brine-card-body">
@@ -202,6 +207,7 @@ export default function Brine() {
                 <strong>{work.zh}</strong>
                 <em>{work.en}</em>
                 <span>{work.hint} · 未上架</span>
+                {work.gift && <span className="brine-works-gift">附赠 · {work.gift}</span>}
               </figcaption>
             </figure>
           ))}
@@ -300,7 +306,7 @@ export default function Brine() {
               <p className="brine-dialog-note">{open.note}</p>
               {open.gift && (
                 <p className="brine-dialog-gift">
-                  <img src={img('logo-mark')} alt="" aria-hidden="true" />
+                  <img src={img(open.giftImg ?? 'logo-mark')} alt="" aria-hidden="true" />
                   随包附赠：<strong>{open.gift}</strong>
                 </p>
               )}

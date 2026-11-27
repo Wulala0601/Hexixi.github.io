@@ -260,6 +260,7 @@
 .brine-works figcaption strong { font-size: 13.5px; }
 .brine-works figcaption em { font-family: var(--font-body, system-ui); font-size: 9.5px; font-style: normal; letter-spacing: 0.1em; color: var(--muted); }
 .brine-works figcaption span { font-family: var(--font-body, system-ui); font-size: 10.5px; color: var(--pink); }
+.brine-works-gift { font-weight: 700; }
 
 /* ---------- 模型 ---------- */
 .brine-model {
@@ -386,7 +387,7 @@
   font-family: var(--font-body, system-ui);
   font-size: 12.5px;
 }
-.brine-dialog-gift img { width: 22px; }
+.brine-dialog-gift img { width: 34px; height: 34px; object-fit: contain; border-radius: 6px; background: rgba(255,255,255,.7); }
 
 .brine-dialog-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .brine-dialog-hint { margin: 2px 0 0; font-family: var(--font-body, system-ui); font-size: 10.5px; color: #9aa9ad; }
