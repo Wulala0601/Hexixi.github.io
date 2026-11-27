@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+﻿import { Link, useParams } from 'react-router-dom'
 import { imageUrl, links, projects } from './content'
 import { usePreferences } from './preferences'
 import { ExternalLink } from './App'
@@ -9,6 +9,7 @@ import OnTheEve from './Eve'
 import Anicat from './Anicat'
 import Clover from './Clover'
 import Brine from './Brine'
+import AboutPage from './AboutPage'
 export default function Pages() {
   const { slug } = useParams(); const { t } = usePreferences()
   if (slug === 'atb505') return <Atb505 />
@@ -19,7 +20,7 @@ export default function Pages() {
   if (slug === 'shop') return <Brine />
   if (slug === 'bag-details') return <BagDetails />
   if (slug === 'model-details') return <ModelDetails />
-  if (slug === 'about') return <About />
+  if (slug === 'about') return <AboutPage />
   if (slug === 'contact') return <Contact />
   if (slug === 'shop') return <Shop />
   if (slug === 'ip-models') return <IpModels />
@@ -28,7 +29,6 @@ export default function Pages() {
   return <main id="main" className="inner-page"><p className="eyebrow">404 / SOFT ERROR</p><h1>{t('This little door goes nowhere.','这扇小门暂时没有通向任何地方。')}</h1><Link className="pill" to="/">{t('Return to the wonderland','回到柔软故障乐园')} ↗</Link></main>
 }
 function Shell({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) { return <main id="main" className="inner-page"><div className="page-intro"><p className="eyebrow">{eyebrow}</p><h1>{title}</h1></div>{children}</main> }
-function About() { const { t } = usePreferences(); return <Shell eyebrow="ABOUT / HE XIXI" title={t('A soft place for sharp ideas.','给尖锐想法留一处柔软空间。')}><div className="about-grid"><p className="lead">{t('I am HE XIXI / 何茜茜, a multidisciplinary designer and original IP creator. My practice moves between graphic design, brand systems, digital art and spatial storytelling.','我是 HE XIXI / 何茜茜，一名跨领域设计师与原创 IP 创作者。我的创作往返于平面设计、品牌系统、数字艺术与空间叙事之间。')}</p><img src={imageUrl('portrait')} alt={t('Portrait of HE XIXI','何茜茜的肖像')} /><div><h2>{t('What I make','我做什么')}</h2><ul><li>{t('Graphic identities & visual systems','视觉识别与品牌系统')}</li><li>{t('Original characters & IP worlds','原创角色与 IP 世界')}</li><li>{t('Digital art, motion & 3D scenes','数字艺术、动态与 3D 场景')}</li><li>{t('Objects, packaging & spatial narratives','物件、包装与空间叙事')}</li></ul></div></div></Shell> }
 function Contact() { const { t } = usePreferences(); return <Shell eyebrow="CONTACT / SAY HELLO" title={t('Let’s give your idea a world.','一起给你的想法造一个世界。')}><div className="contact-grid"><p className="lead">{t('Open to design collaborations, studio opportunities, commissions and thoughtful messages.','欢迎设计合作、工作机会、委托项目，也欢迎认真而有趣的消息。')}</p><a className="contact-email" href={links.email}>xixihe@ln.hk ↗</a><div className="contact-links"><a href={links.mainland}>CN +86 131 2886 4697 ↗</a><a href={links.hongkong}>HK +852 6061 1624 ↗</a><ExternalLink href={links.red}>Xiaohongshu / 小红书</ExternalLink><ExternalLink href={links.douyin}>Douyin / 抖音</ExternalLink></div></div></Shell> }
 function Shop() { const {t}=usePreferences(); return <Shell eyebrow="SHOP / LITTLE OBJECTS" title={t('Small things, ready to wander.','小小的物件，准备去漫游。')}><p className="lead">{t('A small selection of original bags and characters. No prices here, just a gentle nudge to the external shops.','这里展示原创包包与角色模型。不在本站显示价格，只把你轻轻带到外部店铺。')}</p><div className="product-grid"><a className="product-card" href={links.redShop} target="_blank" rel="noreferrer"><img src={imageUrl('bag-front')} alt={t('Original bag','原创包包')} /><span>{t('Bags / 小包包','包包 / Bags')} ↗</span><small>{t('View on Xiaohongshu shop','去小红书店铺查看')}</small></a><Link className="product-card" to="/ip-models"><img src={imageUrl('ip-standing')} alt={t('Original mint catgirl figure','原创薄荷猫耳少女模型')} /><span>{t('IP figures / 角色模型','IP 模型 / Figures')} ↗</span><small>{t('Visit the figure gallery','查看模型展厅')}</small></Link></div><div className="shop-links"><ExternalLink href={links.redShop}>{t('Xiaohongshu shop','小红书店铺')} </ExternalLink><ExternalLink href={links.taobao}>{t('Taobao shop','淘宝店铺')} </ExternalLink></div></Shell> }
 function IpModels() { const {t}=usePreferences(); return <Shell eyebrow="IP MODELS / ORIGINAL CHARACTERS" title={t('The guide, in three dimensions.','三维里的小向导。')}><p className="lead">{t('The mint catgirl is an original digital avatar, character and quiet guide through this site. Please rotate each view gently; she gets dizzy.','薄荷猫耳少女是原创数字分身、角色，也是这个网站的安静向导。请轻轻旋转，她可能会晕。')}</p><div className="model-grid">{['ip-standing','ip-seated','ip-front','ip-side','ip-back'].map((name)=><figure key={name}><img src={imageUrl(name)} alt={`${name} ${t('view','视图')}`} /><figcaption>{name.replace('ip-','').replace('-',' ')} / {t('view','视图')}</figcaption></figure>)}</div></Shell> }
