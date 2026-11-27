@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    BRINE · 古早少女 · 薄荷 / 全息 / 蕾丝
    ============================================================ */
 
@@ -389,7 +389,18 @@
   border: 1px solid rgba(23, 50, 58, 0.08);
 }
 
-.brine-model-facts ul { display: flex; flex-wrap: wrap; gap: clamp(16px, 3vw, 40px); margin: 0; padding: 0; list-style: none; }
+.brine-model-facts ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(16px, 3vw, 40px);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 700px) {
+  .brine-model-facts ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .brine-model-facts li { display: grid; gap: 2px; }
 .brine-model-facts li span { font-family: var(--font-body, system-ui); font-size: 10px; letter-spacing: 0.14em; color: var(--muted); }
 .brine-model-facts li strong { font-family: var(--font-body, system-ui); font-size: 15px; color: var(--deep); }

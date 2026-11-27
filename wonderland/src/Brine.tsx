@@ -300,10 +300,6 @@ export default function Brine() {
             <li><span>挂环</span><strong>可挂包 / 钥匙</strong></li>
             <li><span>状态</span><strong>准备出售</strong></li>
           </ul>
-          <div className="brine-model-actions">
-            <Link className="brine-btn brine-btn-solid" to="/ip-models">看原始模型 ↗</Link>
-            <span className="brine-soon">实体上架筹备中</span>
-          </div>
         </div>
       </section>
       {/* ---------- 页脚 ---------- */}
