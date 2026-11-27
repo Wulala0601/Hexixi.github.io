@@ -1,12 +1,12 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from './assets'
 import './pixel-room.css'
 
 const W = 320
 const H = 200
 const GROUND = 168
-const MIN_X = 24
-const MAX_X = 296
+const MIN_X = 26
+const MAX_X = 294
 
 type Kind = 'girl' | 'fish' | 'bei'
 type Mood = 'idle' | 'walk' | 'phone' | 'read' | 'music' | 'exercise' | 'eat' | 'toilet' | 'smoke' | 'groom'
@@ -19,6 +19,8 @@ type Actor = {
   target: number
   timer: number
   tick: number
+  bounce: number
+  phase: number
 }
 
 const S = {
@@ -42,13 +44,12 @@ const S = {
   },
 } as const
 
-/** 画布统一 640；下面两个比例来自素材本身：
- *  CONTENT：角色内容占画布高度的比例（用来把角色缩放到指定高度）
- *  FOOT：脚底在画布中的位置（用来对齐地面） */
-const GEOM: Record<Kind, { content: number; foot: number; height: number }> = {
-  girl: { content: 0.833, foot: 0.919, height: 122 },
-  fish: { content: 0.591, foot: 0.897, height: 62 },
-  bei: { content: 0.588, foot: 0.891, height: 62 },
+/** content：角色内容占 640 画布的高度比例；foot：脚底在画布中的位置；
+ *  wf：角色内容占画布的宽度比例（用于点击命中，别点猫却骂到人）。 */
+const GEOM: Record<Kind, { content: number; foot: number; height: number; wf: number }> = {
+  girl: { content: 0.833, foot: 0.919, height: 122, wf: 0.362 },
+  fish: { content: 0.591, foot: 0.897, height: 62, wf: 0.655 },
+  bei: { content: 0.588, foot: 0.891, height: 62, wf: 0.779 },
 }
 
 const GIRL_LINES = [
@@ -56,8 +57,7 @@ const GIRL_LINES = [
   '最近是不是又胖了...', '想吃点辣的', '今天我拉了超大一坨噢', '嘻嘻~',
   '让我自己静一静呗', '好累啊！',
 ]
-const FISH_LINES = ['喵~', '猫凹~', '老吴！！', '咪？', '嘛~~啊', '咕噜咕噜咕噜~', '喵喵喵喵喵！']
-const BEI_LINES = FISH_LINES
+const CAT_LINES = ['喵~', '猫凹~', '老吴！！', '咪？', '嘛~~啊', '咕噜咕噜咕噜~', '喵喵喵喵喵！']
 
 const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)]
 
@@ -69,10 +69,10 @@ export default function PixelRoom() {
   const st = useRef({
     imgs: {} as Record<string, HTMLImageElement>,
     room: null as HTMLImageElement | null,
-    girl: { kind: 'girl' as Kind, mood: 'idle' as Mood, x: 150, dir: 1 as 1 | -1, target: 150, timer: 2600, tick: 0 },
+    girl: { kind: 'girl' as Kind, mood: 'idle' as Mood, x: 150, dir: 1 as 1 | -1, target: 150, timer: 2600, tick: 0, bounce: 0, phase: 0 },
     cats: [
-      { kind: 'fish' as Kind, mood: 'idle' as Mood, x: 84, dir: 1 as 1 | -1, target: 84, timer: 2200, tick: 0 },
-      { kind: 'bei' as Kind, mood: 'idle' as Mood, x: 210, dir: -1 as 1 | -1, target: 210, timer: 3200, tick: 0 },
+      { kind: 'fish' as Kind, mood: 'idle' as Mood, x: 84, dir: 1 as 1 | -1, target: 84, timer: 2200, tick: 0, bounce: 0, phase: 1.9 },
+      { kind: 'bei' as Kind, mood: 'idle' as Mood, x: 210, dir: -1 as 1 | -1, target: 210, timer: 3200, tick: 0, bounce: 0, phase: 3.4 },
     ] as Actor[],
     particles: [] as { x: number; y: number; vy: number; life: number; glyph: string; colour: string }[],
     bubbles: [] as { x: number; y: number; text: string; life: number; big?: boolean }[],
@@ -80,6 +80,7 @@ export default function PixelRoom() {
     smokes: 0,
     shake: 0,
     toiletQueued: false,
+    musicUntil: 0,
   })
 
   useEffect(() => {
@@ -116,24 +117,28 @@ export default function PixelRoom() {
     let raf = 0
     let last = performance.now()
 
-    const drawOne = (name: string, kind: Kind, x: number, dir: 1 | -1, dx = 0) => {
+    const drawOne = (
+      name: string,
+      kind: Kind,
+      x: number,
+      dir: 1 | -1,
+      o: { dx?: number; sx?: number; sy?: number; rot?: number } = {},
+    ) => {
       const img = s.imgs[name]
       if (!img) return
       const g = GEOM[kind]
-      const size = (g.height / g.content) * 1 // 画布显示边长
-      const w = size
-      const h = size
-      const top = GROUND - h * g.foot
+      const size = g.height / g.content
       ctx.save()
-      ctx.translate(x + dx, top)
-      if (dir === -1) { ctx.translate(w, 0); ctx.scale(-1, 1) }
-      ctx.drawImage(img, 0, 0, w, h)
+      ctx.translate(x + (o.dx ?? 0), GROUND)
+      if (dir === -1) ctx.scale(-1, 1)
+      ctx.rotate(o.rot ?? 0)
+      ctx.scale(o.sx ?? 1, o.sy ?? 1)
+      ctx.drawImage(img, -size / 2, -size * g.foot, size, size)
       ctx.restore()
     }
 
     const shadow = (x: number, kind: Kind) => {
-      const g = GEOM[kind]
-      const w = g.height * 0.55
+      const w = GEOM[kind].height * 0.55
       ctx.fillStyle = 'rgba(10,5,16,0.32)'
       ctx.beginPath()
       ctx.ellipse(x, GROUND - 1, w / 2, 4, 0, 0, Math.PI * 2)
@@ -145,6 +150,7 @@ export default function PixelRoom() {
       last = now
       s.t += dt
       if (s.shake > 0) s.shake = Math.max(0, s.shake - dt)
+      const musicOn = s.t < s.musicUntil
 
       // 背景
       if (s.room) {
@@ -189,7 +195,6 @@ export default function PixelRoom() {
         g.timer = 2000
       }
 
-      // 吃完一阵子去厕所（彩蛋）
       if (g.mood === 'eat' && g.timer < 200 && s.toiletQueued) {
         s.toiletQueued = false
         g.mood = 'toilet'
@@ -197,7 +202,7 @@ export default function PixelRoom() {
         say('……先去个洗手间', g.x, GROUND - GEOM.girl.height - 12)
       }
 
-      // 猫：站立 / 走动 / 舔毛
+      // 猫的情绪
       s.cats.forEach((c) => {
         c.timer -= dt
         if (c.mood === 'eat') {
@@ -231,59 +236,86 @@ export default function PixelRoom() {
         }
       })
 
-      // 只做边界限制，不再互相推开（允许遮挡，看着更自然）
       g.x = Math.max(MIN_X + 14, Math.min(MAX_X - 14, g.x))
       s.cats.forEach((c) => { c.x = Math.max(MIN_X, Math.min(MAX_X, c.x)) })
 
       s.cats.forEach((c) => shadow(c.x, c.kind))
       shadow(g.x, 'girl')
 
+      // 统一算一下每个角色的「呼吸 / 摇摆 / 弹一下」
+      const bounceOf = (a: Actor) => {
+        const k = Math.max(0, a.bounce)
+        const wave = Math.sin((1 - k) * Math.PI * 2.2) * k
+        return { sy: 1 + wave * 0.14, sx: 1 - wave * 0.09 }
+      }
+      const musicSway = (a: Actor) => (musicOn ? Math.sin(s.t / 260 + a.phase) * 0.05 : 0)
+      const musicBob = (a: Actor) => (musicOn ? Math.abs(Math.sin(s.t / 260 + a.phase)) * 2.6 : 0)
+      const breath = (a: Actor) => (reduce ? 1 : 1 + Math.sin(s.t / 900 + a.phase) * 0.012)
+
       // 猫（先画，人后画 → 人挡住猫）
       s.cats.forEach((c) => {
         const set = c.kind === 'fish' ? S.fish : S.bei
         c.tick += dt
+        c.bounce = Math.max(0, c.bounce - dt / 260)
+        const b = bounceOf(c)
+        const opt = {
+          rot: musicSway(c),
+          sy: b.sy * breath(c),
+          sx: b.sx,
+          dx: 0,
+        }
         if (c.mood === 'walk') {
-          drawOne(c.tick % 300 < 150 ? set.walk1 : set.walk2, c.kind, c.x, c.dir)
+          drawOne(c.tick % 300 < 150 ? set.walk1 : set.walk2, c.kind, c.x, c.dir, opt)
         } else if (c.mood === 'groom') {
-          drawOne(c.tick % 800 < 400 ? set.groom1 : set.groom2, c.kind, c.x, c.dir)
+          drawOne(c.tick % 800 < 400 ? set.groom1 : set.groom2, c.kind, c.x, c.dir, opt)
         } else if (c.mood === 'eat') {
-          drawOne(c.tick % 700 < 350 ? set.eat1 : set.eat2, c.kind, c.x, c.dir)
+          drawOne(c.tick % 700 < 350 ? set.eat1 : set.eat2, c.kind, c.x, c.dir, opt)
         } else {
-          drawOne(set.side, c.kind, c.x, c.dir)
+          drawOne(set.side, c.kind, c.x, c.dir, opt)
         }
       })
 
       // 她
       g.tick += dt
+      g.bounce = Math.max(0, g.bounce - dt / 260)
+      const gb = bounceOf(g)
       const shakeX = s.shake > 0 ? (Math.random() - 0.5) * 3 : 0
+      const gopt = {
+        dx: shakeX,
+        rot: musicSway(g) * 1.15,
+        sy: gb.sy * breath(g),
+        sx: gb.sx,
+      }
+      const gbob = musicBob(g)
       switch (g.mood) {
         case 'walk':
-          drawOne(g.tick % 300 < 150 ? S.girl.walk1 : S.girl.walk2, 'girl', g.x, g.dir, shakeX)
+          drawOne(g.tick % 300 < 150 ? S.girl.walk1 : S.girl.walk2, 'girl', g.x, g.dir, gopt)
           break
         case 'phone':
-          drawOne(S.girl.phone, 'girl', g.x, 1, shakeX)
+          drawOne(S.girl.phone, 'girl', g.x, 1, gopt)
           break
         case 'read':
-          drawOne(g.tick % 2200 < 1100 ? S.girl.read1 : S.girl.read2, 'girl', g.x, 1, shakeX)
+          drawOne(g.tick % 2200 < 1100 ? S.girl.read1 : S.girl.read2, 'girl', g.x, 1, gopt)
           break
         case 'music':
-          drawOne(g.tick % 1000 < 500 ? S.girl.music1 : S.girl.music2, 'girl', g.x, 1, shakeX)
+          drawOne(g.tick % 900 < 450 ? S.girl.music1 : S.girl.music2, 'girl', g.x, 1, { ...gopt, sy: gopt.sy * (1 + Math.abs(Math.sin(s.t / 260)) * 0.05) })
           break
         case 'exercise':
-          drawOne(g.tick % 620 < 310 ? S.girl.dumbbell1 : S.girl.dumbbell2, 'girl', g.x, 1, shakeX)
+          drawOne(g.tick % 620 < 310 ? S.girl.dumbbell1 : S.girl.dumbbell2, 'girl', g.x, 1, gopt)
           break
         case 'eat':
-          drawOne([S.girl.eat1, S.girl.eat2, S.girl.eat3][Math.floor(g.tick / 340) % 3], 'girl', g.x, 1, shakeX)
+          drawOne([S.girl.eat1, S.girl.eat2, S.girl.eat3][Math.floor(g.tick / 340) % 3], 'girl', g.x, 1, gopt)
           break
         case 'toilet':
-          drawOne([S.girl.toilet1, S.girl.toilet2, S.girl.toilet3][Math.floor(g.tick / 900) % 3], 'girl', g.x, 1, shakeX)
+          drawOne([S.girl.toilet1, S.girl.toilet2, S.girl.toilet3][Math.floor(g.tick / 900) % 3], 'girl', g.x, 1, gopt)
           break
         case 'smoke':
-          drawOne(g.tick % 1400 < 700 ? S.girl.smoke1 : S.girl.smoke2, 'girl', g.x, 1, shakeX)
+          drawOne(g.tick % 1400 < 700 ? S.girl.smoke1 : S.girl.smoke2, 'girl', g.x, 1, gopt)
           break
         default:
-          drawOne(S.girl.front, 'girl', g.x, 1, shakeX)
+          drawOne(S.girl.front, 'girl', g.x, 1, gopt)
       }
+      void gbob
 
       // 粒子
       s.particles = s.particles.filter((p) => {
@@ -339,11 +371,13 @@ export default function PixelRoom() {
     const head = GROUND - GEOM.girl.height - 12
     if (kind === 'music') {
       g.mood = 'music'
-      g.timer = 5200
+      g.timer = 5600
+      s.musicUntil = s.t + 5600
+      s.cats.forEach((c) => { c.timer = Math.min(c.timer, 1200) })
       for (let i = 0; i < 4; i += 1) {
         s.particles.push({ x: g.x + 6, y: GROUND - GEOM.girl.height + 8 - i * 8, vy: -0.14, life: 1, glyph: '♪', colour: '#c9a7ff' })
       }
-      setHint('她在听歌，脚在打拍子')
+      setHint('音乐一响，三个都跟着晃')
     } else if (kind === 'food') {
       g.mood = 'eat'
       g.timer = 3600
@@ -365,7 +399,6 @@ export default function PixelRoom() {
       say('看会儿书', g.x, head)
       setHint('盘腿看书，房间安静下来')
     } else {
-      // 休息 = 抽烟；抽太多会咳
       g.mood = 'smoke'
       g.timer = 7000
       s.smokes += 1
@@ -393,17 +426,31 @@ export default function PixelRoom() {
     const canvas = canvasRef.current
     if (!canvas) return
     const rect = canvas.getBoundingClientRect()
-    const x = ((event.clientX - rect.left) / rect.width) * W
+    const px = ((event.clientX - rect.left) / rect.width) * W
+    const py = ((event.clientY - rect.top) / rect.height) * H
     const s = st.current
     const all: Actor[] = [s.girl, ...s.cats]
-    // 从右往左找最近的（人画在最上层，优先命中小孩以外的大目标）
-    const hit = all
-      .map((a) => ({ a, d: Math.abs(a.x - x), w: GEOM[a.kind].height * 0.85 }))
-      .filter((it) => it.d < it.w)
-      .sort((a, b) => a.d - b.d)[0]
-    if (!hit) return
-    const a = hit.a
-    const lines = a.kind === 'girl' ? GIRL_LINES : a.kind === 'fish' ? FISH_LINES : BEI_LINES
+
+    // 用真实包围盒命中：横向按角色实际宽度、纵向要落在角色高度范围内
+    const hits = all
+      .map((a) => {
+        const geom = GEOM[a.kind]
+        const size = geom.height / geom.content
+        const halfW = (geom.wf * size) / 2 + 2
+        const topY = GROUND - geom.height - 6
+        const insideX = Math.abs(a.x - px) <= halfW
+        const insideY = py >= topY && py <= GROUND + 6
+        const dist = Math.abs(a.x - px) / Math.max(1, halfW)
+        return { a, ok: insideX && insideY, dist }
+      })
+      .filter((it) => it.ok)
+      .sort((x, y) => x.dist - y.dist)
+
+    if (!hits.length) return
+    const a = hits[0].a
+    // 点中的角色弹一下
+    a.bounce = 1
+    const lines = a.kind === 'girl' ? GIRL_LINES : CAT_LINES
     say(pick(lines), a.x, GROUND - GEOM[a.kind].height - 10)
     a.dir = (a.dir === 1 ? -1 : 1) as 1 | -1
     a.tick = 0
