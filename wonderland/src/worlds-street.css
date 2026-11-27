@@ -1,0 +1,232 @@
+﻿/* ============================================================
+   03 六个世界 · 街景版
+   在 doors-v2.css 之上：把 3×2 网格改成「沿街一整排」，
+   并给这一章铺一条白天的街：天空、天际线、人行道、马路、路灯。
+   ============================================================ */
+
+/* ---------- 整章的底色：从薄荷天空过渡到暖色地面 ---------- */
+main.journey #worlds,
+#worlds.door-installation.chapter {
+  background:
+    linear-gradient(180deg, #d7f6ea 0%, #e6f8f0 34%, #f6f4e8 58%, #fbf3e6 72%, #efe3d3 78%, #e2d6c8 100%);
+  color: #2f4a42;
+}
+
+/* 章节顶部那条彩虹色带保留，但调淡，别打断街景 */
+#worlds.door-installation::before { content: none; }
+
+/* ---------- 街道容器 ---------- */
+.street {
+  position: relative;
+  margin-top: clamp(24px, 3.6vw, 46px);
+  /* 让天空和路面铺满整页宽，像一条真的街 */
+  margin-inline: -5%;
+}
+@media (max-width: 900px) {
+  .street { margin-inline: -5%; }
+}
+
+/* 天空 + 天际线 */
+.street-sky {
+  position: relative;
+  height: clamp(90px, 11vw, 150px);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.street-sun {
+  position: absolute;
+  right: 8%;
+  bottom: 6%;
+  width: clamp(46px, 5vw, 74px);
+  height: clamp(46px, 5vw, 74px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 36%, #fff6d8, #ffe3b8 62%, rgba(255, 227, 184, 0) 72%);
+  filter: blur(0.3px);
+  opacity: 0.9;
+}
+
+.street-sky i {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  border-radius: 3px 3px 0 0;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 6px, rgba(255, 255, 255, 0.55) 6px 12px) 0 44% / 100% 5px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 6px, rgba(255, 255, 255, 0.35) 6px 12px) 0 66% / 100% 5px no-repeat,
+    #b7d2cb;
+}
+
+.street-sky i:nth-child(2n) { background-color: #a9c6bf; }
+.street-sky i:nth-child(3n) { background-color: #c3dad3; }
+
+/* 一排门 */
+.doors-gallery {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(8px, 1.2vw, 20px);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(10px, 3vw, 40px);
+}
+
+@media (min-width: 1200px) {
+  /* 给右下角固定的音乐播放器让出位置，别挡住第六扇门 */
+  .doors-gallery { max-width: min(1240px, calc(100% - 190px)); margin-left: 4%; margin-right: auto; }
+}
+
+/* 店招：每扇门上方的小招牌 */
+.door-world .door-plaque {
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  border-radius: 8px 8px 4px 4px;
+  background: color-mix(in srgb, var(--door-color) 16%, #fffdf8);
+  border: 1px solid color-mix(in srgb, var(--door-color) 38%, #ffffff);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--door-color) 22%, #ffffff);
+  font-size: 10.5px;
+  gap: 3px;
+}
+
+.door-world .door-plaque > span:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 遮阳篷：让每扇门像一家小店 */
+.door-world .door-theatre::before {
+  content: "";
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  top: -1%;
+  height: 9%;
+  z-index: 4;
+  border-radius: 4px 4px 0 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--door-color) 62%, #ffffff) 0 12px,
+      #fffaf2 12px 24px
+    );
+  box-shadow: 0 2px 6px rgba(47, 74, 66, 0.18);
+  pointer-events: none;
+  opacity: 0.95;
+}
+
+/* 门前的台阶影子 */
+.door-world .door-theatre::after {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: -6px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(47, 74, 66, 0.22), rgba(47, 74, 66, 0) 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 门的标题在窄栏里要收一下 */
+.door-world h3 { font-size: clamp(12px, 1.1vw, 14px); line-height: 1.4; }
+.door-world .door-project-type { font-size: 10.5px; }
+.door-world .door-underlink { font-size: 10.5px; }
+
+/* ---------- 地面：人行道 + 马路 ---------- */
+.street-floor {
+  position: relative;
+  z-index: 1;
+  height: clamp(120px, 13vw, 180px);
+  margin-top: clamp(-110px, -9vw, -70px);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.street-sidewalk {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 46%;
+  background:
+    repeating-linear-gradient(90deg, rgba(120, 96, 76, 0.16) 0 1px, transparent 1px 46px),
+    linear-gradient(180deg, #f3e7d6, #e8d8c2);
+  border-top: 2px solid #d8c4aa;
+}
+
+.street-road {
+  position: absolute;
+  inset: 46% 0 0 0;
+  background: linear-gradient(180deg, #cfd6d3, #bcc5c2);
+  border-top: 3px solid #a9b4b0;
+}
+
+.street-road::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 52%;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0 26px, transparent 26px 54px);
+}
+
+/* 路灯：站在人行道上，往前探一点 */
+.street-lamp {
+  position: absolute;
+  bottom: 6%;
+  width: 3px;
+  height: clamp(88px, 9vw, 132px);
+  background: linear-gradient(180deg, #3d5a52, #2f4a42);
+  border-radius: 2px;
+  z-index: 3;
+}
+
+.street-lamp.is-edge { height: clamp(104px, 10vw, 148px); }
+
+.street-lamp::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: -10px;
+  width: 21px;
+  height: 12px;
+  border-radius: 10px 10px 4px 4px;
+  background: #fff3cf;
+  border: 2px solid #2f4a42;
+  box-shadow: 0 0 18px rgba(255, 232, 176, 0.85);
+}
+
+.street-lamp::after {
+  content: "";
+  position: absolute;
+  left: -7px;
+  bottom: -3px;
+  width: 17px;
+  height: 5px;
+  border-radius: 3px;
+  background: #2f4a42;
+}
+
+/* ---------- 窄屏：一屏放不下就横着滑，仍然是一排 ---------- */
+@media (max-width: 900px) {
+  .doors-gallery {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(150px, 40vw);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    padding: 0 6% 14px;
+    gap: 12px;
+    margin: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .door-world { scroll-snap-align: center; }
+  .doors-gallery::-webkit-scrollbar { height: 4px; }
+  .doors-gallery::-webkit-scrollbar-thumb { background: rgba(47, 74, 66, 0.25); border-radius: 4px; }
+
+  .street-lamp { display: none; }
+}

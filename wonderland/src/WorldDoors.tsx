@@ -1,4 +1,4 @@
-import { useReducer, useState, type CSSProperties } from 'react'
+﻿import { useReducer, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { imageUrl, projects } from './content'
 import { assetUrl } from './assets'
@@ -7,6 +7,7 @@ import KeyRing from './KeyRing'
 import { doorGameReducer, initialDoorGame, type DoorId } from './door-game'
 import './world-doors.css'
 import './doors-v2.css'
+import './worlds-street.css'
 
 type DoorDef = {
   id: DoorId
@@ -40,6 +41,13 @@ function metaFor(slug: string) {
 }
 
 const hrefFor = (slug: string) => (slug === 'shop' ? '/shop' : `/work/${slug}`)
+
+/** 街景：远处楼房（左%、宽%、高 px）与路灯位置 */
+const SKYLINE: [number, number, number][] = [
+  [1, 7, 58], [8, 5, 86], [14, 9, 46], [24, 6, 72], [31, 8, 98], [40, 5, 60],
+  [46, 10, 78], [57, 5, 50], [63, 8, 90], [72, 6, 62], [79, 9, 74], [89, 8, 54],
+]
+const LAMPS = [2.5, 96]
 
 export default function WorldDoors() {
   const { t, lang, reduced } = usePreferences()
@@ -118,7 +126,15 @@ export default function WorldDoors() {
         onDrop={drop}
       />
 
-      <div className="doors-gallery">
+      <div className="street">
+        <div className="street-sky" aria-hidden="true">
+          <span className="street-sun" />
+          {SKYLINE.map(([left, width, height], i) => (
+            <i key={i} style={{ left: `${left}%`, width: `${width}%`, height: `${height}px` }} />
+          ))}
+        </div>
+
+        <div className="doors-gallery">
         {doors.map((door, i) => {
           const meta = metaFor(door.slug)
           const opened = game.opened.includes(door.id)
@@ -177,6 +193,15 @@ export default function WorldDoors() {
             </article>
           )
         })}
+        </div>
+
+        <div className="street-floor" aria-hidden="true">
+          <span className="street-sidewalk" />
+          <span className="street-road" />
+          {LAMPS.map((left, i) => (
+            <span className="street-lamp" key={i} style={{ left: `${left}%` }} />
+          ))}
+        </div>
       </div>
 
       <div className="doors-bottom">
