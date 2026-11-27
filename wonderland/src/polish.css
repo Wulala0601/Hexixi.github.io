@@ -325,3 +325,8 @@ main.journey #hello .text-link {
   main.journey #hello .chapter-copy > p { margin-bottom: 28px; }
   main.journey #hello .contact-email { font-size: clamp(24px, 8vw, 38px); }
 }
+
+/* ============================================================
+   12. 全局：装饰星星会超出视口，窄屏出现一条横向滚动，这里裁掉
+   ============================================================ */
+html, body { overflow-x: clip; }
