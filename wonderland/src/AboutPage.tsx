@@ -1,4 +1,4 @@
-﻿import type { CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { assetUrl } from './assets'
 import { imageUrl, links } from './content'
@@ -78,46 +78,48 @@ export default function AboutPage() {
         </figure>
       </section>
 
-      <section className="ap-tags-section">
-        <header className="ap-section-head">
-          <span className="ap-eyebrow">TAGS / 关于我的六个标签</span>
-          <h2>把它们<em>拉开</em>看</h2>
-          <p>六个吊牌挂在一起，鼠标放上去会散得更开一点。</p>
-        </header>
+      <section className="ap-two">
+        <div className="ap-col">
+          <header className="ap-section-head">
+            <span className="ap-eyebrow">TAGS / 关于我的六个标签</span>
+            <h2>把它们<em>拉开</em>看</h2>
+            <p>六个吊牌挂在一起，鼠标放上去会散得更开一点。</p>
+          </header>
 
-        <div className="ap-tags" tabIndex={0} aria-label="我的六个标签">
-          {TAGS.map((tag, i) => (
-            <img key={tag.file} src={img(tag.file)} alt={tag.label} style={{ '--i': i } as CSSProperties} loading="lazy" />
-          ))}
-        </div>
-      </section>
-
-      <section className="ap-make">
-        <header className="ap-section-head">
-          <span className="ap-eyebrow">WHAT I MAKE / 我做什么</span>
-          <h2>五个方向，<em>一条线</em></h2>
-        </header>
-        <ol className="ap-make-list">
-          {MAKES.map((item, i) => (
-            <li key={item}>
-              <span>{String(i + 1).padStart(2, '0')}</span>
-              {item}
-            </li>
-          ))}
-        </ol>
-
-        <div className="ap-marquee" aria-hidden="true">
-          <div className="ap-marquee-track">
-            {[0, 1].map((copy) => (
-              <span key={copy}>
-                {MARQUEE.map((word) => (
-                  <b key={word + copy}>{word}</b>
-                ))}
-              </span>
+          <div className="ap-tags" tabIndex={0} aria-label="我的六个标签">
+            {TAGS.map((tag, i) => (
+              <img key={tag.file} src={img(tag.file)} alt={tag.label} style={{ '--i': i } as CSSProperties} loading="lazy" />
             ))}
           </div>
         </div>
+
+        <div className="ap-col">
+          <header className="ap-section-head">
+            <span className="ap-eyebrow">WHAT I MAKE / 我做什么</span>
+            <h2>五个方向，<em>一条线</em></h2>
+          </header>
+          <ol className="ap-make-list">
+            {MAKES.map((item, i) => (
+              <li key={item}>
+                <span>{String(i + 1).padStart(2, '0')}</span>
+                {item}
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
+
+      <div className="ap-marquee" aria-hidden="true">
+        <div className="ap-marquee-track">
+          {[0, 1].map((copy) => (
+            <span key={copy}>
+              {MARQUEE.map((word) => (
+                <b key={word + copy}>{word}</b>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
     </main>
   )
 }
