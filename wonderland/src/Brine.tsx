@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { assetUrl } from './assets'
 import { links } from './content'
@@ -99,6 +99,7 @@ const REVIEWS: { file: string; name: string; text: string; date?: string }[] = [
   { file: 'review-09', name: '烤菠萝', text: '特别可爱的设计，容量也很大，特别喜欢薄荷绿', date: '09-06' },
   { file: 'review-10', name: '买家晒单', text: '薄荷绿配全套徽章，出门一次带齐' },
   { file: 'review-11', name: '买家晒单', text: '粉蓝海洋包配格裙，意外地搭' },
+  { file: 'review-12', name: '炸酱面', text: '特别大很能装，每次去购物我都带上它！质量特别好~' },
 ]
 
 const stockLabel: Record<Stock, string> = { on: '在售', soon: '即将上架', sold: '补货中' }

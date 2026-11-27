@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    BRINE · 古早少女 · 薄荷 / 全息 / 蕾丝
    ============================================================ */
 
@@ -299,7 +299,11 @@
 .brine-process p { margin: 0; font-size: 13.5px; line-height: 1.85; color: var(--muted); }
 
 /* ---------- 买家秀 ---------- */
-.brine-reviews { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+.brine-reviews { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+
+@media (max-width: 900px) {
+  .brine-reviews { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 .brine-review { margin: 0; display: grid; gap: 8px; align-content: start; }
 
