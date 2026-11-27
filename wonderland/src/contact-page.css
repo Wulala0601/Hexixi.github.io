@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    /contact · 一封放在桌上的信
    ============================================================ */
 
@@ -124,7 +124,7 @@
   color: #7b8f86;
 }
 
-.cp-mail-address {
+.cp-mail-addr {
   font-size: clamp(22px, 3.2vw, 40px);
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -255,7 +255,7 @@
 
 @media (max-width: 560px) {
   .cp-mail { flex-wrap: wrap; }
-  .cp-mail-address { font-size: 20px; }
+  .cp-mail-addr { font-size: 20px; }
   .cp-mail-arrow { margin-left: 0; }
 }
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { links } from './content'
 import './contact-page.css'
 
@@ -81,7 +81,7 @@ export default function ContactPage() {
           <span className="cp-mail-stamp" aria-hidden="true">✉</span>
           <span className="cp-mail-body">
             <span className="cp-mail-label">写封信给我</span>
-            <strong className="cp-mail-address">xixihe@ln.hk</strong>
+            <strong className="cp-mail-addr">xixihe@ln.hk</strong>
           </span>
           <span className="cp-mail-arrow" aria-hidden="true">↗</span>
         </a>

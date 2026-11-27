@@ -8,7 +8,10 @@ test('required routes are present in the source map', () => {
   for (const slug of ['caviar','on-the-eve','anicat','please-lie-here']) assert.match(content, new RegExp(slug))
 })
 test('public contact data does not expose a residential address', () => {
-  const source = fs.readFileSync(path.join(root, 'src/Pages.tsx'), 'utf8')
+  // 联系页拆成了独立组件，两处一起检查
+  const source = ['src/Pages.tsx', 'src/ContactPage.tsx']
+    .map((file) => fs.readFileSync(path.join(root, file), 'utf8'))
+    .join('\n')
   assert.doesNotMatch(source, /street|district|residential|address/i)
   assert.match(source, /xixihe@ln\.hk/)
 })
