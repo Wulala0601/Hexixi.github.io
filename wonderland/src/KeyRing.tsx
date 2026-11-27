@@ -1,6 +1,6 @@
 import { useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react'
 import { createPortal } from 'react-dom'
-import { KeyArtwork } from './DoorArtwork'
+import { assetUrl } from './assets'
 import type { DoorId } from './door-game'
 
 export type KeyItem = {
@@ -20,29 +20,26 @@ type Props = {
 
 const DRAG_THRESHOLD = 8
 
+/** 每把钥匙的丝带长度：故意错落，像挂在墙上一排钩子上 */
+const RIBBON = [46, 86, 58, 100, 68, 78]
+
+const keySrc = (id: DoorId) => assetUrl(`/images/keys/${id}.webp`)
+
 /**
- * 钥匙扣：平时五/六把钥匙叠在一起，鼠标移上去扇开。
- * 点一下拿起（或直接拖走），拖到同色的门上方松手即可开锁。
+ * 一排钥匙：每把用彩色丝带吊着，高低错落。
+ * 鼠标移上去，那一把的丝带会垂长一点；点一下拿起，或直接拖到同色的门上。
  */
 export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
-  const [open, setOpen] = useState(false)
   const [drag, setDrag] = useState<{ id: DoorId; x: number; y: number } | null>(null)
   const origin = useRef<{ x: number; y: number } | null>(null)
   const moved = useRef(false)
-
-  const center = (items.length - 1) / 2
-
-  /** 展开后：沿弧线水平排开，中间最低、两侧逐级抬高，全部保持竖直 */
-  const spreadOf = (index: number) => (index - center) * 92
-  const liftOf = (index: number) => -Math.abs(index - center) * 10
-  const tiltOf = (index: number) => (index - center) * 4
 
   const onPointerDown = (event: ReactPointerEvent<HTMLButtonElement>, id: DoorId) => {
     if (event.button !== 0 && event.pointerType === 'mouse') return
     try {
       event.currentTarget.setPointerCapture(event.pointerId)
     } catch {
-      /* 合成事件或浏览器不支持捕获时忽略，拖动仍然可用 */
+      /* 合成事件或浏览器不支持捕获时忽略 */
     }
     origin.current = { x: event.clientX, y: event.clientY }
     moved.current = false
@@ -69,17 +66,11 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
   const draggedItem = drag ? items.find((item) => item.id === drag.id) : null
 
   return (
-    <div
-      className={`keyring ${open ? 'is-open' : ''} ${drag ? 'is-dragging' : ''}`}
-      onPointerEnter={() => setOpen(true)}
-      onPointerLeave={() => { if (!drag) setOpen(false) }}
-      data-open={open}
-    >
-      <span className="keyring-label">
-        {open ? '选一把钥匙，拖到同色的门上' : '把鼠标放上来，取出钥匙'}
-      </span>
-      <div className="keyring-stage" onPointerEnter={() => setOpen(true)}>
-        <span className="keyring-hoop" aria-hidden="true" />
+    <div className={`keyring ${drag ? 'is-dragging' : ''}`}>
+      <span className="keyring-label">选一把钥匙，拖到同色的门上</span>
+
+      <div className="keyring-stage">
+        <span className="keyring-line" aria-hidden="true" />
         {items.map((item, index) => {
           const isSelected = selected === item.id
           return (
@@ -88,11 +79,9 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
               type="button"
               className={`keyring-key ${isSelected ? 'is-selected' : ''} ${item.disabled ? 'is-used' : ''}`}
               style={{
-                '--dx': `${spreadOf(index)}px`,
-                '--dy': `${liftOf(index)}px`,
-                '--tilt': `${tiltOf(index)}deg`,
-                '--i': index,
+                '--ribbon': `${RIBBON[index % RIBBON.length]}px`,
                 '--key-colour': item.color,
+                '--i': index,
               } as CSSProperties}
               aria-pressed={isSelected}
               aria-label={`${item.name}钥匙`}
@@ -103,7 +92,8 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
               onPointerCancel={() => { setDrag(null); origin.current = null; moved.current = false }}
               onClick={(event) => { if (event.detail === 0) onPick(item.id) }}
             >
-              <KeyArtwork kind={item.id} />
+              <span className="keyring-ribbon" aria-hidden="true" />
+              <img className="keyring-figure" src={keySrc(item.id)} alt="" draggable={false} loading="lazy" />
               <span className="keyring-key-name">{item.name}</span>
             </button>
           )
@@ -112,7 +102,7 @@ export default function KeyRing({ items, selected, onPick, onDrop }: Props) {
 
       {drag && draggedItem && createPortal(
         <span className="keyring-ghost" style={{ left: drag.x, top: drag.y, color: draggedItem.color }} aria-hidden="true">
-          <KeyArtwork kind={draggedItem.id} />
+          <img src={keySrc(draggedItem.id)} alt="" />
         </span>,
         document.body,
       )}

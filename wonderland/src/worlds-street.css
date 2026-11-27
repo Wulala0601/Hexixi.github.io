@@ -65,16 +65,16 @@ main.journey #worlds,
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: clamp(8px, 1.2vw, 20px);
-  max-width: 1240px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(26px, 3.6vw, 54px) clamp(16px, 2.4vw, 34px);
+  max-width: 1020px;
   margin: 0 auto;
-  padding: 0 clamp(10px, 3vw, 40px);
+  padding: 0 clamp(14px, 3vw, 40px);
 }
 
 @media (min-width: 1200px) {
-  /* 给右下角固定的音乐播放器让出位置，别挡住第六扇门 */
-  .doors-gallery { max-width: min(1240px, calc(100% - 190px)); margin-left: 4%; margin-right: auto; }
+  /* 给右下角固定的音乐播放器让出位置 */
+  .doors-gallery { max-width: min(1020px, calc(100% - 200px)); margin-left: auto; margin-right: auto; }
 }
 
 /* 店招：每扇门上方的小招牌 */
@@ -212,16 +212,11 @@ main.journey #worlds,
 /* ---------- 窄屏：一屏放不下就横着滑，仍然是一排 ---------- */
 @media (max-width: 900px) {
   .doors-gallery {
-    grid-template-columns: none;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(150px, 40vw);
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    padding: 0 6% 14px;
-    gap: 12px;
-    margin: 0;
-    -webkit-overflow-scrolling: touch;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 560px;
+    padding: 0 5% 14px;
+    gap: 26px 14px;
+    margin: 0 auto;
   }
 
   .door-world { scroll-snap-align: center; }
@@ -229,4 +224,132 @@ main.journey #worlds,
   .doors-gallery::-webkit-scrollbar-thumb { background: rgba(47, 74, 66, 0.25); border-radius: 4px; }
 
   .street-lamp { display: none; }
+}
+
+/* ============================================================
+   钥匙：去掉金属圈，改成六条彩色丝带吊着，高低错落
+   ============================================================ */
+.keyring {
+  margin-top: clamp(18px, 2.6vw, 32px);
+}
+
+.keyring .keyring-label {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #5d7268;
+  margin-bottom: 4px;
+}
+
+.keyring .keyring-stage {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(8px, 2vw, 30px);
+  width: min(920px, 100%);
+  height: auto;
+  padding: 14px 0 6px;
+}
+
+/* 挂丝带的那根横杆 */
+.keyring .keyring-line {
+  position: absolute;
+  top: 0;
+  left: 2%;
+  right: 2%;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(47, 74, 66, 0) 0%, rgba(47, 74, 66, 0.22) 18%, rgba(47, 74, 66, 0.22) 82%, rgba(47, 74, 66, 0) 100%);
+}
+
+.keyring .keyring-key {
+  position: static;
+  top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(56px, 7.2vw, 92px);
+  padding: 0;
+  border: 0;
+  background: none;
+  transform: none;
+  cursor: grab;
+  touch-action: none;
+  z-index: 3;
+}
+
+.keyring .keyring-key:hover,
+.keyring .keyring-key:focus-visible { z-index: 7; }
+
+/* 丝带本体：悬停时变长，钥匙自然往下坠一点 */
+.keyring .keyring-ribbon {
+  width: clamp(9px, 1.1vw, 13px);
+  height: var(--ribbon, 60px);
+  border-radius: 2px 2px 5px 5px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.6) 0 3px, transparent 3px 100%),
+    linear-gradient(180deg, color-mix(in srgb, var(--key-colour) 72%, #ffffff), var(--key-colour));
+  box-shadow: 0 2px 6px rgba(47, 74, 66, 0.2);
+  transition: height 0.36s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.3s ease;
+}
+
+.keyring .keyring-key:hover .keyring-ribbon,
+.keyring .keyring-key:focus-visible .keyring-ribbon {
+  height: calc(var(--ribbon, 60px) + 28px);
+  filter: saturate(1.1) brightness(1.05);
+}
+
+.keyring .keyring-figure {
+  width: 100%;
+  height: auto;
+  margin-top: -14px;
+  transform-origin: top center;
+  filter: drop-shadow(0 10px 14px rgba(47, 74, 66, 0.26));
+  transition: transform 0.36s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.3s ease;
+  pointer-events: none;
+}
+
+.keyring .keyring-key:hover .keyring-figure,
+.keyring .keyring-key:focus-visible .keyring-figure {
+  transform: rotate(-3.5deg);
+}
+
+.keyring .keyring-key.is-selected .keyring-figure {
+  filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.95)) drop-shadow(0 10px 14px rgba(47, 74, 66, 0.3));
+}
+
+.keyring .keyring-key.is-used {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.keyring .keyring-key-name {
+  position: static;
+  transform: none;
+  opacity: 1;
+  padding: 0;
+  background: none;
+  margin-top: 10px;
+  font-family: var(--font-body, system-ui);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--key-colour) 78%, #2f4a42);
+  white-space: nowrap;
+}
+
+/* 拖起来的那把 */
+.keyring-ghost img {
+  width: 76px;
+  height: auto;
+  filter: drop-shadow(0 16px 20px rgba(47, 74, 66, 0.35));
+}
+
+@media (max-width: 700px) {
+  .keyring .keyring-stage { gap: 6px; }
+  .keyring .keyring-key { width: 21vw; }
+  .keyring .keyring-key-name { font-size: 10px; }
+  .keyring .keyring-ribbon { height: calc(var(--ribbon, 60px) * 0.62); }
+  .keyring .keyring-key:hover .keyring-ribbon,
+  .keyring .keyring-key:focus-visible .keyring-ribbon { height: calc(var(--ribbon, 60px) * 0.62 + 18px); }
 }
