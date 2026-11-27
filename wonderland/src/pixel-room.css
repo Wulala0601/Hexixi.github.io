@@ -1,0 +1,59 @@
+﻿/* 像素小房间（/about 右栏底部） */
+
+.pr {
+  margin-top: clamp(18px, 2.4vw, 28px);
+  border-radius: 14px;
+  border: 1px solid rgba(233, 214, 245, 0.18);
+  background: #150c1e;
+  overflow: hidden;
+}
+
+.pr-stage {
+  position: relative;
+  aspect-ratio: 170 / 108;
+  background: #150c1e;
+}
+
+.pr-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.pr-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(233, 214, 245, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.pr-hint {
+  font-family: var(--font-body, system-ui);
+  font-size: 11px;
+  color: #b9a4c9;
+}
+
+.pr-actions { display: flex; gap: 6px; }
+
+.pr-actions button {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 140, 194, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 140, 194, 0.12);
+  color: #ffd9ea;
+  font-family: var(--font-body, system-ui);
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.pr-actions button:hover { background: rgba(255, 140, 194, 0.26); transform: translateY(-1px); }
+.pr-actions button:active { transform: translateY(0); }
