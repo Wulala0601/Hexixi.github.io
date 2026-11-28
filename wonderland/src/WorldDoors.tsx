@@ -1,10 +1,11 @@
-import { Fragment, useReducer, useState, type CSSProperties } from 'react'
+﻿import { Fragment, useReducer, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { imageUrl, projects } from './content'
 import { assetUrl } from './assets'
 import { usePreferences } from './preferences'
 import KeyRing from './KeyRing'
 import { doorGameReducer, initialDoorGame, type DoorId } from './door-game'
+import { markDoorRead } from './gacha-progress'
 import './world-doors.css'
 import './doors-v2.css'
 import './worlds-street.css'
@@ -162,7 +163,7 @@ export default function WorldDoors() {
               <div className="door-theatre">
                 <div className="door-threshold" />
                 <div className="door-reveal" id={`behind-${door.id}`} aria-hidden={!opened}>
-                  <Link to={hrefFor(door.slug)} tabIndex={opened ? 0 : -1} aria-label={t(`Enter ${meta.title.en}`, `走进${meta.title.zh}`)}>
+                  <Link to={hrefFor(door.slug)} onClick={() => markDoorRead(door.id)} tabIndex={opened ? 0 : -1} aria-label={t(`Enter ${meta.title.en}`, `走进${meta.title.zh}`)}>
                     <img src={imageUrl(meta.image)} alt={meta.title[lang]} loading="lazy" />
                     <span className="door-reveal-caption">
                       <small>{t('YOU FOUND A WORLD', '你找到一个世界')}</small>

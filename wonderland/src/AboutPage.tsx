@@ -1,8 +1,9 @@
-﻿import { useState, type CSSProperties } from 'react'
+﻿import { useEffect, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { assetUrl } from './assets'
 import { imageUrl, links } from './content'
 import PixelRoom from './PixelRoom'
+import { markAboutRead } from './gacha-progress'
 import './about-page.css'
 
 const img = (name: string) => assetUrl(`/images/${name}.webp`)
@@ -60,6 +61,9 @@ const MAKES = [
 const MARQUEE = ['油画', '国画', '素描', '版画', '插画', 'PS', 'SAI', 'Midjourney', '品牌视觉', '包装', 'IP 角色', '3D 打印']
 
 export default function AboutPage() {
+  // 读过简介 = 拿到第 7 枚硬币
+  useEffect(() => { markAboutRead() }, [])
+
   const [hover, setHover] = useState<{ i: number; x: number; y: number; side: 'right' | 'left' } | null>(null)
 
   // 标签旁边弹出一张小纸条：位置贴着吊牌，靠近右边界就翻到左边
