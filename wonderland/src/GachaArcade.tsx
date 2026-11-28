@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from './assets'
 import { usePreferences } from './preferences'
 import { sfx } from './retro-sfx'
@@ -31,6 +31,7 @@ export default function GachaArcade() {
   const [line, setLine] = useState(0)
 
   const audio = useRef<HTMLAudioElement>(null)
+  const section = useRef<HTMLElement>(null)
   const world = useRef<HTMLDivElement>(null)
   const handleRef = useRef<HTMLDivElement>(null)
   const drag = useRef({ active: false, last: 0, total: 0 })
@@ -38,6 +39,23 @@ export default function GachaArcade() {
   const timers = useRef<number[]>([])
 
   useEffect(() => subscribe(() => setState(getGacha())), [])
+
+  // 顶部导航真实高度（不同缩放/字体下会变），用它算舞台高度，避免底部留缝
+  useEffect(() => {
+    const measure = () => {
+      const header = document.querySelector('.header')
+      const h = header ? Math.round(header.getBoundingClientRect().height) : 76
+      document.documentElement.style.setProperty('--hdr', h + 'px')
+      // 直接用可视高度铺满，避免不同缩放/浏览器留缝
+      if (section.current) {
+        section.current.style.height = Math.max(460, window.innerHeight - h) + 'px'
+      }
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    const id = window.setTimeout(measure, 400)
+    return () => { window.removeEventListener('resize', measure); window.clearTimeout(id) }
+  }, [])
   useEffect(() => { if (audio.current) audio.current.volume = volume / 100 }, [volume])
   useEffect(() => () => { timers.current.forEach((id) => window.clearTimeout(id)) }, [])
 
@@ -192,7 +210,7 @@ export default function GachaArcade() {
   const showHeld = phase === 'held' || phase === 'opened'
 
   return (
-    <section className="arc" aria-label={t('Gachapon arcade', '扭蛋机电玩城')}>
+    <section className="arc" ref={section} aria-label={t('Gachapon arcade', '扭蛋机电玩城')}>
       <audio ref={audio} src={assetUrl('/media/miaozi-jam.mp3')} loop preload="none" />
 
       <div className={`arc-world is-${phase} ${playing ? 'is-playing' : ''}`} ref={world}>
@@ -289,6 +307,8 @@ export default function GachaArcade() {
           </div>
         )}
 
+      </div>
+
         {/* HUD */}
         <div className="arc-hud">
           <span className="arc-coin"><i aria-hidden="true">◉</i>{coins}</span>
@@ -336,8 +356,6 @@ export default function GachaArcade() {
             </div>
           </div>
         )}
-      </div>
-
       {/* 老录像质感 */}
       <div className="arc-vhs" aria-hidden="true" />
       <div className="arc-grain" aria-hidden="true" />
