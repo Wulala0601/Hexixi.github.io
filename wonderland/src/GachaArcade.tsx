@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { assetUrl } from './assets'
 import { usePreferences } from './preferences'
 import { sfx } from './retro-sfx'
@@ -204,7 +204,7 @@ export default function GachaArcade() {
         <div className={`arc-radio ${inserted ? 'has-tape' : ''}`} onMouseEnter={hoverRadio}
           onClick={inserted ? togglePlay : insertTape} role="button" tabIndex={0}
           aria-label={t('Cassette player', '磁带机')}
-          onKeyDown={(e) => { if (e.key === 'Enter') (inserted ? togglePlay() : insertTape()) }}>
+          onKeyDown={(e) => { if (e.key === 'Enter') { if (inserted) togglePlay(); else insertTape() } }}>
           <img src={img('radio')} alt="" draggable={false} />
           <span className="arc-radio-glow" aria-hidden="true" />
           <span className="arc-notes" aria-hidden="true"><i>♪</i><i>♫</i><i>♥</i></span>
