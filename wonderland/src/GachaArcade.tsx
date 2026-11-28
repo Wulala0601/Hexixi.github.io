@@ -46,15 +46,26 @@ export default function GachaArcade() {
       const header = document.querySelector('.header')
       const h = header ? Math.round(header.getBoundingClientRect().height) : 76
       document.documentElement.style.setProperty('--hdr', h + 'px')
-      // 直接用可视高度铺满，避免不同缩放/浏览器留缝
-      if (section.current) {
-        section.current.style.height = Math.max(460, window.innerHeight - h) + 'px'
+      const el = section.current
+      if (!el) return
+
+      // 先按「可视高度 - 顶栏」给一个基准值
+      let target = window.innerHeight - h
+
+      // 再实测一次：如果页面在顶部时底部还有缝，就把缝补进高度里
+      if (window.scrollY < 2) {
+        const rect = el.getBoundingClientRect()
+        const gap = window.innerHeight - rect.bottom
+        if (gap > 0 && gap < 240) target += gap
       }
+
+      el.style.height = Math.max(460, Math.round(target)) + 'px'
     }
     measure()
     window.addEventListener('resize', measure)
     const id = window.setTimeout(measure, 400)
-    return () => { window.removeEventListener('resize', measure); window.clearTimeout(id) }
+    const id2 = window.setTimeout(measure, 1200)
+    return () => { window.removeEventListener('resize', measure); window.clearTimeout(id); window.clearTimeout(id2) }
   }, [])
   useEffect(() => { if (audio.current) audio.current.volume = volume / 100 }, [volume])
   useEffect(() => () => { timers.current.forEach((id) => window.clearTimeout(id)) }, [])
