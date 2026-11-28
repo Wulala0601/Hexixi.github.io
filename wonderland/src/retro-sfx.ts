@@ -1,4 +1,4 @@
-/** 8-bit 风格音效：全部用 WebAudio 现场合成，不依赖音频文件 */
+﻿/** 8-bit 风格音效：全部用 WebAudio 现场合成，不依赖音频文件 */
 
 let ctx: AudioContext | null = null
 
@@ -89,6 +89,14 @@ export const sfx = {
   fanfare(rare = false) {
     const notes = rare ? [784, 988, 1175, 1568] : [659, 784, 988]
     notes.forEach((f, i) => tone({ freq: f, dur: 0.18, gain: 0.13, type: 'square', delay: i * 0.12 }))
+  },
+  /** 拖动把手时的一下轻响 */
+  crankTick() {
+    noise(0.03, 0.05, 0, 3800)
+  },
+  /** 打开时的小星光 */
+  sparkle() {
+    [1320, 1568, 1864, 2093].forEach((freq, i) => tone({ freq, dur: 0.12, gain: 0.08, type: 'triangle', delay: i * 0.06 }))
   },
   /** 放进磁带机：咔哒 + 马达 */
   insert() {
